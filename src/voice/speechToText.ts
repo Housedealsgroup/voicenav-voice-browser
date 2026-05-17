@@ -27,6 +27,7 @@ export function useSpeechRecognition() {
   const [interimTranscript, setInterimTranscript] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [volume, setVolume] = useState(0);
+  const [currentLang, setCurrentLang] = useState('en-US');
   const callbacksRef = useRef<STTCallbacks | null>(null);
 
   useSpeechRecognitionEvent('start', () => {
@@ -71,11 +72,14 @@ export function useSpeechRecognition() {
     setVolume(normalized);
   });
 
-  const start = useCallback(async (callbacks?: STTCallbacks) => {
+  const start = useCallback(async (callbacks?: STTCallbacks, lang?: string) => {
     callbacksRef.current = callbacks || null;
     setTranscript('');
     setInterimTranscript('');
     setError(null);
+
+    const sttLang = lang || 'en-US';
+    setCurrentLang(sttLang);
 
     try {
       const granted = await requestPermission();
@@ -88,7 +92,7 @@ export function useSpeechRecognition() {
       callbacks?.onListeningChange?.(true);
 
       ExpoSpeechRecognitionModule.start({
-        lang: 'en-US',
+        lang: sttLang,
         interimResults: true,
         continuous: false,
         addsPunctuation: true,
@@ -112,14 +116,26 @@ export function useSpeechRecognition() {
     } catch {}
   }, []);
 
+  // Switch language mid-session (restarts recognition)
+  const switchLanguage = useCallback(async (lang: string, callbacks?: STTCallbacks) => {
+    if (lang === currentLang) return;
+    try {
+      ExpoSpeechRecognitionModule.stop();
+    } catch {}
+    await new Promise(r => setTimeout(r, 150)); // Brief pause for clean restart
+    await start(callbacks || callbacksRef.current || undefined, lang);
+  }, [currentLang, start]);
+
   return {
     isListening,
     transcript,
     interimTranscript,
     error,
     volume,
+    currentLang,
     start,
     stop,
     abort,
+    switchLanguage,
   };
 }

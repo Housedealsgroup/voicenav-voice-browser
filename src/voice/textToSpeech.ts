@@ -18,11 +18,16 @@ const DEFAULT_OPTIONS: TTSOptions = {
 
 let isSpeaking = false;
 let currentUtterance: string | null = null;
+let currentLanguage = 'en-US';
 
 export async function speak(text: string, options: TTSOptions = {}): Promise<void> {
   const opts = { ...DEFAULT_OPTIONS, ...options };
 
-  // Stop any current speech
+  // Use current detected language if not explicitly overridden
+  if (!options.language) {
+    opts.language = currentLanguage;
+  }
+
   if (isSpeaking) {
     await Speech.stop();
   }
@@ -79,9 +84,19 @@ export function getCurrentUtterance(): string | null {
   return currentUtterance;
 }
 
-export async function speakInterruptible(text: string): Promise<void> {
+// Set the active language for TTS
+export function setTTSLanguage(lang: string): void {
+  currentLanguage = lang;
+  logger.voice('setTTSLanguage', { lang });
+}
+
+export function getTTSLanguage(): string {
+  return currentLanguage;
+}
+
+export async function speakInterruptible(text: string, lang?: string): Promise<void> {
   await stopSpeaking();
-  await speak(text);
+  await speak(text, lang ? { language: lang } : {});
 }
 
 // Queue system for sequential speech

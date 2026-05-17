@@ -1,8 +1,10 @@
 // VoiceNav Continuous Listener — always-on voice mode with wake word detection
 // Barge-in support, silence detection, voice activity detection
+// Real-time language detection and dynamic switching
 
 import { ExpoSpeechRecognitionModule } from 'expo-speech-recognition';
 import { stopSpeaking, getIsSpeaking } from './textToSpeech';
+import { detectLanguage } from './languageDetector';
 import { logger } from '../utils/logger';
 
 export type ContinuousMode = 'off' | 'wake_word' | 'always_on' | 'push_to_talk';
@@ -16,15 +18,18 @@ export type ContinuousListenerState = {
   silenceTimeout: number; // ms
   wakeWord: string;
   lastActivityTime: number;
+  currentLang: string; // BCP-47 tag
+  langSwitchDebounce: number; // ms
 };
 
 type ContinuousCallbacks = {
-  onCommand: (text: string) => void;
+  onCommand: (text: string, lang: string) => void;
   onWakeWord: () => void;
   onListeningStart: () => void;
   onListeningEnd: () => void;
   onVolumeChange: (volume: number) => void;
   onError: (error: string) => void;
+  onLanguageChange?: (lang: string) => void;
 };
 
 const DEFAULT_STATE: ContinuousListenerState = {
@@ -36,15 +41,20 @@ const DEFAULT_STATE: ContinuousListenerState = {
   silenceTimeout: 3000,
   wakeWord: 'hey voicenav',
   lastActivityTime: 0,
+  currentLang: 'en-US',
+  langSwitchDebounce: 2000,
 };
 
 let state = { ...DEFAULT_STATE };
 let callbacks: ContinuousCallbacks | null = null;
+let langSwitchTimer: ReturnType<typeof setTimeout> | null = null;
+let pendingLang: string | null = null;
+let interimBuffer = '';
 
 // --- Public API ---
 export function startContinuous(
   mode: ContinuousMode,
-  cbs: Partial<ContinuousCallbacks> & { onCommand: (text: string) => void }
+  cbs: Partial<ContinuousCallbacks> & { onCommand: (text: string, lang: string) => void }
 ): void {
   logger.voice('startContinuous', { mode });
   callbacks = cbs as ContinuousCallbacks;
@@ -64,6 +74,12 @@ export function stopContinuous(): void {
     clearTimeout(state.silenceTimer);
     state.silenceTimer = null;
   }
+  if (langSwitchTimer) {
+    clearTimeout(langSwitchTimer);
+    langSwitchTimer = null;
+  }
+  pendingLang = null;
+  interimBuffer = '';
   try {
     ExpoSpeechRecognitionModule.stop();
   } catch {}
@@ -89,8 +105,19 @@ export function isContinuousActive(): boolean {
   return state.mode !== 'off';
 }
 
+export function getCurrentLang(): string {
+  return state.currentLang;
+}
+
+export function setLanguage(lang: string): void {
+  state.currentLang = lang;
+  if (state.isListening) {
+    restartSTT(lang);
+  }
+}
+
 // --- Push to Talk ---
-export function pushToTalkStart(onResult: (text: string) => void): void {
+export function pushToTalkStart(onResult: (text: string, lang: string) => void): void {
   state.mode = 'push_to_talk';
   state.isListening = true;
   callbacks = { onCommand: onResult } as ContinuousCallbacks;
@@ -117,7 +144,7 @@ function startListeningLoop(): void {
 function startSTT(): void {
   try {
     ExpoSpeechRecognitionModule.start({
-      lang: 'en-US',
+      lang: state.currentLang,
       interimResults: true,
       continuous: true,
       addsPunctuation: true,
@@ -125,6 +152,50 @@ function startSTT(): void {
   } catch (e: any) {
     callbacks?.onError?.(e.message || 'Failed to start speech recognition');
   }
+}
+
+function restartSTT(lang: string): void {
+  logger.voice('restartSTT', { from: state.currentLang, to: lang });
+  state.currentLang = lang;
+  try {
+    ExpoSpeechRecognitionModule.stop();
+  } catch {}
+  setTimeout(() => {
+    if (state.mode !== 'off') {
+      startSTT();
+      callbacks?.onLanguageChange?.(lang);
+    }
+  }, 200);
+}
+
+// --- Real-Time Language Detection ---
+function detectAndSwitchLanguage(interimText: string): void {
+  if (!interimText || interimText.length < 3) return;
+
+  const result = detectLanguage(interimText);
+  const detectedSttCode = result.language.sttCode;
+
+  // Only switch if confidence is high and language actually changed
+  if (result.confidence < 0.7 || detectedSttCode === state.currentLang) {
+    pendingLang = null;
+    return;
+  }
+
+  // Debounce — don't switch too fast
+  if (pendingLang === detectedSttCode) return;
+  pendingLang = detectedSttCode;
+
+  if (langSwitchTimer) {
+    clearTimeout(langSwitchTimer);
+  }
+
+  langSwitchTimer = setTimeout(() => {
+    if (pendingLang === detectedSttCode && state.mode !== 'off') {
+      logger.voice('langSwitch', { from: state.currentLang, to: detectedSttCode, confidence: result.confidence });
+      restartSTT(detectedSttCode);
+    }
+    pendingLang = null;
+  }, state.langSwitchDebounce);
 }
 
 // --- Wake Word Detection ---
@@ -144,11 +215,9 @@ function resetSilenceTimer(): void {
   if (state.mode === 'always_on' || state.mode === 'push_to_talk') {
     state.silenceTimer = setTimeout(() => {
       if (state.isListening && state.mode !== 'push_to_talk') {
-        // Auto-stop after silence, but keep continuous mode active
         try {
           ExpoSpeechRecognitionModule.stop();
         } catch {}
-        // Restart listening after a brief pause
         setTimeout(() => {
           if (state.mode !== 'off') {
             startSTT();
@@ -191,63 +260,66 @@ export function setWakeWord(word: string): void {
   state.wakeWord = word.toLowerCase().trim();
 }
 
+export function setLangSwitchDebounce(ms: number): void {
+  state.langSwitchDebounce = Math.max(500, Math.min(10000, ms));
+}
+
 // --- Event Handlers (to be wired up by the app) ---
 export function handleSpeechResult(transcript: string, isFinal: boolean): void {
   if (!isFinal) {
+    // Use interim results for real-time language detection
+    interimBuffer += ' ' + transcript;
+    if (interimBuffer.length > 10) {
+      detectAndSwitchLanguage(interimBuffer);
+      interimBuffer = ''; // Reset buffer after detection attempt
+    }
     resetSilenceTimer();
     return;
   }
-  logger.voice('speechResult', { transcript, isFinal, mode: state.mode });
+  logger.voice('speechResult', { transcript, isFinal, mode: state.mode, lang: state.currentLang });
 
   // Check for wake word in wake_word mode
   if (state.mode === 'wake_word' && !state.isWakeWordDetected) {
     if (checkWakeWord(transcript)) {
       state.isWakeWordDetected = true;
       callbacks?.onWakeWord?.();
-      // Strip wake word from command
       const command = transcript.replace(/hey\s+voice\s*nav(?:igation)?|ok\s+voicenav|hello\s+voicenav/gi, '').trim();
       if (command.length > 0) {
-        callbacks?.onCommand?.(command);
+        callbacks?.onCommand?.(command, state.currentLang);
       }
       resetSilenceTimer();
       return;
     }
-    // Not a wake word, ignore
     resetSilenceTimer();
     return;
   }
 
-  // In wake_word mode, after wake word detected, process commands
   if (state.mode === 'wake_word' && state.isWakeWordDetected) {
-    // Check if user said "stop listening" or "never mind"
     if (/^(?:stop listening|never mind|forget it|cancel)$/i.test(transcript.trim())) {
       state.isWakeWordDetected = false;
       callbacks?.onListeningEnd?.();
       resetSilenceTimer();
       return;
     }
-    callbacks?.onCommand?.(transcript.trim());
+    callbacks?.onCommand?.(transcript.trim(), state.currentLang);
     resetSilenceTimer();
     return;
   }
 
-  // In always_on mode, process all commands
   if (state.mode === 'always_on') {
-    callbacks?.onCommand?.(transcript.trim());
+    callbacks?.onCommand?.(transcript.trim(), state.currentLang);
     resetSilenceTimer();
     return;
   }
 
-  // Push to talk
   if (state.mode === 'push_to_talk') {
-    callbacks?.onCommand?.(transcript.trim());
+    callbacks?.onCommand?.(transcript.trim(), state.currentLang);
     return;
   }
 }
 
 export function handleSpeechError(error: string): void {
   callbacks?.onError?.(error);
-  // Restart listening if continuous mode is active
   if (state.mode !== 'off' && state.mode !== 'push_to_talk') {
     setTimeout(() => {
       if (state.mode !== 'off') {

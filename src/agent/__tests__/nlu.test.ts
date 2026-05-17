@@ -70,6 +70,151 @@ describe('NLU Engine', () => {
       expect(result.originalText).toBe('  Go To AMAZON  ');
       expect(result.normalizedText).toBeDefined();
     });
+
+    it('returns detected language', () => {
+      const result = understand('search for headphones');
+      expect(result.detectedLanguage).toBe('en');
+    });
+  });
+
+  describe('Multi-Language NLU', () => {
+    describe('Spanish', () => {
+      it('classifies search intent in Spanish', () => {
+        const result = understand('buscar auriculares');
+        expect(result.intent).toBe('search');
+        expect(result.detectedLanguage).toBe('es');
+      });
+
+      it('classifies navigate intent in Spanish', () => {
+        const result = understand('abrir google');
+        expect(result.intent).toBe('navigate');
+      });
+
+      it('classifies back intent in Spanish', () => {
+        const result = understand('atrás');
+        expect(result.intent).toBe('back');
+      });
+
+      it('classifies help intent in Spanish', () => {
+        const result = understand('ayuda');
+        expect(result.intent).toBe('help');
+      });
+    });
+
+    describe('French', () => {
+      it('classifies search intent in French', () => {
+        const result = understand('chercher des écouteurs');
+        expect(result.intent).toBe('search');
+        expect(result.detectedLanguage).toBe('fr');
+      });
+
+      it('classifies navigate intent in French', () => {
+        const result = understand('ouvrir google');
+        expect(result.intent).toBe('navigate');
+      });
+
+      it('classifies back intent in French', () => {
+        const result = understand('retourner');
+        expect(result.intent).toBe('back');
+      });
+    });
+
+    describe('German', () => {
+      it('classifies search intent in German', () => {
+        const result = understand('suche nach kopfhörern');
+        expect(result.intent).toBe('search');
+        expect(result.detectedLanguage).toBe('de');
+      });
+
+      it('classifies navigate intent in German', () => {
+        const result = understand('öffne google');
+        expect(result.intent).toBe('navigate');
+      });
+
+      it('classifies help intent in German', () => {
+        const result = understand('hilfe');
+        expect(result.intent).toBe('help');
+      });
+    });
+
+    describe('Italian', () => {
+      it('classifies search intent in Italian', () => {
+        const result = understand('cerca cuffie');
+        expect(result.intent).toBe('search');
+        expect(result.detectedLanguage).toBe('it');
+      });
+    });
+
+    describe('Portuguese', () => {
+      it('classifies search intent in Portuguese', () => {
+        const result = understand('buscar fones');
+        expect(result.intent).toBe('search');
+        expect(result.detectedLanguage).toBe('pt');
+      });
+    });
+
+    describe('Russian', () => {
+      it('classifies search intent in Russian', () => {
+        const result = understand('найти наушники');
+        expect(result.intent).toBe('search');
+        expect(result.detectedLanguage).toBe('ru');
+      });
+
+      it('classifies back intent in Russian', () => {
+        const result = understand('назад');
+        expect(result.intent).toBe('back');
+      });
+    });
+
+    describe('Japanese', () => {
+      it('classifies search intent in Japanese', () => {
+        const result = understand('ヘッドフォンを検索');
+        expect(result.intent).toBe('search');
+        expect(result.detectedLanguage).toBe('ja');
+      });
+
+      it('classifies back intent in Japanese', () => {
+        const result = understand('戻る');
+        expect(result.intent).toBe('back');
+      });
+    });
+
+    describe('Korean', () => {
+      it('classifies search intent in Korean', () => {
+        const result = understand('이어폰 검색');
+        expect(result.intent).toBe('search');
+        expect(result.detectedLanguage).toBe('ko');
+      });
+    });
+
+    describe('Chinese', () => {
+      it('classifies search intent in Chinese', () => {
+        const result = understand('搜索耳机');
+        expect(result.intent).toBe('search');
+        expect(result.detectedLanguage).toBe('zh');
+      });
+
+      it('classifies back intent in Chinese', () => {
+        const result = understand('返回');
+        expect(result.intent).toBe('back');
+      });
+    });
+
+    describe('Arabic', () => {
+      it('classifies search intent in Arabic', () => {
+        const result = understand('ابحث عن سماعات');
+        expect(result.intent).toBe('search');
+        expect(result.detectedLanguage).toBe('ar');
+      });
+    });
+
+    describe('Hindi', () => {
+      it('classifies search intent in Hindi', () => {
+        const result = understand('हेडफोन खोजो');
+        expect(result.intent).toBe('search');
+        expect(result.detectedLanguage).toBe('hi');
+      });
+    });
   });
 
   describe('resolveSiteAlias()', () => {

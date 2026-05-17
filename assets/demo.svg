@@ -1,0 +1,190 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 700" width="400" height="700">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0B0B1E"/>
+      <stop offset="100%" style="stop-color:#1A1A3E"/>
+    </linearGradient>
+    <linearGradient id="micGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF2D78"/>
+      <stop offset="100%" style="stop-color:#FF6B9D"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7C5CFC"/>
+      <stop offset="100%" style="stop-color:#9B7FFF"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="micGlow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="700" fill="url(#bg)" rx="20"/>
+
+  <!-- Status bar -->
+  <text x="20" y="30" fill="#666" font-family="system-ui" font-size="12">9:41</text>
+  <circle cx="370" cy="25" r="4" fill="#666"/>
+
+  <!-- Header -->
+  <text x="200" y="65" text-anchor="middle" fill="white" font-family="system-ui" font-size="20" font-weight="bold">VoiceNav</text>
+  <text x="200" y="85" text-anchor="middle" fill="#7C5CFC" font-family="system-ui" font-size="11">Voice Browser</text>
+
+  <!-- Browser mockup area -->
+  <rect x="20" y="100" width="360" height="280" rx="12" fill="#12122A" stroke="#2A2A4A" stroke-width="1"/>
+
+  <!-- URL bar -->
+  <rect x="30" y="110" width="340" height="36" rx="8" fill="#1A1A3E"/>
+  <text x="50" y="133" fill="#666" font-family="monospace" font-size="12">google.com</text>
+  <circle cx="355" cy="128" r="8" fill="#2A2A4A"/>
+
+  <!-- Page content skeleton -->
+  <rect x="40" y="160" width="120" height="12" rx="4" fill="#1E1E3E"/>
+  <rect x="40" y="180" width="200" height="8" rx="4" fill="#16162E"/>
+  <rect x="40" y="195" width="180" height="8" rx="4" fill="#16162E"/>
+  <rect x="40" y="210" width="160" height="8" rx="4" fill="#16162E"/>
+
+  <!-- Search results -->
+  <rect x="40" y="240" width="320" height="60" rx="8" fill="#16162E"/>
+  <rect x="50" y="250" width="180" height="10" rx="4" fill="#7C5CFC" opacity="0.6"/>
+  <rect x="50" y="268" width="280" height="6" rx="3" fill="#1E1E3E"/>
+  <rect x="50" y="280" width="240" height="6" rx="3" fill="#1E1E3E"/>
+
+  <rect x="40" y="310" width="320" height="60" rx="8" fill="#16162E"/>
+  <rect x="50" y="320" width="160" height="10" rx="4" fill="#7C5CFC" opacity="0.6"/>
+  <rect x="50" y="338" width="260" height="6" rx="3" fill="#1E1E3E"/>
+  <rect x="50" y="350" width="220" height="6" rx="3" fill="#1E1E3E"/>
+
+  <!-- Voice command area -->
+  <rect x="20" y="400" width="360" height="180" rx="12" fill="#12122A" stroke="#2A2A4A" stroke-width="1"/>
+
+  <!-- Animated waveform bars -->
+  <g filter="url(#glow)">
+    <rect x="80" y="460" width="4" height="20" rx="2" fill="#00E5FF">
+      <animate attributeName="height" values="20;40;20" dur="0.8s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="460;450;460" dur="0.8s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="92" y="455" width="4" height="30" rx="2" fill="#00E5FF">
+      <animate attributeName="height" values="30;50;30" dur="0.6s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="455;445;455" dur="0.6s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="104" y="450" width="4" height="40" rx="2" fill="#00E5FF">
+      <animate attributeName="height" values="40;60;40" dur="0.7s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="450;440;450" dur="0.7s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="116" y="445" width="4" height="50" rx="2" fill="#7C5CFC">
+      <animate attributeName="height" values="50;70;50" dur="0.5s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="445;435;445" dur="0.5s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="128" y="440" width="4" height="60" rx="2" fill="#7C5CFC">
+      <animate attributeName="height" values="60;80;60" dur="0.9s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="440;430;440" dur="0.9s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="140" y="445" width="4" height="50" rx="2" fill="#FF2D78">
+      <animate attributeName="height" values="50;70;50" dur="0.6s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="445;435;445" dur="0.6s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="152" y="450" width="4" height="40" rx="2" fill="#FF2D78">
+      <animate attributeName="height" values="40;60;40" dur="0.8s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="450;440;450" dur="0.8s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="164" y="455" width="4" height="30" rx="2" fill="#00E5FF">
+      <animate attributeName="height" values="30;50;30" dur="0.7s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="455;445;455" dur="0.7s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="176" y="460" width="4" height="20" rx="2" fill="#00E5FF">
+      <animate attributeName="height" values="20;40;20" dur="0.5s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="460;450;460" dur="0.5s" repeatCount="indefinite"/>
+    </rect>
+
+    <!-- Mirror side -->
+    <rect x="220" y="460" width="4" height="20" rx="2" fill="#00E5FF">
+      <animate attributeName="height" values="20;40;20" dur="0.7s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="460;450;460" dur="0.7s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="232" y="455" width="4" height="30" rx="2" fill="#00E5FF">
+      <animate attributeName="height" values="30;50;30" dur="0.9s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="455;445;455" dur="0.9s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="244" y="450" width="4" height="40" rx="2" fill="#7C5CFC">
+      <animate attributeName="height" values="40;60;40" dur="0.6s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="450;440;450" dur="0.6s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="256" y="445" width="4" height="50" rx="2" fill="#7C5CFC">
+      <animate attributeName="height" values="50;70;50" dur="0.8s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="445;435;445" dur="0.8s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="268" y="440" width="4" height="60" rx="2" fill="#FF2D78">
+      <animate attributeName="height" values="60;80;60" dur="0.5s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="440;430;440" dur="0.5s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="280" y="445" width="4" height="50" rx="2" fill="#FF2D78">
+      <animate attributeName="height" values="50;70;50" dur="0.7s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="445;435;445" dur="0.7s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="292" y="450" width="4" height="40" rx="2" fill="#00E5FF">
+      <animate attributeName="height" values="40;60;40" dur="0.6s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="450;440;450" dur="0.6s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="304" y="455" width="4" height="30" rx="2" fill="#00E5FF">
+      <animate attributeName="height" values="30;50;30" dur="0.8s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="455;445;455" dur="0.8s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="316" y="460" width="4" height="20" rx="2" fill="#00E5FF">
+      <animate attributeName="height" values="20;40;20" dur="0.9s" repeatCount="indefinite"/>
+      <animate attributeName="y" values="460;450;460" dur="0.9s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- Voice command text with typing animation -->
+  <text x="200" y="510" text-anchor="middle" fill="#00E5FF" font-family="monospace" font-size="14" font-weight="bold">
+    "Search for headphones"
+    <animate attributeName="opacity" values="0;1;1;0" dur="3s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- Animated command text sequence -->
+  <text x="200" y="510" text-anchor="middle" fill="#7C5CFC" font-family="monospace" font-size="14" font-weight="bold" opacity="0">
+    "Click the first result"
+    <animate attributeName="opacity" values="0;0;1;1;0" dur="3s" repeatCount="indefinite"/>
+  </text>
+
+  <text x="200" y="510" text-anchor="middle" fill="#FF2D78" font-family="monospace" font-size="14" font-weight="bold" opacity="0">
+    "Add it to cart"
+    <animate attributeName="opacity" values="0;0;0;1;1" dur="3s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- Feedback text -->
+  <text x="200" y="540" text-anchor="middle" fill="#4A4A6A" font-family="system-ui" font-size="11">
+    <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+    Listening...
+  </text>
+
+  <!-- Mic button -->
+  <g transform="translate(200, 620)" filter="url(#micGlow)">
+    <circle r="35" fill="url(#micGrad)">
+      <animate attributeName="r" values="35;38;35" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="35" fill="none" stroke="#FF2D78" stroke-width="2" opacity="0.5">
+      <animate attributeName="r" values="35;50;35" dur="1.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.5;0;0.5" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="35" fill="none" stroke="#FF2D78" stroke-width="1" opacity="0.3">
+      <animate attributeName="r" values="35;60;35" dur="1.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.3;0;0.3" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Mic icon -->
+    <path d="M0,-12 L0,4 M-8,-4 L-8,-12 C-8,-18 8,-18 8,-12 L8,-4 M-12,4 L12,4 M0,4 L0,10" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Bottom nav hint -->
+  <rect x="150" y="685" width="100" height="4" rx="2" fill="#4A4A6A"/>
+</svg>

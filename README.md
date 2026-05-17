@@ -61,6 +61,18 @@ A fully accessible mobile browser that understands your voice and completes comp
 
 ---
 
+## **Live Demo**
+
+<div align="center">
+
+<img src="assets/demo.svg" alt="VoiceNav Demo - Voice commands in action" width="350">
+
+**Tap. Speak. Browse.** — VoiceNav responds to natural language commands in real-time.
+
+</div>
+
+---
+
 ## **What Makes VoiceNav Different**
 
 <div align="center">
