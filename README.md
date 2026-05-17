@@ -20,7 +20,7 @@ A fully accessible mobile browser that understands your voice and completes comp
 
 ---
 
-**Built by [GITLAWB](https://github.com/Housedealsgroup) · Powered by [MIMO](https://github.com/Housedealsgroup) · Backed by [APOLLO BTC](https://github.com/Housedealsgroup)**
+**Built by [HouseDealsGroup](https://github.com/Housedealsgroup)**
 
 </div>
 
@@ -30,9 +30,14 @@ A fully accessible mobile browser that understands your voice and completes comp
 
 <div align="center">
 
-[![VoiceNav Demo Video](https://img.shields.io/badge/%E2%96%B6_Watch_VoiceNav_Demo-FF006E?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/watch?v=YOUR_VIDEO_ID)
+<!-- Replace the URL below with your actual video file in the repo -->
+<!-- GitHub supports .mp4 files directly in README — just upload to assets/ and link here -->
 
-*One tap. One voice command. The entire web at your command.*
+https://github.com/Housedealsgroup/voicenav/assets/demo.mp4
+
+**One tap. One voice command. The entire web at your command.**
+
+[![VoiceNav Demo on YouTube](https://img.shields.io/badge/%E2%96%B6_Watch_Full_Demo_on_YouTube-FF006E?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/watch?v=YOUR_VIDEO_ID)
 
 </div>
 
@@ -93,46 +98,79 @@ A fully accessible mobile browser that understands your voice and completes comp
 
 ---
 
-## **Quick Start**
+## **Getting Started**
 
 <div align="center">
 
-### **Get Running in 60 Seconds**
+### **3 Steps. 60 Seconds. You're In.**
 
 </div>
 
+### **Step 1: Install Expo Go on Your Phone**
+
+| Platform | Link |
+|----------|------|
+| **iPhone** | [Download from App Store](https://apps.apple.com/app/expo-go/id982107779) |
+| **Android** | [Download from Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent) |
+
+### **Step 2: Clone and Run**
+
 ```bash
-# Clone the repo
 git clone https://github.com/Housedealsgroup/voicenav.git
 cd voicenav
-
-# Install dependencies
 npm install
-
-# Start the app
 npm start
 ```
+
+### **Step 3: Scan and Speak**
+
+1. Open **Expo Go** on your phone
+2. Scan the QR code shown in your terminal
+3. Tap the **microphone button**
+4. Say **"Go to Amazon"** — VoiceNav does the rest
 
 <div align="center">
 
 ```
 ┌─────────────────────────────────────────────────┐
 │                                                 │
-│   📱  Install Expo Go on your phone             │
+│   📱  Install Expo Go                           │
 │       │                                         │
 │       ▼                                         │
-│   📷  Scan the QR code                          │
+│   📷  Scan QR Code                              │
 │       │                                         │
 │       ▼                                         │
-│   🎤  Tap the mic and speak                     │
+│   🎤  Tap Mic & Speak                           │
 │       │                                         │
 │       ▼                                         │
-│   ✅  VoiceNav does the rest                    │
+│   ✅  VoiceNav Does It                          │
 │                                                 │
 └─────────────────────────────────────────────────┘
 ```
 
 </div>
+
+### **Your First Commands**
+
+Try these to get started:
+
+```
+"Go to Google"
+"Search for weather today"
+"Click the first result"
+"Read this page"
+"Scroll down"
+"Go back"
+```
+
+### **System Requirements**
+
+| Requirement | Details |
+|-------------|---------|
+| **Node.js** | 18+ (LTS recommended) |
+| **Phone** | iOS 13+ or Android 8+ |
+| **Network** | Same WiFi for development |
+| **Microphone** | Required for voice commands |
 
 ---
 
@@ -662,9 +700,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 - [x] **v2** — Bookmarks, voice shortcuts, onboarding
 - [x] **v3** — Enterprise suite, security, multi-language
 - [x] **v4** — Supercomputer-level navigation, NLU, task automation
-- [x] **v5** — Testing, CI/CD, error boundaries, deployment config
-- [ ] **v5.1** — Offline mode with command queue
-- [ ] **v5.2** — Crash reporting with Sentry
+- [x] **v5** — Testing (60+ tests), CI/CD, error boundaries, offline mode, crash reporting, deployment
 - [ ] **v6** — Cloud sync across devices
 - [ ] **v6.1** — Caregiver dashboard
 - [ ] **v6.2** — Custom voice profiles
@@ -686,11 +722,14 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 | Role | Contributor |
 |------|-------------|
-| **Creator & Lead Developer** | [GITLAWB](https://github.com/Housedealsgroup) |
-| **AI Development** | [MIMO](https://github.com/Housedealsgroup) |
-| **Technical Architecture** | [APOLLO BTC](https://github.com/Housedealsgroup) |
+| **Creator & Project Owner** | [HDG (HouseDealsGroup)](https://github.com/Housedealsgroup) |
+| **Lead Developer** | [GITLAWB](https://github.com/Housedealsgroup) |
+| **AI Development** | MIMO |
+| **Technical Architecture** | APOLLO BTC |
 | **Framework** | [Expo Team](https://expo.dev) |
 | **Ecosystem** | [React Native Community](https://reactnative.dev) |
+
+**VoiceNav was created by HDG** — conceived, directed, and built to make the web accessible for everyone.
 
 </div>
 

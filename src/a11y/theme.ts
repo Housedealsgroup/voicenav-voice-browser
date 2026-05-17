@@ -1,30 +1,36 @@
 export const COLORS = {
-  // Dark theme
+  // Dark theme — deep space aesthetic with electric accents
   dark: {
-    background: '#0A0A1A',
-    surface: '#12122A',
-    surfaceLight: '#1A1A3A',
-    primary: '#6C63FF',
-    primaryLight: '#8B83FF',
-    accent: '#00D9FF',
+    background: '#0B0B1E',
+    surface: '#13132D',
+    surfaceLight: '#1C1C3A',
+    primary: '#7C5CFC',
+    primaryLight: '#9B82FF',
+    accent: '#00E5FF',
     success: '#00E676',
     warning: '#FFD600',
     error: '#FF5252',
     text: '#FFFFFF',
-    textSecondary: '#A0A0C0',
-    textMuted: '#606080',
+    textSecondary: '#B0B0D0',
+    textMuted: '#6A6A8A',
     border: '#2A2A4A',
-    card: '#16163A',
-    overlay: 'rgba(10, 10, 26, 0.85)',
-    gradient: ['#6C63FF', '#00D9FF'],
+    card: '#161638',
+    overlay: 'rgba(11, 11, 30, 0.9)',
+    gradient: ['#7C5CFC', '#00E5FF'],
+    mic: '#FF2D78',
+    micGlow: 'rgba(255, 45, 120, 0.3)',
+    waveform: '#7C5CFC',
+    taskActive: '#00E5FF',
+    taskComplete: '#00E676',
+    taskPending: '#6A6A8A',
   },
-  // Light theme
+  // Light theme — clean, modern, high contrast
   light: {
-    background: '#F5F5FF',
+    background: '#F8F8FF',
     surface: '#FFFFFF',
-    surfaceLight: '#EEEFFF',
-    primary: '#6C63FF',
-    primaryLight: '#8B83FF',
+    surfaceLight: '#F0F0FF',
+    primary: '#6C47FF',
+    primaryLight: '#8B6FFF',
     accent: '#00B8D4',
     success: '#00C853',
     warning: '#FFD600',
@@ -32,10 +38,16 @@ export const COLORS = {
     text: '#1A1A2E',
     textSecondary: '#5A5A7A',
     textMuted: '#9A9AB0',
-    border: '#DDDDEE',
+    border: '#E0E0F0',
     card: '#FFFFFF',
-    overlay: 'rgba(245, 245, 255, 0.85)',
-    gradient: ['#6C63FF', '#00B8D4'],
+    overlay: 'rgba(248, 248, 255, 0.9)',
+    gradient: ['#6C47FF', '#00B8D4'],
+    mic: '#FF2D78',
+    micGlow: 'rgba(255, 45, 120, 0.2)',
+    waveform: '#6C47FF',
+    taskActive: '#00B8D4',
+    taskComplete: '#00C853',
+    taskPending: '#9A9AB0',
   },
 };
 
@@ -56,6 +68,12 @@ export type ThemeColors = {
   card: string;
   overlay: string;
   gradient: string[];
+  mic: string;
+  micGlow: string;
+  waveform: string;
+  taskActive: string;
+  taskComplete: string;
+  taskPending: string;
 };
 
 export const SPACING = {
