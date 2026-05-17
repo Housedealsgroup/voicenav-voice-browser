@@ -4,64 +4,59 @@
   <text x="195" y="28" text-anchor="middle" fill="white" font-family="system-ui" font-size="14" font-weight="600">9:41</text>
 
   <!-- Header -->
-  <text x="195" y="80" text-anchor="middle" fill="white" font-family="system-ui" font-size="22" font-weight="700">Bookmarks</text>
+  <text x="30" y="80" fill="white" font-family="system-ui" font-size="24" font-weight="800">Bookmarks</text>
+  <text x="30" y="100" fill="#B0B0D0" font-family="system-ui" font-size="12">4 saved pages</text>
 
   <!-- Search -->
-  <rect x="30" y="100" width="330" height="45" rx="12" fill="#13132D"/>
-  <text x="55" y="128" fill="#6A6A8A" font-family="system-ui" font-size="14">Search bookmarks...</text>
+  <rect x="30" y="115" width="330" height="36" rx="18" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <circle cx="50" cy="133" r="8" fill="none" stroke="#6A6A8A" stroke-width="1.5"/>
+  <line x1="56" y1="139" x2="60" y2="143" stroke="#6A6A8A" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="70" y="138" fill="#6A6A8A" font-family="system-ui" font-size="12">Search bookmarks...</text>
 
-  <!-- Categories -->
-  <rect x="30" y="160" width="100" height="35" rx="17" fill="#7C5CFC"/>
-  <text x="80" y="183" text-anchor="middle" fill="white" font-family="system-ui" font-size="12" font-weight="600">All</text>
-  <rect x="140" y="160" width="100" height="35" rx="17" fill="#13132D"/>
-  <text x="190" y="183" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="12">Shopping</text>
-  <rect x="250" y="160" width="100" height="35" rx="17" fill="#13132D"/>
-  <text x="300" y="183" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="12">News</text>
+  <!-- Bookmark cards -->
+  <rect x="30" y="170" width="330" height="80" rx="14" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <circle cx="65" cy="210" r="20" fill="#FF990020"/>
+  <text x="65" y="216" text-anchor="middle" fill="#FF9900" font-family="system-ui" font-size="18">&#128722;</text>
+  <text x="100" y="200" fill="white" font-family="system-ui" font-size="14" font-weight="600">Amazon</text>
+  <text x="100" y="218" fill="#6A6A8A" font-family="system-ui" font-size="11">amazon.com</text>
+  <text x="100" y="235" fill="#B0B0D0" font-family="system-ui" font-size="10">Shopping - Added 2 days ago</text>
+  <circle cx="340" cy="210" r="12" fill="#FF2D7820"/>
+  <text x="340" y="215" text-anchor="middle" fill="#FF2D78" font-family="system-ui" font-size="14">&#9829;</text>
 
-  <!-- Items -->
-  <rect x="30" y="215" width="330" height="80" rx="15" fill="#13132D"/>
-  <circle cx="65" cy="255" r="20" fill="#FF9900"/>
-  <text x="65" y="260" text-anchor="middle" fill="white" font-family="system-ui" font-size="16" font-weight="700">A</text>
-  <text x="100" y="245" fill="white" font-family="system-ui" font-size="15" font-weight="600">Amazon</text>
-  <text x="100" y="265" fill="#6A6A8A" font-family="system-ui" font-size="12">amazon.com</text>
-  <text x="330" y="255" text-anchor="end" fill="#4A4A6A" font-family="system-ui" font-size="11">Shopping</text>
+  <rect x="30" y="260" width="330" height="80" rx="14" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <circle cx="65" cy="300" r="20" fill="#EA433520"/>
+  <text x="65" y="306" text-anchor="middle" fill="#EA4335" font-family="system-ui" font-size="18">&#9993;</text>
+  <text x="100" y="290" fill="white" font-family="system-ui" font-size="14" font-weight="600">Gmail</text>
+  <text x="100" y="308" fill="#6A6A8A" font-family="system-ui" font-size="11">mail.google.com</text>
+  <text x="100" y="325" fill="#B0B0D0" font-family="system-ui" font-size="10">Email - Added 5 days ago</text>
+  <circle cx="340" cy="300" r="12" fill="#FF2D7820"/>
+  <text x="340" y="305" text-anchor="middle" fill="#FF2D78" font-family="system-ui" font-size="14">&#9829;</text>
 
-  <rect x="30" y="305" width="330" height="80" rx="15" fill="#13132D"/>
-  <circle cx="65" cy="345" r="20" fill="#4285F4"/>
-  <text x="65" y="350" text-anchor="middle" fill="white" font-family="system-ui" font-size="16" font-weight="700">G</text>
-  <text x="100" y="335" fill="white" font-family="system-ui" font-size="15" font-weight="600">Google</text>
-  <text x="100" y="355" fill="#6A6A8A" font-family="system-ui" font-size="12">google.com</text>
-  <text x="330" y="345" text-anchor="end" fill="#4A4A6A" font-family="system-ui" font-size="11">Search</text>
+  <rect x="30" y="350" width="330" height="80" rx="14" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <circle cx="65" cy="390" r="20" fill="#4285F420"/>
+  <text x="65" y="396" text-anchor="middle" fill="#4285F4" font-family="system-ui" font-size="18">&#128240;</text>
+  <text x="100" y="380" fill="white" font-family="system-ui" font-size="14" font-weight="600">Google News</text>
+  <text x="100" y="398" fill="#6A6A8A" font-family="system-ui" font-size="11">news.google.com</text>
+  <text x="100" y="415" fill="#B0B0D0" font-family="system-ui" font-size="10">News - Added 1 week ago</text>
+  <circle cx="340" cy="390" r="12" fill="#FF2D7820"/>
+  <text x="340" y="395" text-anchor="middle" fill="#FF2D78" font-family="system-ui" font-size="14">&#9829;</text>
 
-  <rect x="30" y="395" width="330" height="80" rx="15" fill="#13132D"/>
-  <circle cx="65" cy="435" r="20" fill="#FF0000"/>
-  <text x="65" y="440" text-anchor="middle" fill="white" font-family="system-ui" font-size="16" font-weight="700">Y</text>
-  <text x="100" y="425" fill="white" font-family="system-ui" font-size="15" font-weight="600">YouTube</text>
-  <text x="100" y="445" fill="#6A6A8A" font-family="system-ui" font-size="12">youtube.com</text>
-  <text x="330" y="435" text-anchor="end" fill="#4A4A6A" font-family="system-ui" font-size="11">Media</text>
+  <rect x="30" y="440" width="330" height="80" rx="14" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <circle cx="65" cy="480" r="20" fill="#1DB95420"/>
+  <text x="65" y="486" text-anchor="middle" fill="#1DB954" font-family="system-ui" font-size="18">&#9835;</text>
+  <text x="100" y="470" fill="white" font-family="system-ui" font-size="14" font-weight="600">Spotify</text>
+  <text x="100" y="488" fill="#6A6A8A" font-family="system-ui" font-size="11">spotify.com</text>
+  <text x="100" y="505" fill="#B0B0D0" font-family="system-ui" font-size="10">Music - Added 2 weeks ago</text>
+  <circle cx="340" cy="480" r="12" fill="#FF2D7820"/>
+  <text x="340" y="485" text-anchor="middle" fill="#FF2D78" font-family="system-ui" font-size="14">&#9829;</text>
 
-  <rect x="30" y="485" width="330" height="80" rx="15" fill="#13132D"/>
-  <circle cx="65" cy="525" r="20" fill="#1DB954"/>
-  <text x="65" y="530" text-anchor="middle" fill="white" font-family="system-ui" font-size="16" font-weight="700">S</text>
-  <text x="100" y="515" fill="white" font-family="system-ui" font-size="15" font-weight="600">Spotify</text>
-  <text x="100" y="535" fill="#6A6A8A" font-family="system-ui" font-size="12">spotify.com</text>
-  <text x="330" y="525" text-anchor="end" fill="#4A4A6A" font-family="system-ui" font-size="11">Music</text>
+  <!-- Voice hint -->
+  <rect x="60" y="560" width="270" height="36" rx="18" fill="#13132D" stroke="#00E5FF" stroke-width="1"/>
+  <text x="195" y="583" text-anchor="middle" fill="#00E5FF" font-family="system-ui" font-size="11">Say "bookmark this" to save any page</text>
 
-  <rect x="30" y="575" width="330" height="80" rx="15" fill="#13132D"/>
-  <circle cx="65" cy="615" r="20" fill="#FF6600"/>
-  <text x="65" y="620" text-anchor="middle" fill="white" font-family="system-ui" font-size="16" font-weight="700">G</text>
-  <text x="100" y="605" fill="white" font-family="system-ui" font-size="15" font-weight="600">GitHub</text>
-  <text x="100" y="625" fill="#6A6A8A" font-family="system-ui" font-size="12">github.com</text>
-  <text x="330" y="615" text-anchor="end" fill="#4A4A6A" font-family="system-ui" font-size="11">Dev</text>
-
-  <!-- FAB -->
-  <circle cx="330" cy="700" r="28" fill="#00E5FF"/>
-  <text x="330" y="707" text-anchor="middle" fill="white" font-family="system-ui" font-size="24" font-weight="300">+</text>
-
-  <!-- Bottom nav -->
   <rect x="0" y="750" width="390" height="94" fill="#0B0B1E"/>
-  <rect x="30" y="760" width="330" height="70" rx="20" fill="#13132D"/>
-  <text x="85" y="800" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="10">Home</text>
-  <text x="195" y="800" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="10">Browser</text>
-  <text x="305" y="800" text-anchor="middle" fill="#00E5FF" font-family="system-ui" font-size="10">Settings</text>
+  <rect x="30" y="760" width="330" height="60" rx="16" fill="#13132D"/>
+  <text x="85" y="795" text-anchor="middle" fill="#00E5FF" font-family="system-ui" font-size="10" font-weight="600">Home</text>
+  <text x="195" y="795" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="10">Browser</text>
+  <text x="305" y="795" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="10">Settings</text>
 </svg>

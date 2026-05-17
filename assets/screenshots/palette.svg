@@ -3,42 +3,66 @@
   <rect x="0" y="0" width="390" height="44" fill="#0B0B1E"/>
   <text x="195" y="28" text-anchor="middle" fill="white" font-family="system-ui" font-size="14" font-weight="600">9:41</text>
 
-  <!-- Overlay -->
-  <rect x="0" y="0" width="390" height="844" fill="#0B0B1E" opacity="0.85"/>
+  <!-- Dimmed background -->
+  <rect x="0" y="44" width="390" height="800" fill="#000" opacity="0.6"/>
 
-  <!-- Modal -->
-  <rect x="30" y="200" width="330" height="440" rx="20" fill="#13132D"/>
+  <!-- Command palette -->
+  <rect x="20" y="120" width="350" height="480" rx="20" fill="#13132D" stroke="#7C5CFC" stroke-width="2"/>
+  <rect x="20" y="120" width="350" height="50" rx="20" fill="#1a1a3e"/>
+  <rect x="20" y="150" width="350" height="20" fill="#1a1a3e"/>
 
-  <!-- Search bar -->
-  <rect x="45" y="220" width="300" height="45" rx="12" fill="#0B0B1E"/>
-  <text x="65" y="248" fill="#6A6A8A" font-family="system-ui" font-size="14">Search commands...</text>
+  <!-- Search input -->
+  <circle cx="50" cy="145" r="10" fill="none" stroke="#7C5CFC" stroke-width="1.5"/>
+  <line x1="57" y1="152" x2="63" y2="158" stroke="#7C5CFC" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="75" y="150" fill="white" font-family="system-ui" font-size="15" font-weight="500">Go to am</text>
+  <rect x="168" y="137" width="2" height="20" fill="#00E5FF">
+    <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+  </rect>
 
-  <!-- Categories -->
-  <text x="45" y="295" fill="#00E5FF" font-family="system-ui" font-size="11" font-weight="600">NAVIGATION</text>
-  <rect x="45" y="305" width="300" height="40" rx="8" fill="#0B0B1E"/>
-  <text x="65" y="330" fill="white" font-family="system-ui" font-size="13">Go to...</text>
-  <text x="290" y="330" fill="#6A6A8A" font-family="system-ui" font-size="11">⌘G</text>
+  <!-- Results -->
+  <rect x="35" y="185" width="320" height="44" rx="10" fill="#7C5CFC15" stroke="#7C5CFC" stroke-width="1"/>
+  <circle cx="58" cy="207" r="12" fill="#FF990020"/>
+  <text x="58" y="212" text-anchor="middle" fill="#FF9900" font-family="system-ui" font-size="12">&#128722;</text>
+  <text x="82" y="203" fill="white" font-family="system-ui" font-size="13" font-weight="600">amazon.com</text>
+  <text x="82" y="220" fill="#6A6A8A" font-family="system-ui" font-size="10">Shopping - Visited 12 times</text>
+  <text x="330" y="210" fill="#7C5CFC" font-family="system-ui" font-size="10">&#8599;</text>
 
-  <rect x="45" y="350" width="300" height="40" rx="8" fill="#0B0B1E"/>
-  <text x="65" y="375" fill="white" font-family="system-ui" font-size="13">Open...</text>
-  <text x="290" y="375" fill="#6A6A8A" font-family="system-ui" font-size="11">⌘O</text>
+  <rect x="35" y="237" width="320" height="44" rx="10" fill="#13132D"/>
+  <circle cx="58" cy="259" r="12" fill="#4285F420"/>
+  <text x="58" y="264" text-anchor="middle" fill="#4285F4" font-family="system-ui" font-size="12">&#128269;</text>
+  <text x="82" y="255" fill="white" font-family="system-ui" font-size="13" font-weight="600">Google search: amazon</text>
+  <text x="82" y="272" fill="#6A6A8A" font-family="system-ui" font-size="10">Search the web</text>
+  <text x="330" y="262" fill="#6A6A8A" font-family="system-ui" font-size="10">&#8599;</text>
 
-  <text x="45" y="420" fill="#00E5FF" font-family="system-ui" font-size="11" font-weight="600">SEARCH</text>
-  <rect x="45" y="430" width="300" height="40" rx="8" fill="#0B0B1E"/>
-  <text x="65" y="455" fill="white" font-family="system-ui" font-size="13">Search for...</text>
-  <text x="290" y="455" fill="#6A6A8A" font-family="system-ui" font-size="11">⌘S</text>
+  <rect x="35" y="289" width="320" height="44" rx="10" fill="#13132D"/>
+  <circle cx="58" cy="311" r="12" fill="#00E5FF20"/>
+  <text x="58" y="316" text-anchor="middle" fill="#00E5FF" font-family="system-ui" font-size="12">&#127760;</text>
+  <text x="82" y="307" fill="white" font-family="system-ui" font-size="13" font-weight="600">amazon.co.uk</text>
+  <text x="82" y="324" fill="#6A6A8A" font-family="system-ui" font-size="10">United Kingdom</text>
+  <text x="330" y="314" fill="#6A6A8A" font-family="system-ui" font-size="10">&#8599;</text>
 
-  <rect x="45" y="475" width="300" height="40" rx="8" fill="#0B0B1E"/>
-  <text x="65" y="500" fill="white" font-family="system-ui" font-size="13">Find on page...</text>
-  <text x="290" y="500" fill="#6A6A8A" font-family="system-ui" font-size="11">⌘F</text>
+  <rect x="35" y="341" width="320" height="44" rx="10" fill="#13132D"/>
+  <circle cx="58" cy="363" r="12" fill="#FF2D7820"/>
+  <text x="58" y="368" text-anchor="middle" fill="#FF2D78" font-family="system-ui" font-size="12">&#128214;</text>
+  <text x="82" y="359" fill="white" font-family="system-ui" font-size="13" font-weight="600">Read about Amazon</text>
+  <text x="82" y="376" fill="#6A6A8A" font-family="system-ui" font-size="10">Wikipedia article</text>
+  <text x="330" y="366" fill="#6A6A8A" font-family="system-ui" font-size="10">&#8599;</text>
 
-  <text x="45" y="545" fill="#7C5CFC" font-family="system-ui" font-size="11" font-weight="600">RECENT</text>
-  <rect x="45" y="555" width="300" height="40" rx="8" fill="#0B0B1E"/>
-  <text x="65" y="580" fill="#6A6A8A" font-family="system-ui" font-size="13">Go to amazon</text>
+  <rect x="35" y="393" width="320" height="44" rx="10" fill="#13132D"/>
+  <circle cx="58" cy="415" r="12" fill="#00E67620"/>
+  <text x="58" y="420" text-anchor="middle" fill="#00E676" font-family="system-ui" font-size="12">&#9889;</text>
+  <text x="82" y="411" fill="white" font-family="system-ui" font-size="13" font-weight="600">Shortcut: "my shopping"</text>
+  <text x="82" y="428" fill="#6A6A8A" font-family="system-ui" font-size="10">Voice shortcut</text>
 
-  <rect x="45" y="600" width="300" height="40" rx="8" fill="#0B0B1E"/>
-  <text x="65" y="625" fill="#6A6A8A" font-family="system-ui" font-size="13">Search for headphones</text>
+  <!-- Keyboard hints -->
+  <rect x="35" y="460" width="320" height="30" rx="8" fill="#0B0B1E"/>
+  <text x="55" y="480" fill="#6A6A8A" font-family="system-ui" font-size="10">&#8593;&#8595; navigate</text>
+  <text x="155" y="480" fill="#6A6A8A" font-family="system-ui" font-size="10">&#9166; select</text>
+  <text x="245" y="480" fill="#6A6A8A" font-family="system-ui" font-size="10">esc close</text>
 
-  <!-- Hint -->
-  <text x="195" y="670" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="11">ESC to close · ↑↓ to navigate · Enter to select</text>
+  <rect x="0" y="750" width="390" height="94" fill="#0B0B1E"/>
+  <rect x="30" y="760" width="330" height="60" rx="16" fill="#13132D"/>
+  <text x="85" y="795" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="10">Home</text>
+  <text x="195" y="795" text-anchor="middle" fill="#00E5FF" font-family="system-ui" font-size="10" font-weight="600">Browser</text>
+  <text x="305" y="795" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="10">Settings</text>
 </svg>

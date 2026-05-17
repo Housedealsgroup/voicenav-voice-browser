@@ -1,63 +1,104 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" fill="none">
-  <rect width="390" height="844" rx="40" fill="#0B0B1E"/>
-  <rect x="0" y="0" width="390" height="44" fill="#0B0B1E"/>
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0B0B1E"/>
+      <stop offset="100%" style="stop-color:#0f0f28"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#7C5CFC"/>
+      <stop offset="100%" style="stop-color:#00E5FF"/>
+    </linearGradient>
+    <linearGradient id="micBtnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF2D78"/>
+      <stop offset="100%" style="stop-color:#FF6B9D"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="390" height="844" rx="40" fill="url(#bgGrad)"/>
+  <rect x="0" y="0" width="390" height="44" fill="url(#bgGrad)"/>
   <text x="195" y="28" text-anchor="middle" fill="white" font-family="system-ui" font-size="14" font-weight="600">9:41</text>
+  <circle cx="340" cy="22" r="4" fill="#00E676"/>
 
-  <!-- Logo -->
-  <circle cx="195" cy="100" r="35" fill="#7C5CFC"/>
-  <circle cx="195" cy="100" r="40" stroke="#7C5CFC" stroke-width="2" fill="none" opacity="0.4"/>
-  <circle cx="195" cy="100" r="47" stroke="#7C5CFC" stroke-width="1" fill="none" opacity="0.2"/>
-  <text x="195" y="108" text-anchor="middle" fill="white" font-family="system-ui" font-size="28" font-weight="700">VN</text>
+  <!-- Top buttons -->
+  <rect x="300" y="50" width="36" height="36" rx="18" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <text x="318" y="73" text-anchor="middle" fill="#B0B0D0" font-family="system-ui" font-size="14">&#9881;</text>
+  <rect x="256" y="50" width="36" height="36" rx="18" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <text x="274" y="73" text-anchor="middle" fill="#B0B0D0" font-family="system-ui" font-size="14">&#9734;</text>
 
-  <!-- Title -->
-  <text x="195" y="170" text-anchor="middle" fill="white" font-family="system-ui" font-size="24" font-weight="700">VoiceNav</text>
-  <text x="195" y="195" text-anchor="middle" fill="#B0B0D0" font-family="system-ui" font-size="13">Speak. Browse. Done.</text>
+  <!-- Logo with proper mic icon -->
+  <circle cx="195" cy="130" r="45" fill="#7C5CFC" opacity="0.12"/>
+  <circle cx="195" cy="130" r="30" fill="#7C5CFC" opacity="0.2"/>
+  <rect x="185" y="110" width="20" height="32" rx="10" fill="url(#accentGrad)"/>
+  <path d="M180 140 Q180 155 195 155 Q210 155 210 140" fill="none" stroke="url(#accentGrad)" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="195" y1="155" x2="195" y2="162" stroke="url(#accentGrad)" stroke-width="2.5" stroke-linecap="round"/>
+
+  <text x="195" y="200" text-anchor="middle" fill="white" font-family="system-ui" font-size="26" font-weight="800" letter-spacing="-0.5">VoiceNav</text>
+  <text x="195" y="222" text-anchor="middle" fill="#00E5FF" font-family="system-ui" font-size="12" font-weight="500">Supercomputer-level voice navigation</text>
 
   <!-- Mic button -->
-  <circle cx="195" cy="270" r="45" fill="#FF2D78"/>
-  <circle cx="195" cy="270" r="50" stroke="#FF2D78" stroke-width="2" fill="none" opacity="0.4"/>
-  <circle cx="195" cy="270" r="57" stroke="#FF2D78" stroke-width="1" fill="none" opacity="0.2"/>
-  <path d="M185 255 L185 275 Q185 285 195 285 Q205 285 205 275 L205 255" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
-  <line x1="195" y1="285" x2="195" y2="292" stroke="white" stroke-width="3" stroke-linecap="round"/>
-  <line x1="188" y1="292" x2="202" y2="292" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="195" cy="290" r="48" fill="url(#micBtnGrad)" filter="url(#glow)"/>
+  <circle cx="195" cy="290" r="54" stroke="#FF2D78" stroke-width="2" fill="none" opacity="0.3"/>
+  <circle cx="195" cy="290" r="62" stroke="#FF2D78" stroke-width="1" fill="none" opacity="0.15"/>
+  <rect x="185" y="272" width="20" height="28" rx="10" fill="white"/>
+  <path d="M180 298 Q180 310 195 310 Q210 310 210 298" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="195" y1="310" x2="195" y2="316" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="188" y1="316" x2="202" y2="316" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
 
-  <!-- Listening state -->
-  <rect x="60" y="340" width="270" height="50" rx="25" fill="#13132D"/>
-  <text x="195" y="370" text-anchor="middle" fill="#00E5FF" font-family="system-ui" font-size="14" font-weight="600">Listening...</text>
+  <!-- Listening pill -->
+  <rect x="120" y="360" width="150" height="32" rx="16" fill="#13132D" stroke="#00E5FF" stroke-width="1" opacity="0.8"/>
+  <circle cx="140" cy="376" r="4" fill="#00E5FF">
+    <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  <text x="175" y="381" text-anchor="middle" fill="#00E5FF" font-family="system-ui" font-size="12" font-weight="500">Listening...</text>
 
-  <!-- Quick actions -->
-  <rect x="30" y="420" width="160" height="70" rx="16" fill="#13132D"/>
-  <text x="110" y="450" text-anchor="middle" fill="#7C5CFC" font-family="system-ui" font-size="12" font-weight="600">Quick Task</text>
-  <text x="110" y="472" text-anchor="middle" fill="white" font-family="system-ui" font-size="13">Go to Amazon</text>
+  <!-- URL Input -->
+  <rect x="30" y="410" width="330" height="44" rx="22" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <circle cx="52" cy="432" r="10" fill="none" stroke="#6A6A8A" stroke-width="1.5"/>
+  <line x1="59" y1="439" x2="65" y2="445" stroke="#6A6A8A" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="75" y="437" fill="#6A6A8A" font-family="system-ui" font-size="13">Enter website or search...</text>
 
-  <rect x="200" y="420" width="160" height="70" rx="16" fill="#13132D"/>
-  <text x="280" y="450" text-anchor="middle" fill="#7C5CFC" font-family="system-ui" font-size="12" font-weight="600">Quick Task</text>
-  <text x="280" y="472" text-anchor="middle" fill="white" font-family="system-ui" font-size="13">Read News</text>
+  <!-- Quick Tasks -->
+  <text x="45" y="490" fill="#7C5CFC" font-family="system-ui" font-size="11" font-weight="700" letter-spacing="2">QUICK TASKS</text>
+  <rect x="30" y="500" width="100" height="72" rx="14" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <circle cx="80" cy="524" r="14" fill="#FF990020"/>
+  <text x="80" y="529" text-anchor="middle" fill="#FF9900" font-family="system-ui" font-size="14">&#128722;</text>
+  <text x="80" y="556" text-anchor="middle" fill="white" font-family="system-ui" font-size="11" font-weight="600">Shop</text>
+  <rect x="145" y="500" width="100" height="72" rx="14" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <circle cx="195" cy="524" r="14" fill="#00E67620"/>
+  <text x="195" y="529" text-anchor="middle" fill="#00E676" font-family="system-ui" font-size="14">&#128176;</text>
+  <text x="195" y="556" text-anchor="middle" fill="white" font-family="system-ui" font-size="11" font-weight="600">Compare</text>
+  <rect x="260" y="500" width="100" height="72" rx="14" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <circle cx="310" cy="524" r="14" fill="#4285F420"/>
+  <text x="310" y="529" text-anchor="middle" fill="#4285F4" font-family="system-ui" font-size="14">&#128240;</text>
+  <text x="310" y="556" text-anchor="middle" fill="white" font-family="system-ui" font-size="11" font-weight="600">Read News</text>
+  <rect x="30" y="582" width="100" height="72" rx="14" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <circle cx="80" cy="606" r="14" fill="#EA433520"/>
+  <text x="80" y="611" text-anchor="middle" fill="#EA4335" font-family="system-ui" font-size="14">&#9993;</text>
+  <text x="80" y="638" text-anchor="middle" fill="white" font-family="system-ui" font-size="11" font-weight="600">Email</text>
+  <rect x="145" y="582" width="100" height="72" rx="14" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <circle cx="195" cy="606" r="14" fill="#FF000020"/>
+  <text x="195" y="611" text-anchor="middle" fill="#FF0000" font-family="system-ui" font-size="14">&#9654;</text>
+  <text x="195" y="638" text-anchor="middle" fill="white" font-family="system-ui" font-size="11" font-weight="600">Video</text>
+  <rect x="260" y="582" width="100" height="72" rx="14" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <circle cx="310" cy="606" r="14" fill="#9C27B020"/>
+  <text x="310" y="611" text-anchor="middle" fill="#9C27B0" font-family="system-ui" font-size="14">&#128214;</text>
+  <text x="310" y="638" text-anchor="middle" fill="white" font-family="system-ui" font-size="11" font-weight="600">Read Page</text>
 
-  <rect x="30" y="500" width="160" height="70" rx="16" fill="#13132D"/>
-  <text x="110" y="530" text-anchor="middle" fill="#7C5CFC" font-family="system-ui" font-size="12" font-weight="600">Quick Task</text>
-  <text x="110" y="552" text-anchor="middle" fill="white" font-family="system-ui" font-size="13">Check Email</text>
+  <!-- Quick Links -->
+  <text x="45" y="690" fill="#7C5CFC" font-family="system-ui" font-size="11" font-weight="700" letter-spacing="2">QUICK LINKS</text>
+  <rect x="30" y="700" width="330" height="44" rx="12" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <text x="70" y="727" fill="white" font-family="system-ui" font-size="13" font-weight="500">Google</text>
+  <text x="165" y="727" fill="white" font-family="system-ui" font-size="13" font-weight="500">YouTube</text>
+  <text x="265" y="727" fill="white" font-family="system-ui" font-size="13" font-weight="500">Amazon</text>
 
-  <rect x="200" y="500" width="160" height="70" rx="16" fill="#13132D"/>
-  <text x="280" y="530" text-anchor="middle" fill="#7C5CFC" font-family="system-ui" font-size="12" font-weight="600">Quick Task</text>
-  <text x="280" y="552" text-anchor="middle" fill="white" font-family="system-ui" font-size="13">Shopping</text>
+  <!-- Version badge -->
+  <rect x="145" y="770" width="100" height="22" rx="11" fill="#7C5CFC15" stroke="#7C5CFC" stroke-width="0.5"/>
+  <text x="195" y="785" text-anchor="middle" fill="#7C5CFC" font-family="system-ui" font-size="10" font-weight="600">v10.0.0</text>
 
-  <!-- Quick links -->
-  <text x="45" y="610" fill="#7C5CFC" font-family="system-ui" font-size="11" font-weight="600">QUICK LINKS</text>
-  <rect x="30" y="620" width="330" height="50" rx="12" fill="#13132D"/>
-  <text x="65" y="650" fill="white" font-family="system-ui" font-size="13">Google</text>
-  <text x="165" y="650" fill="white" font-family="system-ui" font-size="13">YouTube</text>
-  <text x="275" y="650" fill="white" font-family="system-ui" font-size="13">GitHub</text>
-
-  <!-- Recent history -->
-  <text x="45" y="700" fill="#7C5CFC" font-family="system-ui" font-size="11" font-weight="600">RECENT</text>
-  <rect x="30" y="710" width="330" height="45" rx="12" fill="#13132D"/>
-  <text x="55" y="738" fill="#B0B0D0" font-family="system-ui" font-size="12">amazon.com — Last visited 2h ago</text>
-
-  <!-- Bottom nav -->
-  <rect x="0" y="750" width="390" height="94" fill="#0B0B1E"/>
-  <rect x="30" y="760" width="330" height="70" rx="20" fill="#13132D"/>
-  <text x="85" y="800" text-anchor="middle" fill="#00E5FF" font-family="system-ui" font-size="10">Home</text>
-  <text x="195" y="800" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="10">Browser</text>
-  <text x="305" y="800" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="10">Settings</text>
+  <rect x="0" y="800" width="390" height="44" fill="#0B0B1E"/>
+  <rect x="140" y="808" width="110" height="5" rx="2.5" fill="#333"/>
 </svg>

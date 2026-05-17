@@ -1,89 +1,81 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <!-- Main gradient - deep blue to vibrant purple -->
-    <linearGradient id="mainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366f1"/>
-      <stop offset="50%" style="stop-color:#8b5cf6"/>
-      <stop offset="100%" style="stop-color:#a78bfa"/>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0B0B1E"/>
+      <stop offset="100%" style="stop-color:#1a1a3e"/>
     </linearGradient>
-    <!-- Glow gradient -->
-    <radialGradient id="glowGrad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.3"/>
-      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0"/>
-    </radialGradient>
-    <!-- Sound wave gradient -->
-    <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:0.4"/>
-      <stop offset="50%" style="stop-color:#c4b5fd;stop-opacity:0.8"/>
-      <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:0.4"/>
-    </linearGradient>
-    <!-- Mic gradient -->
     <linearGradient id="micGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#ffffff"/>
-      <stop offset="100%" style="stop-color:#e0e7ff"/>
+      <stop offset="0%" style="stop-color:#00E5FF"/>
+      <stop offset="100%" style="stop-color:#7C5CFC"/>
     </linearGradient>
-    <!-- Shadow filter -->
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#1e1b4b" flood-opacity="0.3"/>
-    </filter>
-    <!-- Inner glow -->
+    <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00E5FF;stop-opacity:0.2"/>
+      <stop offset="50%" style="stop-color:#00E5FF;stop-opacity:0.8"/>
+      <stop offset="100%" style="stop-color:#00E5FF;stop-opacity:0.2"/>
+    </linearGradient>
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7C5CFC"/>
+      <stop offset="50%" style="stop-color:#00E5FF"/>
+      <stop offset="100%" style="stop-color:#FF2D78"/>
+    </linearGradient>
     <filter id="glow">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feGaussianBlur stdDeviation="4" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
   </defs>
 
-  <!-- Background circle -->
-  <circle cx="256" cy="256" r="240" fill="url(#mainGrad)" filter="url(#shadow)"/>
+  <!-- Background -->
+  <rect width="512" height="512" rx="100" fill="url(#bgGrad)"/>
 
-  <!-- Subtle inner ring -->
-  <circle cx="256" cy="256" r="200" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+  <!-- Outer ring -->
+  <circle cx="256" cy="230" r="160" fill="none" stroke="url(#ringGrad)" stroke-width="3" opacity="0.3"/>
 
-  <!-- Glow behind mic -->
-  <circle cx="256" cy="240" r="100" fill="url(#glowGrad)"/>
+  <!-- Middle ring -->
+  <circle cx="256" cy="230" r="120" fill="none" stroke="url(#ringGrad)" stroke-width="2" opacity="0.2"/>
 
-  <!-- Sound waves (outermost first, animated feel) -->
-  <!-- Wave 1 - left -->
-  <path d="M140 200 Q120 256 140 312" fill="none" stroke="url(#waveGrad)" stroke-width="5" stroke-linecap="round" opacity="0.3"/>
-  <!-- Wave 2 - left -->
-  <path d="M160 210 Q145 256 160 302" fill="none" stroke="url(#waveGrad)" stroke-width="5" stroke-linecap="round" opacity="0.5"/>
-  <!-- Wave 3 - left -->
-  <path d="M180 220 Q170 256 180 292" fill="none" stroke="url(#waveGrad)" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <!-- Inner glow -->
+  <circle cx="256" cy="220" r="80" fill="#7C5CFC" opacity="0.08"/>
 
-  <!-- Wave 1 - right -->
-  <path d="M372 200 Q392 256 372 312" fill="none" stroke="url(#waveGrad)" stroke-width="5" stroke-linecap="round" opacity="0.3"/>
-  <!-- Wave 2 - right -->
-  <path d="M352 210 Q367 256 352 302" fill="none" stroke="url(#waveGrad)" stroke-width="5" stroke-linecap="round" opacity="0.5"/>
-  <!-- Wave 3 - right -->
-  <path d="M332 220 Q342 256 332 292" fill="none" stroke="url(#waveGrad)" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <!-- Sound waves - left -->
+  <path d="M120 180 Q100 230 120 280" fill="none" stroke="url(#waveGrad)" stroke-width="4" stroke-linecap="round" opacity="0.4"/>
+  <path d="M140 190 Q125 230 140 270" fill="none" stroke="url(#waveGrad)" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+  <path d="M160 200 Q150 230 160 260" fill="none" stroke="url(#waveGrad)" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
+
+  <!-- Sound waves - right -->
+  <path d="M392 180 Q412 230 392 280" fill="none" stroke="url(#waveGrad)" stroke-width="4" stroke-linecap="round" opacity="0.4"/>
+  <path d="M372 190 Q387 230 372 270" fill="none" stroke="url(#waveGrad)" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+  <path d="M352 200 Q362 230 352 260" fill="none" stroke="url(#waveGrad)" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
 
   <!-- Microphone body -->
   <g filter="url(#glow)">
-    <!-- Mic head (rounded rect) -->
-    <rect x="226" y="180" width="60" height="100" rx="30" fill="url(#micGrad)"/>
-    <!-- Mic grille lines -->
-    <line x1="236" y1="210" x2="276" y2="210" stroke="rgba(99,102,241,0.3)" stroke-width="2"/>
-    <line x1="236" y1="225" x2="276" y2="225" stroke="rgba(99,102,241,0.3)" stroke-width="2"/>
-    <line x1="236" y1="240" x2="276" y2="240" stroke="rgba(99,102,241,0.3)" stroke-width="2"/>
-    <line x1="236" y1="255" x2="276" y2="255" stroke="rgba(99,102,241,0.3)" stroke-width="2"/>
+    <rect x="226" y="160" width="60" height="110" rx="30" fill="url(#micGrad)"/>
+    <line x1="236" y1="190" x2="276" y2="190" stroke="rgba(0,0,0,0.15)" stroke-width="2"/>
+    <line x1="236" y1="205" x2="276" y2="205" stroke="rgba(0,0,0,0.15)" stroke-width="2"/>
+    <line x1="236" y1="220" x2="276" y2="220" stroke="rgba(0,0,0,0.15)" stroke-width="2"/>
+    <line x1="236" y1="235" x2="276" y2="235" stroke="rgba(0,0,0,0.15)" stroke-width="2"/>
+    <line x1="236" y1="250" x2="276" y2="250" stroke="rgba(0,0,0,0.15)" stroke-width="2"/>
   </g>
 
   <!-- Mic stand arc -->
-  <path d="M200 290 Q200 340 256 340 Q312 340 312 290" fill="none" stroke="url(#micGrad)" stroke-width="6" stroke-linecap="round"/>
+  <path d="M195 280 Q195 335 256 335 Q317 335 317 280" fill="none" stroke="url(#micGrad)" stroke-width="5" stroke-linecap="round"/>
   <!-- Mic stand line -->
-  <line x1="256" y1="340" x2="256" y2="370" stroke="url(#micGrad)" stroke-width="6" stroke-linecap="round"/>
+  <line x1="256" y1="335" x2="256" y2="365" stroke="url(#micGrad)" stroke-width="5" stroke-linecap="round"/>
   <!-- Mic base -->
-  <line x1="230" y1="370" x2="282" y2="370" stroke="url(#micGrad)" stroke-width="6" stroke-linecap="round"/>
+  <line x1="228" y1="365" x2="284" y2="365" stroke="url(#micGrad)" stroke-width="5" stroke-linecap="round"/>
 
-  <!-- Accent dot (recording indicator) -->
-  <circle cx="256" cy="170" r="8" fill="#ef4444" opacity="0.9">
-    <animate attributeName="opacity" values="0.9;0.3;0.9" dur="2s" repeatCount="indefinite"/>
+  <!-- Recording indicator -->
+  <circle cx="256" cy="150" r="6" fill="#FF2D78">
+    <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
   </circle>
 
   <!-- Brand text -->
-  <text x="256" y="420" text-anchor="middle" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="42" font-weight="700" fill="white" letter-spacing="3">VOICENAV</text>
-  <text x="256" y="450" text-anchor="middle" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" fill="rgba(255,255,255,0.6)" letter-spacing="6">VOICE BROWSER</text>
+  <text x="256" y="420" text-anchor="middle" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="48" font-weight="800" fill="white" letter-spacing="4">VOICENAV</text>
+  <text x="256" y="452" text-anchor="middle" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" fill="#00E5FF" letter-spacing="8" font-weight="600">VOICE BROWSER</text>
+  <text x="256" y="475" text-anchor="middle" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="rgba(255,255,255,0.4)" letter-spacing="3">by HouseDealsGroup</text>
 </svg>

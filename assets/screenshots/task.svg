@@ -3,64 +3,60 @@
   <rect x="0" y="0" width="390" height="44" fill="#0B0B1E"/>
   <text x="195" y="28" text-anchor="middle" fill="white" font-family="system-ui" font-size="14" font-weight="600">9:41</text>
 
-  <!-- Header -->
-  <rect x="30" y="60" width="330" height="50" rx="25" fill="#13132D"/>
-  <text x="195" y="90" text-anchor="middle" fill="white" font-family="system-ui" font-size="16" font-weight="600">Task Progress</text>
-
-  <!-- Task title -->
-  <rect x="30" y="130" width="330" height="70" rx="15" fill="#13132D"/>
-  <text x="50" y="160" fill="#00E5FF" font-family="system-ui" font-size="12" font-weight="600">AUTOMATION</text>
-  <text x="50" y="185" fill="white" font-family="system-ui" font-size="16" font-weight="600">Shop for headphones</text>
-
-  <!-- Steps -->
-  <rect x="30" y="220" width="330" height="60" rx="12" fill="#00E676" opacity="0.15"/>
-  <circle cx="55" cy="250" r="12" fill="#00E676"/>
-  <text x="55" y="255" text-anchor="middle" fill="white" font-family="system-ui" font-size="12" font-weight="700">✓</text>
-  <text x="80" y="245" fill="white" font-family="system-ui" font-size="14" font-weight="600">Navigate to Amazon</text>
-  <text x="80" y="265" fill="#00E676" font-family="system-ui" font-size="12">Complete</text>
-
-  <rect x="30" y="290" width="330" height="60" rx="12" fill="#00E676" opacity="0.15"/>
-  <circle cx="55" cy="320" r="12" fill="#00E676"/>
-  <text x="55" y="325" text-anchor="middle" fill="white" font-family="system-ui" font-size="12" font-weight="700">✓</text>
-  <text x="80" y="315" fill="white" font-family="system-ui" font-size="14" font-weight="600">Search "headphones"</text>
-  <text x="80" y="335" fill="#00E676" font-family="system-ui" font-size="12">Complete</text>
-
-  <rect x="30" y="360" width="330" height="60" rx="12" fill="#13132D"/>
-  <circle cx="55" cy="390" r="12" fill="#FF2D78"/>
-  <text x="55" y="395" text-anchor="middle" fill="white" font-family="system-ui" font-size="12" font-weight="700">3</text>
-  <text x="80" y="385" fill="white" font-family="system-ui" font-size="14" font-weight="600">Sort by price</text>
-  <text x="80" y="405" fill="#FF2D78" font-family="system-ui" font-size="12">In Progress</text>
-
-  <rect x="30" y="430" width="330" height="60" rx="12" fill="#13132D"/>
-  <circle cx="55" cy="460" r="12" fill="#2A2A4A"/>
-  <text x="55" y="465" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="12" font-weight="700">4</text>
-  <text x="80" y="455" fill="#6A6A8A" font-family="system-ui" font-size="14">Read results</text>
-  <text x="80" y="475" fill="#4A4A6A" font-family="system-ui" font-size="12">Pending</text>
-
-  <rect x="30" y="500" width="330" height="60" rx="12" fill="#13132D"/>
-  <circle cx="55" cy="530" r="12" fill="#2A2A4A"/>
-  <text x="55" y="535" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="12" font-weight="700">5</text>
-  <text x="80" y="525" fill="#6A6A8A" font-family="system-ui" font-size="14">Compare top 3</text>
-  <text x="80" y="545" fill="#4A4A6A" font-family="system-ui" font-size="12">Pending</text>
+  <!-- Task header -->
+  <rect x="30" y="60" width="330" height="50" rx="14" fill="#13132D" stroke="#7C5CFC" stroke-width="1.5"/>
+  <circle cx="58" cy="85" r="14" fill="#7C5CFC20"/>
+  <text x="58" y="90" text-anchor="middle" fill="#7C5CFC" font-family="system-ui" font-size="16">&#9881;</text>
+  <text x="85" y="80" fill="#7C5CFC" font-family="system-ui" font-size="10" font-weight="600">ACTIVE TASK</text>
+  <text x="85" y="98" fill="white" font-family="system-ui" font-size="14" font-weight="600">Shop for headphones</text>
 
   <!-- Progress bar -->
-  <rect x="30" y="590" width="330" height="8" rx="4" fill="#1C1C3A"/>
-  <rect x="30" y="590" width="132" height="8" rx="4" fill="#00E5FF"/>
+  <rect x="30" y="125" width="330" height="8" rx="4" fill="#1a1a3e"/>
+  <rect x="30" y="125" width="220" height="8" rx="4" fill="#7C5CFC"/>
+  <text x="195" y="150" text-anchor="middle" fill="#B0B0D0" font-family="system-ui" font-size="11">Step 3 of 4</text>
 
-  <!-- Controls -->
-  <rect x="60" y="630" width="80" height="45" rx="22" fill="#13132D"/>
-  <text x="100" y="658" text-anchor="middle" fill="#FF2D78" font-family="system-ui" font-size="12" font-weight="600">Pause</text>
+  <!-- Steps -->
+  <rect x="30" y="170" width="330" height="50" rx="12" fill="#00E67610" stroke="#00E676" stroke-width="1"/>
+  <circle cx="55" cy="195" r="12" fill="#00E676"/>
+  <text x="55" y="200" text-anchor="middle" fill="#000" font-family="system-ui" font-size="12" font-weight="700">1</text>
+  <text x="80" y="192" fill="#00E676" font-family="system-ui" font-size="10" font-weight="600">COMPLETED</text>
+  <text x="80" y="208" fill="white" font-family="system-ui" font-size="12">Go to Amazon</text>
 
-  <rect x="155" y="630" width="80" height="45" rx="22" fill="#13132D"/>
-  <text x="195" y="658" text-anchor="middle" fill="#FF5252" font-family="system-ui" font-size="12" font-weight="600">Cancel</text>
+  <rect x="30" y="230" width="330" height="50" rx="12" fill="#00E67610" stroke="#00E676" stroke-width="1"/>
+  <circle cx="55" cy="255" r="12" fill="#00E676"/>
+  <text x="55" y="260" text-anchor="middle" fill="#000" font-family="system-ui" font-size="12" font-weight="700">2</text>
+  <text x="80" y="252" fill="#00E676" font-family="system-ui" font-size="10" font-weight="600">COMPLETED</text>
+  <text x="80" y="268" fill="white" font-family="system-ui" font-size="12">Search for headphones</text>
 
-  <rect x="250" y="630" width="80" height="45" rx="22" fill="#13132D"/>
-  <text x="290" y="658" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="12">Skip</text>
+  <rect x="30" y="290" width="330" height="50" rx="12" fill="#7C5CFC10" stroke="#7C5CFC" stroke-width="1.5"/>
+  <circle cx="55" cy="315" r="12" fill="#7C5CFC"/>
+  <text x="55" y="320" text-anchor="middle" fill="white" font-family="system-ui" font-size="12" font-weight="700">3</text>
+  <text x="80" y="312" fill="#7C5CFC" font-family="system-ui" font-size="10" font-weight="600">IN PROGRESS</text>
+  <text x="80" y="328" fill="white" font-family="system-ui" font-size="12">Sort by price</text>
+  <circle cx="340" cy="315" r="8" fill="#7C5CFC">
+    <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite"/>
+  </circle>
 
-  <!-- Bottom nav -->
+  <rect x="30" y="350" width="330" height="50" rx="12" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <circle cx="55" cy="375" r="12" fill="#1a1a3e" stroke="#6A6A8A" stroke-width="1"/>
+  <text x="55" y="380" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="12" font-weight="700">4</text>
+  <text x="80" y="372" fill="#6A6A8A" font-family="system-ui" font-size="10">PENDING</text>
+  <text x="80" y="388" fill="#6A6A8A" font-family="system-ui" font-size="12">Click first result</text>
+
+  <!-- Voice feedback -->
+  <rect x="60" y="430" width="270" height="44" rx="22" fill="#13132D" stroke="#00E5FF" stroke-width="1"/>
+  <text x="195" y="457" text-anchor="middle" fill="#00E5FF" font-family="system-ui" font-size="12">Sorted by price: low to high</text>
+
+  <!-- Action buttons -->
+  <rect x="30" y="500" width="155" height="44" rx="12" fill="#FF2D78"/>
+  <text x="107" y="527" text-anchor="middle" fill="white" font-family="system-ui" font-size="12" font-weight="600">Pause Task</text>
+  <rect x="205" y="500" width="155" height="44" rx="12" fill="#13132D" stroke="#1a1a3e" stroke-width="1"/>
+  <text x="282" y="527" text-anchor="middle" fill="#B0B0D0" font-family="system-ui" font-size="12" font-weight="600">Skip Step</text>
+
+  <!-- Bottom bar -->
   <rect x="0" y="750" width="390" height="94" fill="#0B0B1E"/>
-  <rect x="30" y="760" width="330" height="70" rx="20" fill="#13132D"/>
-  <text x="85" y="800" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="10">Home</text>
-  <text x="195" y="800" text-anchor="middle" fill="#00E5FF" font-family="system-ui" font-size="10">Browser</text>
-  <text x="305" y="800" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="10">Settings</text>
+  <rect x="30" y="760" width="330" height="60" rx="16" fill="#13132D"/>
+  <text x="85" y="795" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="10">Home</text>
+  <text x="195" y="795" text-anchor="middle" fill="#00E5FF" font-family="system-ui" font-size="10" font-weight="600">Browser</text>
+  <text x="305" y="795" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="10">Settings</text>
 </svg>
