@@ -5,7 +5,7 @@ import {
   PageSnapshot, AgentAction, PageElement, VoiceCommand,
   AgentContext, PageType
 } from '../browser/types';
-import { understand, resolveSiteAlias, NLUResult, Intent } from './nlu';
+import { understand, resolveSiteAlias, NLUResult, Intent, isValidCommand, isRateLimited } from './nlu';
 import { getSession, getContextForNLU, updateEntityMemory, resolveReference } from './sessionMemory';
 import { logger } from '../utils/logger';
 import { matchShortcut } from './voiceShortcuts';
@@ -176,6 +176,14 @@ export function getPageSuggestions(snapshot: PageSnapshot): string[] {
 // --- NLU-Powered Intent Parsing ---
 
 export async function parseVoiceCommand(transcript: string, context?: AgentContext): Promise<VoiceCommand> {
+  // Security: validate input and rate limit
+  if (!isValidCommand(transcript)) {
+    return { intent: 'unknown', confidence: 0, entities: [], params: {} };
+  }
+  if (isRateLimited()) {
+    return { intent: 'stop', confidence: 1, entities: [], params: {} };
+  }
+
   // Check voice shortcuts first
   const shortcut = await matchShortcut(transcript);
   if (shortcut) {

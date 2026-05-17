@@ -15,9 +15,11 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppStore } from '../src/store';
 import { useVoiceShortcutStore, VoiceShortcut } from '../src/store/voiceCommands';
-import { COLORS, SPACING, FONT_SIZE, RADIUS } from '../src/a11y/theme';
+import { COLORS, SPACING, FONT_SIZE, RADIUS, ThemeName } from '../src/a11y/theme';
 import { speak } from '../src/voice/textToSpeech';
 import { SUPPORTED_LANGUAGES, getLanguageName } from '../src/voice/languages';
+import { clearAllData } from '../src/store/persistentState';
+import { useThemeStore } from '../src/store/theme';
 
 const SPEECH_RATES = [
   { label: 'Slow', value: 0.6 },
@@ -36,6 +38,7 @@ export default function SettingsScreen() {
     language, setLanguage,
   } = useAppStore();
   const { shortcuts, addShortcut, removeShortcut } = useVoiceShortcutStore();
+  const { themeName, setTheme } = useThemeStore();
 
   const [showAddShortcut, setShowAddShortcut] = useState(false);
   const [newPhrase, setNewPhrase] = useState('');
@@ -206,12 +209,54 @@ export default function SettingsScreen() {
           </View>
         </View>
 
+        {/* Theme */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Theme</Text>
+          <Text style={styles.sectionDescription}>Choose your visual theme</Text>
+          <View style={styles.rateOptions}>
+            {([
+              { name: 'dark' as ThemeName, label: 'Dark', icon: 'moon', desc: 'Default dark theme' },
+              { name: 'light' as ThemeName, label: 'Light', icon: 'sunny', desc: 'Clean light theme' },
+              { name: 'highContrast' as ThemeName, label: 'High Contrast', icon: 'eye', desc: 'Maximum readability' },
+              { name: 'amoled' as ThemeName, label: 'AMOLED', icon: 'contrast', desc: 'Pure black, saves battery' },
+            ]).map((theme) => (
+              <TouchableOpacity
+                key={theme.name}
+                style={[
+                  styles.rateOption,
+                  themeName === theme.name && styles.rateOptionActive,
+                ]}
+                onPress={() => {
+                  setTheme(theme.name);
+                  speak(`Theme set to ${theme.label}`);
+                }}
+                accessibilityLabel={`${theme.label} theme: ${theme.desc}`}
+                accessibilityState={{ selected: themeName === theme.name }}
+              >
+                <Ionicons
+                  name={theme.icon as any}
+                  size={20}
+                  color={themeName === theme.name ? COLORS.dark.primary : COLORS.dark.textMuted}
+                />
+                <Text
+                  style={[
+                    styles.rateOptionText,
+                    themeName === theme.name && styles.rateOptionTextActive,
+                  ]}
+                >
+                  {theme.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
         {/* Language */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Language</Text>
           <Text style={styles.sectionDescription}>Voice recognition and speech language</Text>
           <View style={styles.languageGrid}>
-            {SUPPORTED_LANGUAGES.slice(0, 12).map((lang) => (
+            {SUPPORTED_LANGUAGES.map((lang) => (
               <TouchableOpacity
                 key={lang.code}
                 style={[styles.languageOption, language === lang.code && styles.languageOptionActive]}
@@ -343,6 +388,49 @@ export default function SettingsScreen() {
           </View>
         </View>
 
+        {/* Privacy & Data */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Privacy & Data</Text>
+          <TouchableOpacity
+            style={styles.toggleRow}
+            onPress={() => router.push('/privacy')}
+            accessibilityLabel="View privacy policy"
+          >
+            <View style={styles.toggleInfo}>
+              <Text style={styles.toggleLabel}>Privacy Policy</Text>
+              <Text style={styles.toggleDescription}>How VoiceNav protects your data</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color={COLORS.dark.textMuted} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.toggleRow}
+            onPress={() => {
+              Alert.alert(
+                'Clear All Data',
+                'This will delete all bookmarks, history, shortcuts, and preferences. This cannot be undone.',
+                [
+                  { text: 'Cancel', style: 'cancel' },
+                  {
+                    text: 'Clear Everything',
+                    style: 'destructive',
+                    onPress: async () => {
+                      await clearAllData();
+                      speak('All data cleared.');
+                    },
+                  },
+                ]
+              );
+            }}
+            accessibilityLabel="Clear all data"
+          >
+            <View style={styles.toggleInfo}>
+              <Text style={[styles.toggleLabel, { color: COLORS.dark.error }]}>Clear All Data</Text>
+              <Text style={styles.toggleDescription}>Delete all bookmarks, history, and preferences</Text>
+            </View>
+            <Ionicons name="trash-outline" size={20} color={COLORS.dark.error} />
+          </TouchableOpacity>
+        </View>
+
         {/* About */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>About VoiceNav</Text>
@@ -351,8 +439,8 @@ export default function SettingsScreen() {
             users. Browse the web, shop online, and access information using just your voice.
           </Text>
           <Text style={styles.aboutText}>
-            Version 1.0.0{'\n'}
-            Open Source • Free Forever
+            Version 10.0.0 • Built by HouseDealsGroup{'\n'}
+            Open Source • MIT License • Free Forever
           </Text>
         </View>
       </ScrollView>

@@ -99,6 +99,8 @@ describe('Page Summarizer', () => {
       const summary: SummaryResult = {
         title: 'Shop', summary: 'Great deals.', keyPoints: ['Point 1'],
         readingTime: 2, wordCount: 400, sentiment: 'positive', category: 'shopping',
+        bulletPoints: [], readingLevel: { level: 'intermediate', grade: 8, description: 'Standard.', avgSentenceLength: 15, avgWordLength: 5 },
+        relatedTopics: [], actionItems: [],
       };
       const spoken = speakSummary(summary);
       expect(spoken).toContain('shopping');
@@ -108,9 +110,13 @@ describe('Page Summarizer', () => {
       const summary: SummaryResult = {
         title: 'Page', summary: 'Summary text.', keyPoints: ['Key one', 'Key two'],
         readingTime: 1, wordCount: 100, sentiment: 'neutral', category: 'general',
+        bulletPoints: [], readingLevel: { level: 'intermediate', grade: 8, description: 'Standard.', avgSentenceLength: 15, avgWordLength: 5 },
+        relatedTopics: [], actionItems: [],
       };
       const spoken = speakSummary(summary);
-      expect(spoken).toContain('Key points');
+      // When no bullet points, key points are shown as "Additional points"
+      expect(spoken).toMatch(/Key points|Additional points/);
+      expect(spoken).toContain('Key one');
     });
   });
 

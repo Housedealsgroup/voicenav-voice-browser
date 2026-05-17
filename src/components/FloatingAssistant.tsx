@@ -130,7 +130,7 @@ export default function FloatingAssistant({
               <View style={[styles.statusDot, { backgroundColor: isListening ? COLORS.dark.error : COLORS.dark.success }]} />
               <Text style={styles.expandedTitle}>VoiceNav</Text>
             </View>
-            <TouchableOpacity onPress={() => setIsExpanded(false)}>
+            <TouchableOpacity onPress={() => setIsExpanded(false)} accessibilityLabel="Close assistant panel">
               <Ionicons name="close" size={18} color={COLORS.dark.textMuted} />
             </TouchableOpacity>
           </View>
@@ -160,7 +160,7 @@ export default function FloatingAssistant({
           {suggestions.length > 0 && (
             <View style={styles.suggestionsContainer}>
               {suggestions.slice(0, 3).map((s, i) => (
-                <TouchableOpacity key={i} style={styles.suggestionChip} onPress={() => onSuggestionPress(s)}>
+                <TouchableOpacity key={i} style={styles.suggestionChip} onPress={() => onSuggestionPress(s)} accessibilityLabel={`Suggestion: ${s}`}>
                   <Text style={styles.suggestionText} numberOfLines={1}>{s}</Text>
                 </TouchableOpacity>
               ))}
@@ -169,11 +169,11 @@ export default function FloatingAssistant({
 
           {/* Quick Actions */}
           <View style={styles.quickActions}>
-            <TouchableOpacity style={styles.quickAction} onPress={onVoiceToggle}>
+            <TouchableOpacity style={styles.quickAction} onPress={onVoiceToggle} accessibilityLabel={isListening ? 'Stop listening' : 'Start listening'}>
               <Ionicons name={isListening ? 'stop-circle' : 'mic'} size={20} color={isListening ? COLORS.dark.error : COLORS.dark.primary} />
             </TouchableOpacity>
             {onExpand && (
-              <TouchableOpacity style={styles.quickAction} onPress={onExpand}>
+              <TouchableOpacity style={styles.quickAction} onPress={onExpand} accessibilityLabel="Open command palette">
                 <Ionicons name="expand" size={20} color={COLORS.dark.accent} />
               </TouchableOpacity>
             )}
@@ -186,7 +186,7 @@ export default function FloatingAssistant({
         backgroundColor: bubbleColor,
         transform: [{ scale: Animated.multiply(scaleAnim, pulseAnim) }],
       }]}>
-        <TouchableOpacity style={styles.bubbleTouch} onPress={handleBubblePress} onLongPress={handleLongPress} activeOpacity={0.8}>
+        <TouchableOpacity style={styles.bubbleTouch} onPress={handleBubblePress} onLongPress={handleLongPress} activeOpacity={0.8} accessibilityLabel="VoiceNav assistant" accessibilityHint="Tap to expand, long press for voice command">
           <Ionicons name={iconName as any} size={24} color="#fff" />
           {taskProgress && (
             <View style={styles.badge}>

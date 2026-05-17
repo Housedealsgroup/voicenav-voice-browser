@@ -74,7 +74,7 @@ export default function VoiceWaveform({
   };
 
   return (
-    <View style={[styles.container, { height }]}>
+    <View style={[styles.container, { height }]} accessibilityLabel={isActive ? 'Voice waveform active' : 'Voice waveform'} accessibilityRole="image">
       {bars.map((bar, i) => (
         <Animated.View
           key={i}

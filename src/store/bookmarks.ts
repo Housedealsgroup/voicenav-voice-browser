@@ -9,6 +9,7 @@ export type Bookmark = {
   favicon?: string;
   createdAt: number;
   category?: string;
+  tags?: string[];
 };
 
 type BookmarkState = {

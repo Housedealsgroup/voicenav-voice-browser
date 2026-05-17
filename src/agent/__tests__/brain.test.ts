@@ -17,7 +17,6 @@ const mockContext: AgentContext = {
   stepHistory: [], retryCount: 0,
 };
 
-// Helper to make snapshots with specific elements
 function makeSnapshot(overrides: Partial<PageSnapshot> = {}, extraElements: PageElement[] = []): PageSnapshot {
   const baseElements = overrides.elements !== undefined ? overrides.elements : mockSnapshot.elements;
   return {
@@ -614,11 +613,76 @@ describe('Brain Decision Engine', () => {
     });
   });
 
-  describe('decideAction() — Default fallback', () => {
+  describe('decideAction() — Security & edge cases', () => {
     it('returns speak for unknown intent', () => {
       const intent: VoiceCommand = { intent: 'unknown_intent' as any, confidence: 0.9 };
       const { action } = decideAction(intent, mockSnapshot, mockContext);
       expect(action.action).toBe('speak');
+    });
+
+    it('handles navigate with empty target', () => {
+      const intent: VoiceCommand = { intent: 'navigate', confidence: 0.9 };
+      const { action } = decideAction(intent, mockSnapshot, mockContext);
+      expect(action.action).toBe('navigate');
+    });
+
+    it('handles navigate with site alias', () => {
+      const intent: VoiceCommand = { intent: 'navigate', target: 'google', confidence: 0.9 };
+      const { action } = decideAction(intent, mockSnapshot, mockContext);
+      expect(action.action).toBe('navigate');
+      if (action.action === 'navigate') {
+        expect(action.url).toContain('google.com');
+      }
+    });
+
+    it('handles search with empty target', () => {
+      const intent: VoiceCommand = { intent: 'search', confidence: 0.9 };
+      const { action } = decideAction(intent, mockSnapshot, mockContext);
+      expect(action.action).toBe('navigate');
+    });
+
+    it('handles scroll with various directions', () => {
+      const directions = ['down', 'up', 'top', 'bottom', 'left', 'right'];
+      directions.forEach(dir => {
+        const intent: VoiceCommand = { intent: 'scroll', target: dir, confidence: 0.9 };
+        const { action } = decideAction(intent, mockSnapshot, mockContext);
+        expect(action.action).toBe('scroll');
+      });
+    });
+
+    it('returns speak for login with no matching elements', () => {
+      const emptySnapshot = makeSnapshot({ elements: [] });
+      const intent: VoiceCommand = { intent: 'login', confidence: 0.9 };
+      const { action } = decideAction(intent, emptySnapshot, mockContext);
+      expect(action.action).toBe('speak');
+    });
+
+    it('returns speak for signup with no matching elements', () => {
+      const emptySnapshot = makeSnapshot({ elements: [] });
+      const intent: VoiceCommand = { intent: 'signup', confidence: 0.9 };
+      const { action } = decideAction(intent, emptySnapshot, mockContext);
+      expect(action.action).toBe('speak');
+    });
+
+    it('handles click with empty target', () => {
+      const intent: VoiceCommand = { intent: 'click', confidence: 0.9 };
+      const { action } = decideAction(intent, mockSnapshot, mockContext);
+      // Should try to find something or scroll
+      expect(['scroll', 'speak']).toContain(action.action);
+    });
+
+    it('handles type with empty target', () => {
+      const intent: VoiceCommand = { intent: 'type', confidence: 0.9 };
+      const { action } = decideAction(intent, mockSnapshot, mockContext);
+      expect(action.action).toBe('speak');
+    });
+
+    it('returns navigate for home intent to google.com', () => {
+      const intent: VoiceCommand = { intent: 'home', confidence: 0.9 };
+      const { action } = decideAction(intent, mockSnapshot, mockContext);
+      if (action.action === 'navigate') {
+        expect(action.url).toContain('google.com');
+      }
     });
   });
 
@@ -663,6 +727,21 @@ describe('Brain Decision Engine', () => {
       const suggestions = getPageSuggestions(snapshot);
       expect(suggestions.length).toBeGreaterThan(0);
     });
+
+    it('returns at most 6 suggestions', () => {
+      const snapshot: PageSnapshot = { ...mockSnapshot, pageType: 'shopping' };
+      const suggestions = getPageSuggestions(snapshot);
+      expect(suggestions.length).toBeLessThanOrEqual(6);
+    });
+
+    it('includes search suggestion when page has search', () => {
+      const snapshot: PageSnapshot = {
+        ...mockSnapshot,
+        patterns: { hasSearch: true, hasLoginForm: false, hasNav: false, hasPagination: false, hasMoreContent: false },
+      };
+      const suggestions = getPageSuggestions(snapshot);
+      expect(suggestions.some(s => s.toLowerCase().includes('search'))).toBe(true);
+    });
   });
 
   describe('analyzePage()', () => {
@@ -686,6 +765,34 @@ describe('Brain Decision Engine', () => {
       const analysis = analyzePage(snapshot);
       expect(analysis).toContain('Headphones');
       expect(analysis).toContain('$29.99');
+    });
+
+    it('includes page title', () => {
+      const analysis = analyzePage(mockSnapshot);
+      expect(analysis).toContain('Example');
+    });
+
+    it('includes button names', () => {
+      const analysis = analyzePage(mockSnapshot);
+      expect(analysis).toContain('Sign In');
+    });
+
+    it('includes headings when present', () => {
+      const snapshot: PageSnapshot = {
+        ...mockSnapshot,
+        headings: [{ level: 1, text: 'Welcome' }, { level: 2, text: 'Products' }],
+      };
+      const analysis = analyzePage(snapshot);
+      expect(analysis).toContain('Welcome');
+    });
+
+    it('includes pattern information', () => {
+      const snapshot: PageSnapshot = {
+        ...mockSnapshot,
+        patterns: { hasSearch: true, hasLoginForm: true, hasNav: false, hasPagination: false, hasMoreContent: false },
+      };
+      const analysis = analyzePage(snapshot);
+      expect(analysis).toContain('search bar');
     });
   });
 });

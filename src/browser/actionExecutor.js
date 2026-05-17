@@ -1,6 +1,97 @@
-// VoiceNav Action Executor v4 — enhanced with drag, hover, multi-field forms, keyboard shortcuts
+// VoiceNav Action Executor v5 — enhanced with security hardening: URL validation, input sanitization, destructive action confirmation
 const ACTION_EXECUTOR_SCRIPT = `
 (function() {
+
+  // --- URL Validation ---
+  var ALLOWED_NAV_PROTOCOLS = ['http:', 'https:'];
+  var BLOCKED_NAV_DOMAINS = [
+    'malware.com', 'phishing-site.net', 'evil-download.com',
+    'free-prize-scam.xyz', 'credential-stealer.top',
+    'fake-bank-login.com', 'ransomware-host.biz',
+    'cryptojacker.io', 'adware-push.info',
+    'tech-support-scam.com', 'fake-update.net',
+  ];
+
+  function isValidNavigationUrl(url) {
+    if (!url || typeof url !== 'string') return false;
+    try {
+      var parsed = new URL(url);
+      if (ALLOWED_NAV_PROTOCOLS.indexOf(parsed.protocol) < 0) return false;
+      var hostname = parsed.hostname.toLowerCase();
+      for (var i = 0; i < BLOCKED_NAV_DOMAINS.length; i++) {
+        if (hostname === BLOCKED_NAV_DOMAINS[i] || hostname.endsWith('.' + BLOCKED_NAV_DOMAINS[i])) {
+          return false;
+        }
+      }
+      // Block data: URLs with HTML content
+      if (/^data:text\\/html/i.test(url)) return false;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // --- Input Sanitization ---
+  var MAX_TEXT_LENGTH = 10000;
+
+  function sanitizeTextInput(text) {
+    if (typeof text !== 'string') return '';
+    // Trim to max length
+    var sanitized = text.substring(0, MAX_TEXT_LENGTH);
+    // Remove null bytes and dangerous control chars (keep newline, tab, carriage return)
+    sanitized = sanitized.replace(/[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f\\x7f]/g, '');
+    // Remove Unicode line/paragraph separators that can break JS parsing
+    sanitized = sanitized.replace(/[\\u2028\\u2029]/g, '');
+    return sanitized;
+  }
+
+  // --- Destructive Action Confirmation ---
+  var DESTRUCTIVE_ACTIONS = ['submit', 'delete', 'remove', 'clear'];
+  var CONFIRM_TIMEOUT_MS = 30000;
+
+  // Pending confirmations store
+  var pendingConfirmations = {};
+
+  function requestConfirmation(action, elementId, callback) {
+    var confirmId = 'conf_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+    pendingConfirmations[confirmId] = {
+      action: action,
+      elementId: elementId,
+      callback: callback,
+      timestamp: Date.now(),
+    };
+    // Post confirmation request to native side
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(JSON.stringify({
+        type: 'CONFIRM_REQUEST',
+        data: {
+          confirmId: confirmId,
+          action: action,
+          elementId: elementId,
+          message: 'Confirm ' + action + ' action? This may be destructive.',
+        }
+      }));
+    }
+    // Auto-expire stale confirmations
+    setTimeout(function() {
+      if (pendingConfirmations[confirmId]) {
+        delete pendingConfirmations[confirmId];
+      }
+    }, CONFIRM_TIMEOUT_MS);
+    return confirmId;
+  }
+
+  // Called from native side to approve/deny a pending confirmation
+  function resolveConfirmation(confirmId, approved) {
+    var pending = pendingConfirmations[confirmId];
+    if (!pending) return { success: false, error: 'Confirmation expired or not found' };
+    delete pendingConfirmations[confirmId];
+    if (approved && pending.callback) {
+      return pending.callback();
+    }
+    return { success: false, error: 'Action cancelled by user' };
+  }
+
   function findElement(elementId) {
     return document.querySelector('[data-vn-id="' + elementId + '"]');
   }
@@ -140,7 +231,8 @@ const ACTION_EXECUTOR_SCRIPT = `
     for (var i = 0; i < fields.length; i++) {
       var el = findElement(fields[i].elementId);
       if (el) {
-        simulateType(el, fields[i].value);
+        var safeValue = sanitizeTextInput(fields[i].value);
+        simulateType(el, safeValue);
         results.push({ id: fields[i].elementId, success: true });
       } else {
         results.push({ id: fields[i].elementId, success: false, error: 'Element not found' });
@@ -194,15 +286,18 @@ const ACTION_EXECUTOR_SCRIPT = `
         case 'type': {
           var el = findElement(action.elementId);
           if (!el) return { success: false, error: 'Element not found: ' + action.elementId };
+          // Sanitize input text before typing
+          var safeText = sanitizeTextInput(action.text);
           scrollToElement(el);
-          setTimeout(function() { simulateType(el, action.text); }, 200);
+          setTimeout(function() { simulateType(el, safeText); }, 200);
           return { success: true };
         }
 
         case 'select': {
           var el = findElement(action.elementId);
           if (!el) return { success: false, error: 'Element not found' };
-          var result = simulateSelect(el, action.value);
+          var safeValue = sanitizeTextInput(action.value);
+          var result = simulateSelect(el, safeValue);
           return { success: result };
         }
 
@@ -218,6 +313,10 @@ const ACTION_EXECUTOR_SCRIPT = `
         }
 
         case 'navigate': {
+          // Validate URL before navigation
+          if (!isValidNavigationUrl(action.url)) {
+            return { success: false, error: 'Blocked navigation to unsafe or blacklisted URL' };
+          }
           window.location.href = action.url;
           return { success: true };
         }
@@ -225,12 +324,36 @@ const ACTION_EXECUTOR_SCRIPT = `
         case 'submit': {
           var el = findElement(action.elementId);
           if (!el) return { success: false, error: 'Element not found: ' + action.elementId };
+          // Require confirmation for destructive submit actions
+          if (action.confirmed !== true) {
+            return requestConfirmation('submit', action.elementId, function() {
+              var form = el.closest('form');
+              if (form) { form.submit(); } else { simulateKeypress('enter'); }
+              return { success: true, confirmed: true };
+            });
+          }
           var form = el.closest('form');
           if (form) {
             form.submit();
           } else {
             simulateKeypress('enter');
           }
+          return { success: true };
+        }
+
+        case 'delete': {
+          // Destructive action — require confirmation
+          if (action.confirmed !== true) {
+            return requestConfirmation('delete', action.elementId, function() {
+              var el = findElement(action.elementId);
+              if (!el) return { success: false, error: 'Element not found' };
+              el.remove();
+              return { success: true, confirmed: true };
+            });
+          }
+          var el = findElement(action.elementId);
+          if (!el) return { success: false, error: 'Element not found' };
+          el.remove();
           return { success: true };
         }
 
@@ -284,6 +407,9 @@ const ACTION_EXECUTOR_SCRIPT = `
 
   if (typeof window.__vn_executeAction === 'undefined') {
     window.__vn_executeAction = executeAction;
+  }
+  if (typeof window.__vn_resolveConfirmation === 'undefined') {
+    window.__vn_resolveConfirmation = resolveConfirmation;
   }
 })();
 `;

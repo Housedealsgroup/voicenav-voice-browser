@@ -1,5 +1,6 @@
 // VoiceNav Page Intelligence — enhanced page content analysis and extraction
 // Extracts structured data: prices, ratings, reviews, article text, navigation, forms
+// Content type detection, sentiment analysis, entity extraction, price comparison
 
 import type { PageSnapshot, PageElement } from '../browser/types';
 import { logger } from '../utils/logger';
@@ -53,6 +54,36 @@ export type MediaInfo = {
   audio: Array<{ title: string; src?: string }>;
 };
 
+export type ContentType = 'product' | 'article' | 'form' | 'video' | 'social' | 'data' | 'directory' | 'landing' | 'forum' | 'documentation' | 'general';
+
+export type SentimentResult = {
+  overall: 'positive' | 'negative' | 'neutral';
+  score: number; // -1.0 to 1.0
+  positiveWords: string[];
+  negativeWords: string[];
+  confidence: number; // 0-1
+};
+
+export type ExtractedEntity = {
+  text: string;
+  type: 'person' | 'place' | 'organization' | 'product' | 'date' | 'money' | 'url' | 'email' | 'phone';
+  confidence: number;
+};
+
+export type PriceComparison = {
+  items: Array<{
+    name: string;
+    price: number;
+    currency: string;
+    store?: string;
+    url?: string;
+  }>;
+  lowest: { name: string; price: number } | null;
+  highest: { name: string; price: number } | null;
+  average: number;
+  savings: string; // percentage savings from highest to lowest
+};
+
 export type PageIntelligence = {
   article?: ArticleContent;
   navigation?: NavigationMenu;
@@ -73,10 +104,106 @@ export type PageIntelligence = {
     siteName?: string;
     language?: string;
   };
+  // New enhanced fields
+  contentType: ContentType;
+  sentiment: SentimentResult;
+  entities: ExtractedEntity[];
+  priceComparison: PriceComparison | null;
 };
 
+// Positive/negative word lists for sentiment scoring
+const POSITIVE_WORDS = [
+  'good', 'great', 'excellent', 'amazing', 'best', 'love', 'perfect', 'awesome',
+  'fantastic', 'wonderful', 'success', 'win', 'improve', 'growth', 'innovative',
+  'recommend', 'outstanding', 'superb', 'brilliant', 'impressive', 'elegant',
+  'reliable', 'efficient', 'powerful', 'intuitive', 'seamless', 'delightful',
+  'exceptional', 'remarkable', 'phenomenal', 'magnificent', 'splendid', 'terrific',
+];
+
+const NEGATIVE_WORDS = [
+  'bad', 'worst', 'terrible', 'awful', 'fail', 'error', 'problem', 'issue',
+  'bug', 'broken', 'crash', 'loss', 'decline', 'poor', 'disappointing',
+  'slow', 'annoying', 'frustrating', 'confusing', 'useless', 'unreliable',
+  'clunky', 'laggy', 'glitchy', 'unstable', 'defective', 'malfunction',
+  'inadequate', 'subpar', 'mediocre', 'inferior', 'dreadful', 'abysmal',
+];
+
+// Entity patterns for extraction
+const ENTITY_PATTERNS: Array<{ pattern: RegExp; type: ExtractedEntity['type']; confidence: number }> = [
+  // Person names with titles
+  { pattern: /\b(?:Mr|Mrs|Ms|Dr|Prof|Sir|Lady|Lord)\.?\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?/g, type: 'person', confidence: 0.85 },
+  // Organizations
+  { pattern: /\b[A-Z][\w\s]+(?:Inc|Corp|LLC|Ltd|Company|Foundation|Association|Institute|University|College|Bank|Group|Holdings|Partners|Solutions|Technologies|Systems)\b/g, type: 'organization', confidence: 0.8 },
+  // Places (capitalized multi-word, common suffixes)
+  { pattern: /\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*(?:\s+(?:City|Town|Village|County|State|Province|Country|Island|Mountain|River|Lake|Ocean|Sea|Bay|Valley|Desert|Forest))\b/g, type: 'place', confidence: 0.7 },
+  // Money amounts
+  { pattern: /(?:[\$€£¥₹₽₩]\s*\d+(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?\s*(?:USD|EUR|GBP|CAD|AUD|JPY|CNY|INR))/gi, type: 'money', confidence: 0.9 },
+  // Dates
+  { pattern: /\b(?:\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2},?\s*\d{2,4})\b/gi, type: 'date', confidence: 0.85 },
+  // URLs
+  { pattern: /https?:\/\/[^\s<>"{}|\\^`\[\]]+/gi, type: 'url', confidence: 0.95 },
+  // Emails
+  { pattern: /[\w.-]+@[\w.-]+\.\w{2,}/g, type: 'email', confidence: 0.95 },
+  // Phone numbers
+  { pattern: /(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/g, type: 'phone', confidence: 0.8 },
+];
+
+// Content type detection patterns
+const CONTENT_TYPE_PATTERNS: Array<{ type: ContentType; check: (snapshot: PageSnapshot, intel: Partial<PageIntelligence>) => boolean; priority: number }> = [
+  {
+    type: 'product',
+    check: (s, i) => ((i.prices?.length ?? 0) > 0 && (i.ratings?.length ?? 0) > 0) || /add to cart|buy now|add to bag/i.test(s.textContent),
+    priority: 10,
+  },
+  {
+    type: 'article',
+    check: (s, i) => (i.article?.wordCount ?? 0) > 300 && (s.headings?.length ?? 0) >= 1,
+    priority: 8,
+  },
+  {
+    type: 'form',
+    check: (_s, i) => (i.form?.fields?.length ?? 0) > 2,
+    priority: 7,
+  },
+  {
+    type: 'video',
+    check: (s, i) => (i.media?.videos?.length ?? 0) > 0 || /youtube|vimeo|video player/i.test(s.textContent),
+    priority: 6,
+  },
+  {
+    type: 'social',
+    check: (s) => /feed|timeline|post|tweet|share|like|comment|follow/i.test(s.textContent) && /profile|avatar|username/i.test(s.textContent),
+    priority: 5,
+  },
+  {
+    type: 'forum',
+    check: (s) => /thread|reply|topic|forum|discussion|upvote|downvote/i.test(s.textContent),
+    priority: 5,
+  },
+  {
+    type: 'documentation',
+    check: (s) => /api|reference|documentation|guide|tutorial|examples?|parameters?|returns?/i.test(s.textContent) && (s.headings?.length ?? 0) >= 2,
+    priority: 4,
+  },
+  {
+    type: 'landing',
+    check: (s) => /get started|sign up|try free|learn more|subscribe/i.test(s.textContent) && s.textContent.length < 3000,
+    priority: 3,
+  },
+  {
+    type: 'data',
+    check: (_s, i) => (i.tables?.length ?? 0) > 0,
+    priority: 2,
+  },
+  {
+    type: 'directory',
+    check: (_s, i) => (i.navigation?.items?.length ?? 0) > 10,
+    priority: 1,
+  },
+];
+
 // Extract price information from text
-function extractPrices(text: string, elements: PageElement[]): PriceInfo[] {
+function extractPrices(text: string, _elements: PageElement[]): PriceInfo[] {
   const prices: PriceInfo[] = [];
   const priceRegex = /(?:[\$€£¥₹₽₩]|USD|EUR|GBP|CAD|AUD|JPY|CNY|INR)\s*\d+(?:[.,]\d{1,2})?/gi;
   const matches = text.match(priceRegex) || [];
@@ -95,11 +222,29 @@ function extractPrices(text: string, elements: PageElement[]): PriceInfo[] {
     }
   }
 
-  return prices.slice(0, 5);
+  // Price range patterns (e.g., "$10 - $20" or "from $10 to $20")
+  const rangeRegex = /(?:from\s+)?([\$\€\£]\d+(?:[.,]\d{2})?)\s*(?:to|-)\s*([\$\€\£]\d+(?:[.,]\d{2})?)/gi;
+  let rangeMatch;
+  while ((rangeMatch = rangeRegex.exec(text)) !== null) {
+    if (prices.length > 0) {
+      prices[0].priceRange = { min: rangeMatch[1], max: rangeMatch[2] };
+    }
+  }
+
+  // Discount patterns
+  const discountRegex = /(\d+)%\s*(?:off|discount|save)/gi;
+  let discountMatch;
+  while ((discountMatch = discountRegex.exec(text)) !== null) {
+    if (prices.length > 0) {
+      prices[0].discount = `${discountMatch[1]}% off`;
+    }
+  }
+
+  return prices.slice(0, 10);
 }
 
 // Extract rating information
-function extractRatings(text: string, elements: PageElement[]): RatingInfo[] {
+function extractRatings(text: string, _elements: PageElement[]): RatingInfo[] {
   const ratings: RatingInfo[] = [];
 
   // Patterns like "4.5 out of 5", "4.5/5", "4.5 stars"
@@ -149,8 +294,39 @@ function extractArticle(text: string, snapshot: PageSnapshot): ArticleContent | 
     .map(p => p.split(/[.!?]+/).slice(0, 2).join('. ').trim())
     .join('. ');
 
+  // Try to extract author
+  const authorPatterns = [
+    /(?:by|written by|author[:\s]+)\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i,
+    /(?:Posted|Published)\s+by\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i,
+  ];
+  let author: string | undefined;
+  for (const pattern of authorPatterns) {
+    const authorMatch = text.match(pattern);
+    if (authorMatch) {
+      author = authorMatch[1];
+      break;
+    }
+  }
+
+  // Try to extract published date
+  const datePatterns = [
+    /(?:published|posted|updated)[:\s]+(\w+\s+\d{1,2},?\s*\d{4})/i,
+    /(\d{1,2}\/\d{1,2}\/\d{4})/,
+    /(\d{4}-\d{2}-\d{2})/,
+  ];
+  let publishedDate: string | undefined;
+  for (const pattern of datePatterns) {
+    const dateMatch = text.match(pattern);
+    if (dateMatch) {
+      publishedDate = dateMatch[1];
+      break;
+    }
+  }
+
   return {
     title,
+    author,
+    publishedDate,
     readingTime,
     wordCount,
     paragraphs: paragraphs.slice(0, 10),
@@ -179,10 +355,10 @@ function extractNavigation(elements: PageElement[]): NavigationMenu | null {
 
   // Look for breadcrumb patterns
   const breadcrumbElements = elements.filter(e =>
-    e.text?.includes('>') || e.text?.includes('/') || e.text?.includes('›')
+    e.text?.includes('>') || e.text?.includes('/') || e.text?.includes('\u203a')
   );
   for (const el of breadcrumbElements) {
-    const parts = el.text.split(/[>\/›]+/).map(s => s.trim()).filter(Boolean);
+    const parts = el.text.split(/[>\/\u203a]+/).map(s => s.trim()).filter(Boolean);
     breadcrumbs.push(...parts);
   }
 
@@ -216,7 +392,7 @@ function extractForm(elements: PageElement[]): FormAnalysis | null {
 }
 
 // Extract media information
-function extractMedia(elements: PageElement[], text: string): MediaInfo {
+function extractMedia(elements: PageElement[], _text: string): MediaInfo {
   const videos: MediaInfo['videos'] = [];
   const images: MediaInfo['images'] = [];
   const audio: MediaInfo['audio'] = [];
@@ -299,9 +475,153 @@ function extractTables(elements: PageElement[]): Array<{ headers: string[]; rowC
   return tables;
 }
 
+// Sentiment analysis with word scoring
+function analyzeSentiment(text: string): SentimentResult {
+  const lower = text.toLowerCase();
+  const words = lower.split(/\s+/);
+  const foundPositive: string[] = [];
+  const foundNegative: string[] = [];
+  let score = 0;
+
+  for (const word of words) {
+    const clean = word.replace(/[^a-z]/g, '');
+    if (POSITIVE_WORDS.includes(clean)) {
+      score += 1;
+      foundPositive.push(clean);
+    }
+    if (NEGATIVE_WORDS.includes(clean)) {
+      score -= 1;
+      foundNegative.push(clean);
+    }
+  }
+
+  // Check for negation patterns that flip sentiment
+  const negationPattern = /\b(not|no|never|neither|nor|barely|hardly|scarcely|seldom)\s+\w+/gi;
+  const negations = text.match(negationPattern) || [];
+  for (const neg of negations) {
+    const negLower = neg.toLowerCase();
+    for (const pw of POSITIVE_WORDS) {
+      if (negLower.includes(pw)) {
+        score -= 2; // Flip positive to negative
+      }
+    }
+    for (const nw of NEGATIVE_WORDS) {
+      if (negLower.includes(nw)) {
+        score += 1; // Slightly reduce negative impact
+      }
+    }
+  }
+
+  // Normalize score to -1 to 1
+  const totalWords = Math.max(1, words.length);
+  const normalizedScore = Math.max(-1, Math.min(1, score / Math.max(1, totalWords * 0.1)));
+
+  // Confidence based on how many sentiment words were found
+  const sentimentWordCount = foundPositive.length + foundNegative.length;
+  const confidence = Math.min(1, sentimentWordCount / Math.max(1, totalWords * 0.05));
+
+  const overall: SentimentResult['overall'] =
+    normalizedScore > 0.1 ? 'positive' :
+    normalizedScore < -0.1 ? 'negative' : 'neutral';
+
+  return {
+    overall,
+    score: Math.round(normalizedScore * 100) / 100,
+    positiveWords: [...new Set(foundPositive)],
+    negativeWords: [...new Set(foundNegative)],
+    confidence: Math.round(confidence * 100) / 100,
+  };
+}
+
+// Entity extraction
+function extractEntities(text: string): ExtractedEntity[] {
+  const entities: ExtractedEntity[] = [];
+  const seen = new Set<string>();
+
+  for (const { pattern, type, confidence } of ENTITY_PATTERNS) {
+    // Reset regex lastIndex for global patterns
+    pattern.lastIndex = 0;
+    let match;
+    while ((match = pattern.exec(text)) !== null) {
+      const value = match[0].trim();
+      const key = `${type}:${value.toLowerCase()}`;
+      if (!seen.has(key) && value.length > 1) {
+        seen.add(key);
+        entities.push({ text: value, type, confidence });
+      }
+    }
+  }
+
+  // Also detect capitalized multi-word phrases as potential products
+  const productPattern = /\b[A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)+\b/g;
+  let productMatch;
+  while ((productMatch = productPattern.exec(text)) !== null) {
+    const value = productMatch[0].trim();
+    const key = `product:${value.toLowerCase()}`;
+    if (!seen.has(key) && value.length > 4 && value.length < 50) {
+      seen.add(key);
+      entities.push({ text: value, type: 'product', confidence: 0.5 });
+    }
+  }
+
+  // Sort by confidence
+  entities.sort((a, b) => b.confidence - a.confidence);
+  return entities.slice(0, 20);
+}
+
+// Price comparison logic
+function buildPriceComparison(prices: PriceInfo[], text: string): PriceComparison | null {
+  if (prices.length < 1) return null;
+
+  const items: PriceComparison['items'] = [];
+
+  for (const priceInfo of prices) {
+    const numericPrice = parseFloat(priceInfo.price.replace(/[^0-9.]/g, ''));
+    if (!isNaN(numericPrice)) {
+      items.push({
+        name: `Item ${items.length + 1}`,
+        price: numericPrice,
+        currency: priceInfo.currency,
+      });
+    }
+  }
+
+  // Try to find store/brand names near prices
+  const storePattern = /(?:at|from|on)\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*)/gi;
+  let storeMatch;
+  let storeIdx = 0;
+  while ((storeMatch = storePattern.exec(text)) !== null) {
+    if (storeIdx < items.length) {
+      items[storeIdx].store = storeMatch[1];
+      storeIdx++;
+    }
+  }
+
+  if (items.length === 0) return null;
+
+  const sortedByPrice = [...items].sort((a, b) => a.price - b.price);
+  const lowest = { name: sortedByPrice[0].name, price: sortedByPrice[0].price };
+  const highest = { name: sortedByPrice[sortedByPrice.length - 1].name, price: sortedByPrice[sortedByPrice.length - 1].price };
+  const average = Math.round(items.reduce((sum, i) => sum + i.price, 0) / items.length * 100) / 100;
+  const savings = highest.price > 0
+    ? `${Math.round((1 - lowest.price / highest.price) * 100)}%`
+    : '0%';
+
+  return { items, lowest, highest, average, savings };
+}
+
+// Detect content type
+function detectContentTypeInternal(snapshot: PageSnapshot, intel: Partial<PageIntelligence>): ContentType {
+  const candidates = CONTENT_TYPE_PATTERNS
+    .filter(({ check }) => check(snapshot, intel))
+    .sort((a, b) => b.priority - a.priority);
+
+  return candidates.length > 0 ? candidates[0].type : 'general';
+}
+
 // Main intelligence extraction function
 export function analyzePageIntelligence(snapshot: PageSnapshot): PageIntelligence {
-  const { elements, textContent, headings } = snapshot;
+  const { elements, textContent, headings: _headings } = snapshot;
 
   const prices = extractPrices(textContent, elements);
   const ratings = extractRatings(textContent, elements);
@@ -316,6 +636,9 @@ export function analyzePageIntelligence(snapshot: PageSnapshot): PageIntelligenc
   const tables = extractTables(elements);
   const contacts = extractContacts(textContent);
   const socialLinks = extractSocialLinks(elements);
+  const sentiment = analyzeSentiment(textContent);
+  const entities = extractEntities(textContent);
+  const priceComparison = buildPriceComparison(prices, textContent);
 
   // Lists
   const lists: PageIntelligence['lists'] = [];
@@ -327,6 +650,15 @@ export function analyzePageIntelligence(snapshot: PageSnapshot): PageIntelligenc
     });
   }
 
+  // Build partial intel for content type detection
+  const partialIntel: Partial<PageIntelligence> = {
+    prices, ratings, media, tables,
+    article: article ?? undefined,
+    form: form ?? undefined,
+    navigation: navigation ?? undefined,
+  };
+  const contentType = detectContentTypeInternal(snapshot, partialIntel);
+
   logger.agent('pageIntelligence', {
     prices: prices.length,
     ratings: ratings.length,
@@ -334,6 +666,9 @@ export function analyzePageIntelligence(snapshot: PageSnapshot): PageIntelligenc
     hasNav: !!navigation,
     hasForm: !!form,
     links: links.length,
+    contentType,
+    sentiment: sentiment.overall,
+    entities: entities.length,
   });
 
   return {
@@ -352,6 +687,10 @@ export function analyzePageIntelligence(snapshot: PageSnapshot): PageIntelligenc
       description: snapshot.title,
       siteName: new URL(snapshot.url || 'https://example.com').hostname,
     },
+    contentType,
+    sentiment,
+    entities,
+    priceComparison,
   };
 }
 
@@ -367,6 +706,7 @@ export function speakPageIntelligence(intel: PageIntelligence): string {
     const priceStrs = intel.prices.map(p => {
       let s = p.price;
       if (p.originalPrice) s += ` (was ${p.originalPrice})`;
+      if (p.discount) s += ` (${p.discount})`;
       return s;
     });
     parts.push(`Prices found: ${priceStrs.join(', ')}`);
@@ -401,6 +741,26 @@ export function speakPageIntelligence(intel: PageIntelligence): string {
     parts.push(`Social: ${[...new Set(platforms)].join(', ')}`);
   }
 
+  // Content type
+  parts.push(`This appears to be a ${intel.contentType} page.`);
+
+  // Sentiment
+  if (intel.sentiment.overall !== 'neutral') {
+    parts.push(`Overall tone: ${intel.sentiment.overall}.`);
+  }
+
+  // Price comparison
+  if (intel.priceComparison && intel.priceComparison.items.length > 1) {
+    const pc = intel.priceComparison;
+    parts.push(`Price comparison: lowest ${pc.lowest?.price}, highest ${pc.highest?.price}. Potential savings: ${pc.savings}.`);
+  }
+
+  // Key entities
+  const people = intel.entities.filter(e => e.type === 'person');
+  const orgs = intel.entities.filter(e => e.type === 'organization');
+  if (people.length > 0) parts.push(`People mentioned: ${people.slice(0, 3).map(e => e.text).join(', ')}.`);
+  if (orgs.length > 0) parts.push(`Organizations: ${orgs.slice(0, 3).map(e => e.text).join(', ')}.`);
+
   if (parts.length === 0) {
     parts.push('No structured content detected on this page.');
   }
@@ -408,13 +768,38 @@ export function speakPageIntelligence(intel: PageIntelligence): string {
   return parts.join('. ') + '.';
 }
 
-// Quick content type detection
-export function detectContentType(intel: PageIntelligence): string {
-  if (intel.prices.length > 0 && intel.ratings.length > 0) return 'product';
-  if (intel.article && intel.article.wordCount > 300) return 'article';
-  if (intel.form && intel.form.fields.length > 2) return 'form';
-  if (intel.media.videos.length > 0) return 'video';
-  if (intel.tables.length > 0) return 'data';
-  if (intel.navigation && intel.navigation.items.length > 10) return 'directory';
-  return 'general';
+// Quick content type detection (legacy export, now uses enhanced logic)
+export function detectContentType(intel: PageIntelligence): ContentType {
+  return intel.contentType;
+}
+
+// Generate sentiment summary for speech
+export function speakSentiment(sentiment: SentimentResult): string {
+  if (sentiment.overall === 'neutral') return 'The page has a neutral tone.';
+
+  const strength = sentiment.confidence > 0.7 ? 'strongly' : 'somewhat';
+  const wordList = sentiment.overall === 'positive' ? sentiment.positiveWords : sentiment.negativeWords;
+  const examples = wordList.slice(0, 3).join(', ');
+
+  return `The page is ${strength} ${sentiment.overall}. Key words: ${examples}.`;
+}
+
+// Generate entity summary for speech
+export function speakEntities(entities: ExtractedEntity[]): string {
+  if (entities.length === 0) return 'No notable entities found on this page.';
+
+  const byType = new Map<string, string[]>();
+  for (const entity of entities) {
+    const existing = byType.get(entity.type) || [];
+    existing.push(entity.text);
+    byType.set(entity.type, existing);
+  }
+
+  const parts: string[] = [];
+  for (const [type, values] of byType) {
+    const unique = [...new Set(values)].slice(0, 3);
+    parts.push(`${type}s: ${unique.join(', ')}`);
+  }
+
+  return parts.join('. ') + '.';
 }

@@ -2,36 +2,36 @@
 
 <img src="assets/voicenav-logo.svg" alt="VoiceNav Logo" width="200" height="200">
 
-# **VoiceNav v10**
+# **VoiceNav**
 
-### **The AI Voice Browser That Actually Works**
+### **Voice Browser**
 
 **Speak naturally. Browse everything. Zero limits.**
 
-A fully accessible mobile browser powered by on-device AI that understands 29 languages, predicts your next command, holds conversations, and automates complex multi-step tasks. Built for blind users. No cloud. No subscriptions. No compromises.
+A fully accessible mobile browser powered by on-device AI that understands 116 languages, predicts your next command, holds conversations, and automates complex multi-step tasks. Built for blind users. No cloud. No subscriptions. No compromises.
 
 [![Expo](https://img.shields.io/badge/Expo_SDK_54-000020?style=for-the-badge&logo=expo&logoColor=white)](https://expo.dev)
 [![React Native](https://img.shields.io/badge/React_Native_0.81-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactnative.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript_5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![License](https://img.shields.io/badge/License-MIT-00E676?style=for-the-badge)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/Housedealsgroup/voicenav?style=for-the-badge&logo=github&color=FFD600)](https://github.com/Housedealsgroup/voicenav/stargazers)
-[![Tests](https://img.shields.io/badge/Tests-23_Suites_350+-00E676?style=for-the-badge)](#testing)
+[![Tests](https://img.shields.io/badge/Tests-25_Suites_857+-00E676?style=for-the-badge)](#testing)
+[![Languages](https://img.shields.io/badge/Languages-116-FF6B6B?style=for-the-badge)](#116-languages)
 [![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](#cicd)
-[![Sentry](https://img.shields.io/badge/Monitoring-Sentry-362D59?style=for-the-badge&logo=sentry&logoColor=white)](#monitoring)
 
 ---
 
 **Built by [HouseDealsGroup](https://github.com/Housedealsgroup)**
 
+**100% On-Device AI. No Cloud. No APIs. No Compromises.**
+
 </div>
 
 ---
 
-## **Live Demo**
+## **Voice Browser**
 
 <div align="center">
-
-<img src="assets/demo.svg" alt="VoiceNav v10 Demo" width="350">
 
 **Tap the mic. Speak naturally. VoiceNav does the rest.**
 
@@ -39,68 +39,33 @@ A fully accessible mobile browser powered by on-device AI that understands 29 la
 
 ---
 
-## **What's New in v10**
+## **What VoiceNav Does**
 
 <div align="center">
 
-### **10 New Modules. 2 Massive Upgrades.**
+### **AI-Powered Voice Browsing for Everyone**
 
 </div>
 
-### **v9 — Smart Navigation & Context Engine**
-
 | Feature | What It Does |
 |---------|-------------|
-| **Smart Navigation** | Learns your browsing patterns, builds navigation graphs, predicts next pages |
-| **Page Summarizer** | On-device NLP summarizes any page — key points, reading time, sentiment |
-| **Context Actions** | Adapts suggestions to page type — shopping, forms, media, articles |
-| **Command History** | Full history with search, replay, favorites, and pattern analytics |
-| **Gesture Navigation** | Voice-activated gesture simulation — swipe, pinch, double-tap by voice |
-
-### **v10 — Conversation & Intelligence**
-
-| Feature | What It Does |
-|---------|-------------|
-| **Conversation Mode** | Multi-turn AI dialogue with pronoun resolution and context retention |
-| **Tab Manager** | Multi-tab voice navigation — create, switch, close, duplicate tabs |
-| **Voice Profiles** | Personalized recognition adapts to your speech patterns and vocabulary |
-| **Accessibility Dashboard** | WCAG compliance checking with scores, issues, and recommendations |
-| **Performance Monitor** | Tracks voice latency, navigation times, success rates, bottlenecks |
+| **Voice Control** | Browse the web entirely by voice in 116 languages |
+| **Smart Navigation** | Learns your patterns, predicts next pages, builds navigation graphs |
+| **Page Intelligence** | Extracts prices, ratings, articles, forms, contacts from any page |
+| **Page Summarizer** | On-device NLP summarizes any page with key points and reading time |
+| **Conversation Mode** | Multi-turn dialogue with pronoun resolution and context retention |
+| **Tab Manager** | Multi-tab voice navigation — create, switch, close, duplicate |
+| **Voice Profiles** | Personalized recognition adapts to your speech patterns |
+| **Accessibility Dashboard** | WCAG compliance checking with scores and recommendations |
+| **Task Automation** | Multi-step voice commands — "search then click then add to cart" |
+| **Voice Shortcuts** | Custom voice aliases — "my email" opens Gmail |
+| **Gesture Navigation** | Voice-activated gesture simulation — swipe, pinch, double-tap |
+| **Command History** | Full history with search, replay, favorites, and analytics |
+| **Performance Monitor** | Tracks voice latency, navigation times, success rates |
 
 ---
 
-## **Screenshots**
-
-<div align="center">
-
-<table>
-  <tr>
-    <td align="center"><img src="assets/screenshots/home.svg" alt="Home Screen" width="200"></td>
-    <td align="center"><img src="assets/screenshots/voice.svg" alt="Voice Command" width="200"></td>
-    <td align="center"><img src="assets/screenshots/browser.svg" alt="Browser" width="200"></td>
-  </tr>
-  <tr>
-    <td align="center"><b>Home Screen</b></td>
-    <td align="center"><b>Voice Command</b></td>
-    <td align="center"><b>Smart Browser</b></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="assets/screenshots/task.svg" alt="Task Automation" width="200"></td>
-    <td align="center"><img src="assets/screenshots/palette.svg" alt="Command Palette" width="200"></td>
-    <td align="center"><img src="assets/screenshots/bookmarks.svg" alt="Bookmarks" width="200"></td>
-  </tr>
-  <tr>
-    <td align="center"><b>Task Automation</b></td>
-    <td align="center"><b>Command Palette</b></td>
-    <td align="center"><b>Bookmarks</b></td>
-  </tr>
-</table>
-
-</div>
-
----
-
-## **Getting Started**
+## **Quick Start**
 
 <div align="center">
 
@@ -130,19 +95,6 @@ npm start
 2. Scan the QR code
 3. Tap the **microphone button**
 4. Say **"Go to Amazon"**
-
-<div align="center">
-
-```
-  Step 1            Step 2            Step 3
-  ┌──────┐          ┌──────┐          ┌──────┐
-  │  📱  │   ───▶   │  📷  │   ───▶   │  🎤  │
-  │ Expo │          │ Scan │          │Speak!│
-  │  Go  │          │  QR  │          │      │
-  └──────┘          └──────┘          └──────┘
-```
-
-</div>
 
 ---
 
@@ -204,7 +156,7 @@ npm start
 
 <div align="center">
 
-### **Conversation & Tabs (NEW)**
+### **Conversation & Tabs**
 
 </div>
 
@@ -297,18 +249,18 @@ Automatically extracts structured data from any web page:
 | **Contacts** | Emails, phone numbers |
 | **Navigation** | Menus, breadcrumbs |
 | **Media** | Videos, images, audio |
-| **Social** | Facebook, Twitter, LinkedIn links |
+| **Social** | Social media links |
 
 ```
 You: "Describe this page"
-VoiceNav: "Product page. Sony WH-1000XM5 headphones. $79.99,
+VoiceNav: "Product page. Sony headphones. $79.99,
            was $129.99. 4.5 out of 5 stars, 2,341 reviews.
            Add to cart button detected."
 ```
 
 ---
 
-## **Page Summarizer (v9)**
+## **Page Summarizer**
 
 <div align="center">
 
@@ -320,7 +272,7 @@ VoiceNav's on-device NLP summarizes pages without any cloud API:
 
 ```
 You: "Summarize this page"
-VoiceNav: "This is a product page for Sony WH-1000XM5 headphones.
+VoiceNav: "This is a product page for headphones.
            Key points: $79.99 (was $129.99), 4.5 stars, 2,341 reviews.
            Reading time: 2 minutes. Category: shopping."
 ```
@@ -332,7 +284,7 @@ VoiceNav: "This is a product page for Sony WH-1000XM5 headphones.
 
 ---
 
-## **Conversation Mode (v10)**
+## **Conversation Mode**
 
 <div align="center">
 
@@ -348,7 +300,7 @@ VoiceNav: "Found 2,341 results for headphones."
 You: "Sort by price"
 VoiceNav: "Sorted by price: low to high."
 You: "What about the first one?"
-VoiceNav: "Sony WH-1000XM5. $79.99. 4.5 stars."
+VoiceNav: "Sony headphones. $79.99. 4.5 stars."
 You: "Add it to cart"
 VoiceNav: "Added to cart. Checkout?"
 You: "Yes"
@@ -362,7 +314,7 @@ VoiceNav: "Proceeding to checkout."
 
 ---
 
-## **Tab Manager (v10)**
+## **Tab Manager**
 
 <div align="center">
 
@@ -385,7 +337,7 @@ Full multi-tab support through voice:
 
 ---
 
-## **Accessibility Dashboard (v10)**
+## **Accessibility Dashboard**
 
 <div align="center">
 
@@ -411,7 +363,7 @@ VoiceNav: "Accessibility score: 72 out of 100. Good accessibility
 
 ---
 
-## **Voice Profiles (v10)**
+## **Voice Profiles**
 
 <div align="center">
 
@@ -437,7 +389,7 @@ VoiceNav adapts to your unique speaking patterns:
   ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
   │   You Speak  │────▶│  Language    │────▶│   NLU        │
   │              │     │  Detector    │     │   Engine     │
-  └──────────────┘     │  (29 langs)  │     │  Intent +    │
+  └──────────────┘     │ (116 langs)  │     │  Intent +    │
                        └──────────────┘     │  Entities +  │
                                             │  Confidence  │
                                             └──────┬───────┘
@@ -457,6 +409,28 @@ VoiceNav adapts to your unique speaking patterns:
 </div>
 
 **No cloud APIs. No subscriptions. No data leaves your device.**
+
+---
+
+## **116 Languages**
+
+<div align="center">
+
+### **Real-Time Language Detection**
+
+</div>
+
+VoiceNav detects your language instantly using Unicode script analysis and stop word matching:
+
+**European:** English, Spanish, French, German, Italian, Portuguese, Russian, Dutch, Polish, Swedish, Danish, Finnish, Norwegian, Czech, Romanian, Hungarian, Turkish, Greek, Ukrainian, Bulgarian, Croatian, Slovak, Slovenian, Lithuanian, Latvian, Estonian, Serbian, Macedonian, Albanian, Icelandic, Irish, Welsh, Maltese, Basque, Galician, Catalan, Luxembourgish, Afrikaans, Breton, Occitan, Sardinian, Venetian, Neapolitan, Ladin, Romansh, Friulian, Scottish Gaelic, Corsican, Esperanto
+
+**Asian:** Japanese, Korean, Chinese, Hindi, Thai, Vietnamese, Indonesian, Malay, Bengali, Tamil, Telugu, Malayalam, Kannada, Marathi, Gujarati, Punjabi, Urdu, Nepali, Sinhala, Burmese, Khmer, Lao, Mongolian, Azerbaijani, Georgian, Uzbek, Kazakh, Kyrgyz, Tajik, Filipino, Javanese, Sundanese, Cebuano, Hiligaynon, Waray, Kapampangan, Bikol
+
+**African:** Arabic, Hebrew, Swahili, Zulu, Xhosa, Hausa, Yoruba, Igbo, Shona, Southern Sotho, Tswana, Tsonga, Kinyarwanda, Ganda, Akan, Wolof, Amharic
+
+**Middle Eastern:** Persian, Pashto, Kurdish
+
+**Pacific:** Hawaiian, Maori, Samoan, Tongan, Fijian, Haitian Creole, Malagasy
 
 ---
 
@@ -489,16 +463,16 @@ voicenav/
 │   │   ├── voiceOnboarding.ts    # Interactive voice tutorial
 │   │   ├── voiceShortcuts.ts     # Custom voice aliases
 │   │   ├── pageIntelligence.ts   # Page content extraction
-│   │   ├── smartNav.ts           # Navigation graph & route learning [v9]
-│   │   ├── pageSummarizer.ts     # On-device page summarization [v9]
-│   │   ├── contextActions.ts     # Context-aware action suggestions [v9]
-│   │   ├── commandHistory.ts     # Command history with analytics [v9]
-│   │   ├── conversationMode.ts   # Multi-turn AI conversation [v10]
-│   │   ├── tabManager.ts         # Multi-tab voice navigation [v10]
-│   │   ├── voiceProfiles.ts      # Personalized voice profiles [v10]
-│   │   ├── a11yDashboard.ts      # WCAG compliance checking [v10]
-│   │   ├── perfMonitor.ts        # Performance monitoring [v10]
-│   │   └── __tests__/            # 23 test suites
+│   │   ├── smartNav.ts           # Navigation graph & route learning
+│   │   ├── pageSummarizer.ts     # On-device page summarization
+│   │   ├── contextActions.ts     # Context-aware action suggestions
+│   │   ├── commandHistory.ts     # Command history with analytics
+│   │   ├── conversationMode.ts   # Multi-turn AI conversation
+│   │   ├── tabManager.ts         # Multi-tab voice navigation
+│   │   ├── voiceProfiles.ts      # Personalized voice profiles
+│   │   ├── a11yDashboard.ts      # WCAG compliance checking
+│   │   ├── perfMonitor.ts        # Performance monitoring
+│   │   └── __tests__/            # 25 test suites
 │   ├── browser/                  # WebView Integration
 │   │   ├── BrowserView.tsx       # WebView with JS injection
 │   │   ├── domExtractor.js       # Smart DOM extraction
@@ -517,8 +491,8 @@ voicenav/
 │   │   ├── textToSpeech.ts       # TTS with queue
 │   │   ├── continuousListener.ts # Always-on voice mode
 │   │   ├── voiceMacros.ts        # Record & replay macros
-│   │   ├── languageDetector.ts   # 29-language real-time detection
-│   │   ├── gestureNav.ts         # Voice-activated gestures [v9]
+│   │   ├── languageDetector.ts   # 116-language real-time detection
+│   │   ├── gestureNav.ts         # Voice-activated gestures
 │   │   ├── languages.ts          # Language configurations
 │   │   └── __tests__/            # Unit tests
 │   ├── store/                    # State Management
@@ -530,7 +504,7 @@ voicenav/
 │   │   └── __tests__/            # Unit tests
 │   └── utils/
 │       ├── logger.ts             # Structured logging
-│       ├── crashReporting.ts     # Sentry error tracking
+│       ├── crashReporting.ts     # Error tracking
 │       └── haptics.ts            # Haptic feedback system
 ├── assets/
 │   ├── icon.svg                  # App icon
@@ -560,7 +534,6 @@ voicenav/
 | **expo-speech-recognition** | On-device STT |
 | **expo-speech** | Text-to-speech |
 | **expo-haptics** | Tactile feedback |
-| **@sentry/react-native** | Error monitoring |
 | **Jest + Testing Library** | Testing |
 | **GitHub Actions** | CI/CD |
 | **EAS Build** | App store builds |
@@ -573,7 +546,7 @@ voicenav/
 
 <div align="center">
 
-### **23 Test Suites. 350+ Tests. Rock Solid.**
+### **25 Test Suites. 857+ Tests. Rock Solid.**
 
 </div>
 
@@ -591,37 +564,25 @@ npm test -- --testPathPattern=nlu  # Specific suite
 | Session Memory | Pronouns, context, entity tracking | Core |
 | Voice Macros | Matching, variables, recording | Voice |
 | Assistant | Suggestions, greetings | AI |
-| Languages | 29 language configs, RTL | Voice |
+| Languages | 116 language configs, RTL | Voice |
 | Language Detector | Unicode scripts, stop words, detection | Voice |
 | Stores | Bookmarks, shortcuts, theme | State |
 | Command Predictor | Context, habits, sequences | AI |
 | Page Intelligence | Prices, ratings, articles, forms | AI |
 | Voice Shortcuts | Create, delete, match, built-ins | Voice |
 | Voice Onboarding | Tutorial flow, hints, progress | Onboarding |
-| E2E Pipeline | Full NLU → Brain → Action pipeline | Integration |
-| Smart Nav | Navigation graphs, predictions, pathfinding | AI [v9] |
-| Page Summarizer | Summarization, key points, sentiment | AI [v9] |
-| Context Actions | Shopping, form, media, navigation actions | AI [v9] |
-| Command History | Search, replay, favorites, patterns | Core [v9] |
-| Gesture Nav | Gesture matching, JS code generation | Voice [v9] |
-| Conversation Mode | Multi-turn, pronouns, context, topics | AI [v10] |
-| Tab Manager | Create, close, switch, duplicate, stats | Core [v10] |
-| A11y Dashboard | WCAG checks, scoring, recommendations | A11y [v10] |
-| Perf Monitor | Latency tracking, reports, bottlenecks | Monitoring [v10] |
-
----
-
-## **29 Languages**
-
-<div align="center">
-
-### **Real-Time Language Detection**
-
-</div>
-
-VoiceNav detects your language instantly using Unicode script analysis and stop word matching:
-
-English, Spanish, French, German, Italian, Portuguese, Russian, Japanese, Korean, Chinese, Arabic, Hindi, Dutch, Polish, Swedish, Danish, Finnish, Norwegian, Czech, Romanian, Hungarian, Turkish, Thai, Vietnamese, Indonesian, Greek, Hebrew, Ukrainian, Malay
+| E2E Pipeline | Full NLU -> Brain -> Action pipeline | Integration |
+| Smart Nav | Navigation graphs, predictions, pathfinding | AI |
+| Page Summarizer | Summarization, key points, sentiment | AI |
+| Context Actions | Shopping, form, media, navigation actions | AI |
+| Command History | Search, replay, favorites, patterns | Core |
+| Gesture Nav | Gesture matching, JS code generation | Voice |
+| Conversation Mode | Multi-turn, pronouns, context, topics | AI |
+| Tab Manager | Create, close, switch, duplicate, stats | Core |
+| A11y Dashboard | WCAG checks, scoring, recommendations | A11y |
+| Perf Monitor | Latency tracking, reports, bottlenecks | Monitoring |
+| Security | XSS prevention, input validation, rate limiting | Security |
+| Theme | Dark/Light/High Contrast/AMOLED themes | A11y |
 
 ---
 
@@ -639,7 +600,7 @@ English, Spanish, French, German, Italian, Portuguese, Russian, Japanese, Korean
 - **No Cloud** — All processing on your phone
 - **Local Storage** — AsyncStorage on device
 - **Open Source** — Full transparency
-- **Sentry** — Error reports only (no personal data)
+- **Enterprise Security** — WebView hardening, input validation, CSP
 
 **Read our full [Privacy Policy](app/privacy.tsx)**
 
@@ -664,29 +625,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ---
 
-## **Roadmap**
-
-<div align="center">
-
-### **What's Next**
-
-</div>
-
-- [x] **v1** — Basic voice browser
-- [x] **v2** — Bookmarks, voice shortcuts, onboarding
-- [x] **v3** — Enterprise suite, security, multi-language
-- [x] **v4** — Supercomputer-level navigation, NLU, task automation
-- [x] **v5** — Testing (60+ tests), CI/CD, error boundaries, offline mode, crash reporting
-- [x] **v6** — 29-language real-time detection, NLU multi-language support
-- [x] **v7** — Sentry monitoring, haptics, persistent state, smart predictions
-- [x] **v8** — Voice onboarding, shortcuts, page intelligence, stunning new UI
-- [x] **v9** — Smart navigation, page summarizer, context actions, command history, gesture nav
-- [x] **v10** — Conversation mode, tab manager, voice profiles, a11y dashboard, perf monitor
-- [ ] **v11** — Cloud sync across devices
-- [ ] **v12** — Caregiver dashboard, multi-device support
-
----
-
 ## **License**
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
@@ -698,6 +636,8 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 ## **Built with care for accessibility**
 
 *VoiceNav — Because the web should be for everyone.*
+
+**Powered by HouseDealsGroup**
 
 ---
 

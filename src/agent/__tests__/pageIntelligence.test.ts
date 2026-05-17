@@ -103,6 +103,10 @@ describe('Page Intelligence', () => {
       contacts: [],
       socialLinks: [],
       metadata: {},
+      contentType: 'product',
+      sentiment: { overall: 'neutral', score: 0, positiveWords: [], negativeWords: [], confidence: 0 },
+      entities: [],
+      priceComparison: null,
     };
     const summary = speakPageIntelligence(intel);
     expect(summary).toContain('$29.99');
@@ -120,6 +124,10 @@ describe('Page Intelligence', () => {
       contacts: [],
       socialLinks: [],
       metadata: {},
+      contentType: 'product',
+      sentiment: { overall: 'neutral', score: 0, positiveWords: [], negativeWords: [], confidence: 0 },
+      entities: [],
+      priceComparison: null,
     };
     expect(detectContentType(intel)).toBe('product');
   });
@@ -136,6 +144,10 @@ describe('Page Intelligence', () => {
       contacts: [],
       socialLinks: [],
       metadata: {},
+      contentType: 'article',
+      sentiment: { overall: 'neutral', score: 0, positiveWords: [], negativeWords: [], confidence: 0 },
+      entities: [],
+      priceComparison: null,
     };
     expect(detectContentType(intel)).toBe('article');
   });

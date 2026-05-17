@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, TextInput, Animated,
   Dimensions, ScrollView, Platform,
@@ -13,7 +13,7 @@ import { speak } from '../src/voice/textToSpeech';
 import { useSpeechRecognition } from '../src/voice/speechToText';
 import { understand, resolveSiteAlias } from '../src/agent/nlu';
 import VoiceButton from '../src/components/VoiceButton';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { isOnboardingDone } from '../src/store/persistentState';
 
 const { width } = Dimensions.get('window');
 
@@ -51,6 +51,60 @@ const TASK_TEMPLATES = [
   { name: 'Read Page', icon: 'book', color: '#9C27B0', command: 'read this page' },
 ];
 
+const VOICE_COMMAND_CARDS = [
+  {
+    category: 'Navigation',
+    icon: 'navigate' as const,
+    color: COLORS.dark.primary,
+    commands: [
+      { text: 'Go to [website]', desc: 'Open any website' },
+      { text: 'Search for [query]', desc: 'Google search' },
+      { text: 'Go back / Go forward', desc: 'Browser navigation' },
+    ],
+  },
+  {
+    category: 'Page Control',
+    icon: 'finger-print' as const,
+    color: COLORS.dark.accent,
+    commands: [
+      { text: 'Click [element]', desc: 'Tap buttons and links' },
+      { text: 'Scroll down / up', desc: 'Navigate the page' },
+      { text: 'Read this page', desc: 'Hear page content' },
+    ],
+  },
+  {
+    category: 'Shopping',
+    icon: 'cart' as const,
+    color: '#FF9900',
+    commands: [
+      { text: 'Add to cart', desc: 'Add items' },
+      { text: 'Compare prices', desc: 'Price comparison' },
+      { text: 'Sort by price', desc: 'Filter results' },
+    ],
+  },
+  {
+    category: 'Productivity',
+    icon: 'clipboard' as const,
+    color: COLORS.dark.success,
+    commands: [
+      { text: 'Bookmark this', desc: 'Save current page' },
+      { text: 'Fill in [field]', desc: 'Form input' },
+      { text: 'Sign in', desc: 'Login automation' },
+    ],
+  },
+];
+
+const TIPS = [
+  { icon: 'bulb' as const, title: 'Quick Search', text: 'Say "search for" followed by anything to instantly search Google.', color: COLORS.dark.warning },
+  { icon: 'bookmark' as const, title: 'Save Anything', text: 'Say "bookmark this page" to save the current page for later.', color: COLORS.dark.primary },
+  { icon: 'mic' as const, title: 'Hands-Free Mode', text: 'Long-press the microphone for continuous listening mode.', color: COLORS.dark.error },
+  { icon: 'volume-high' as const, title: 'Read Aloud', text: 'Say "read this page" and VoiceNav will read the content to you.', color: COLORS.dark.accent },
+  { icon: 'pricetag' as const, title: 'Smart Shopping', text: 'Say "compare prices for [item]" to find the best deals.', color: COLORS.dark.success },
+  { icon: 'shield-checkmark' as const, title: 'Privacy First', text: 'All voice processing happens on your device. Nothing is sent to servers.', color: COLORS.dark.primary },
+  { icon: 'globe' as const, title: 'Multi-Language', text: 'VoiceNav supports 116 languages. Change yours in Settings.', color: COLORS.dark.accent },
+  { icon: 'flash' as const, title: 'Voice Shortcuts', text: 'Create custom voice shortcuts in Settings for faster navigation.', color: COLORS.dark.warning },
+];
+
 export default function HomeScreen() {
   const router = useRouter();
   const { setCurrentUrl, addBrowsingHistory, addCommandHistory, speechRate, browsingHistory, commandHistory } = useAppStore();
@@ -59,12 +113,15 @@ export default function HomeScreen() {
   const [inputUrl, setInputUrl] = useState('');
   const [fadeAnim] = useState(new Animated.Value(0));
   const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
+  const [currentTipIndex, setCurrentTipIndex] = useState(0);
+  const [commandCardsExpanded, setCommandCardsExpanded] = useState(false);
+  const tipAnim = useRef(new Animated.Value(1)).current;
 
   const { isListening, transcript, interimTranscript, start: startListening, stop: stopListening } = useSpeechRecognition();
 
   useEffect(() => {
-    AsyncStorage.getItem('voicenav-onboarded').then((val) => {
-      if (val !== 'true') { router.replace('/onboarding'); }
+    isOnboardingDone().then((done) => {
+      if (!done) { router.replace('/onboarding'); }
       else { setHasOnboarded(true); }
     });
   }, []);
@@ -77,6 +134,17 @@ export default function HomeScreen() {
       return () => clearTimeout(timer);
     }
   }, [hasOnboarded]);
+
+  // Tips carousel auto-rotation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      Animated.timing(tipAnim, { toValue: 0, duration: 250, useNativeDriver: true }).start(() => {
+        setCurrentTipIndex((prev) => (prev + 1) % TIPS.length);
+        Animated.timing(tipAnim, { toValue: 1, duration: 350, useNativeDriver: true }).start();
+      });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [tipAnim]);
 
   const navigateTo = useCallback((url: string) => {
     let finalUrl = url;
@@ -92,13 +160,11 @@ export default function HomeScreen() {
     if (!command.trim()) return;
     addCommandHistory(command);
 
-    // Check voice shortcuts
     const shortcut = findShortcut(command);
     if (shortcut) {
       if (shortcut.action === 'navigate') { speak(`Opening shortcut: ${shortcut.phrase}`); navigateTo(shortcut.target); return; }
     }
 
-    // Use NLU for intent understanding
     const result = understand(command);
 
     if (result.intent === 'navigate' && result.target) {
@@ -117,7 +183,6 @@ export default function HomeScreen() {
       return;
     }
 
-    // Default: open browser with Google search
     speak(`Let me search for ${command}`);
     navigateTo(`https://www.google.com/search?q=${encodeURIComponent(command)}`);
   }, [navigateTo, addCommandHistory, findShortcut]);
@@ -134,8 +199,19 @@ export default function HomeScreen() {
     }
   }, [isListening, transcript, startListening, stopListening, handleVoiceCommand]);
 
+  // Compute recent sites with visit counts
+  const siteVisitCounts = browsingHistory.reduce<Record<string, number>>((acc, url) => {
+    const key = url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0];
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+  const recentSites = Object.entries(siteVisitCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
   const recentHistory = browsingHistory.slice(0, 5);
   const recentBookmarks = bookmarks.slice(0, 4);
+  const currentTip = TIPS[currentTipIndex];
 
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
@@ -160,6 +236,22 @@ export default function HomeScreen() {
             <TouchableOpacity onPress={handleSubmitUrl} style={styles.goButton}><Ionicons name="arrow-forward" size={20} color={COLORS.dark.text} /></TouchableOpacity>
           )}
         </View>
+
+        {/* Tips Carousel */}
+        <Animated.View style={[styles.tipCard, { opacity: tipAnim }]}>
+          <View style={[styles.tipIconContainer, { backgroundColor: currentTip.color + '20' }]}>
+            <Ionicons name={currentTip.icon} size={20} color={currentTip.color} />
+          </View>
+          <View style={styles.tipContent}>
+            <Text style={styles.tipTitle}>{currentTip.title}</Text>
+            <Text style={styles.tipText}>{currentTip.text}</Text>
+          </View>
+          <View style={styles.tipDots}>
+            {TIPS.map((_, i) => (
+              <View key={i} style={[styles.tipDot, i === currentTipIndex && { backgroundColor: currentTip.color, width: 12 }]} />
+            ))}
+          </View>
+        </Animated.View>
 
         {/* Task Templates */}
         <View style={styles.section}>
@@ -189,6 +281,89 @@ export default function HomeScreen() {
               </TouchableOpacity>
             ))}
           </View>
+        </View>
+
+        {/* Recent Sites with Visit Count */}
+        {recentSites.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Most Visited</Text>
+            <View style={styles.recentSitesContainer}>
+              {recentSites.map(([domain, count], i) => (
+                <TouchableOpacity
+                  key={domain}
+                  style={styles.recentSiteItem}
+                  onPress={() => navigateTo(`https://${domain}`)}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.recentSiteRank}>
+                    <Text style={styles.recentSiteRankText}>{i + 1}</Text>
+                  </View>
+                  <View style={styles.recentSiteInfo}>
+                    <Text style={styles.recentSiteDomain} numberOfLines={1}>{domain}</Text>
+                    <Text style={styles.recentSiteVisits}>{count} visit{count > 1 ? 's' : ''}</Text>
+                  </View>
+                  <View style={[styles.recentSiteBadge, { backgroundColor: i === 0 ? COLORS.dark.warning + '20' : COLORS.dark.surface }]}>
+                    <Ionicons
+                      name={i === 0 ? 'trophy' : 'trending-up'}
+                      size={14}
+                      color={i === 0 ? COLORS.dark.warning : COLORS.dark.textMuted}
+                    />
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* Voice Command Quick-Start Cards */}
+        <View style={styles.section}>
+          <TouchableOpacity
+            style={styles.sectionHeaderPressable}
+            onPress={() => setCommandCardsExpanded(!commandCardsExpanded)}
+            accessibilityLabel={`${commandCardsExpanded ? 'Collapse' : 'Expand'} voice command guide`}
+          >
+            <Text style={styles.sectionTitle}>Voice Command Guide</Text>
+            <Ionicons
+              name={commandCardsExpanded ? 'chevron-up' : 'chevron-down'}
+              size={20}
+              color={COLORS.dark.textSecondary}
+            />
+          </TouchableOpacity>
+
+          {commandCardsExpanded && (
+            <View style={styles.commandCardsGrid}>
+              {VOICE_COMMAND_CARDS.map((card) => (
+                <View key={card.category} style={[styles.commandCard, { borderLeftColor: card.color }]}>
+                  <View style={styles.commandCardHeader}>
+                    <Ionicons name={card.icon} size={18} color={card.color} />
+                    <Text style={[styles.commandCardCategory, { color: card.color }]}>{card.category}</Text>
+                  </View>
+                  {card.commands.map((cmd, i) => (
+                    <TouchableOpacity
+                      key={i}
+                      style={styles.commandRow}
+                      onPress={() => handleVoiceCommand(cmd.text)}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.commandExample}>"{cmd.text}"</Text>
+                      <Text style={styles.commandDesc}>{cmd.desc}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              ))}
+            </View>
+          )}
+
+          {!commandCardsExpanded && (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.voiceExamplesScroll}>
+              {VOICE_EXAMPLES.slice(0, 6).map((cmd, i) => (
+                <TouchableOpacity key={i} style={styles.voiceExampleChip} onPress={() => handleVoiceCommand(cmd)} activeOpacity={0.7}>
+                  <Ionicons name="mic-outline" size={14} color={COLORS.dark.accent} />
+                  <Text style={styles.voiceExampleText}>{cmd}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          )}
         </View>
 
         {/* Bookmarks */}
@@ -222,9 +397,9 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* Voice Commands Guide */}
+        {/* Voice Commands Guide - Full List */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Voice Commands</Text>
+          <Text style={styles.sectionTitle}>All Voice Commands</Text>
           <View style={styles.commandsList}>
             {VOICE_EXAMPLES.map((cmd, i) => (
               <TouchableOpacity key={i} style={styles.commandItem} onPress={() => handleVoiceCommand(cmd)} activeOpacity={0.7}>
@@ -258,6 +433,171 @@ const styles = StyleSheet.create({
   inputIcon: { marginRight: SPACING.sm },
   urlInput: { flex: 1, height: 52, fontSize: FONT_SIZE.md, color: COLORS.dark.text },
   goButton: { width: 36, height: 36, borderRadius: 18, backgroundColor: COLORS.dark.primary, justifyContent: 'center', alignItems: 'center' },
+
+  // Tips carousel
+  tipCard: {
+    backgroundColor: COLORS.dark.surface,
+    borderRadius: RADIUS.lg,
+    padding: SPACING.md,
+    marginBottom: SPACING.lg,
+    borderWidth: 1,
+    borderColor: COLORS.dark.border,
+    position: 'relative',
+  },
+  tipIconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: SPACING.sm,
+  },
+  tipContent: {
+    marginBottom: SPACING.sm,
+  },
+  tipTitle: {
+    fontSize: FONT_SIZE.md,
+    fontWeight: '700',
+    color: COLORS.dark.text,
+    marginBottom: SPACING.xs,
+  },
+  tipText: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.dark.textSecondary,
+    lineHeight: 20,
+  },
+  tipDots: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 4,
+    marginTop: SPACING.xs,
+  },
+  tipDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: COLORS.dark.textMuted,
+  },
+
+  // Recent sites
+  recentSitesContainer: {
+    backgroundColor: COLORS.dark.surface,
+    borderRadius: RADIUS.md,
+    borderWidth: 1,
+    borderColor: COLORS.dark.border,
+    overflow: 'hidden',
+  },
+  recentSiteItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm + 2,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.dark.border,
+  },
+  recentSiteRank: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: COLORS.dark.primary + '20',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: SPACING.md,
+  },
+  recentSiteRankText: {
+    fontSize: FONT_SIZE.sm,
+    fontWeight: '800',
+    color: COLORS.dark.primary,
+  },
+  recentSiteInfo: {
+    flex: 1,
+  },
+  recentSiteDomain: {
+    fontSize: FONT_SIZE.md,
+    fontWeight: '600',
+    color: COLORS.dark.text,
+  },
+  recentSiteVisits: {
+    fontSize: FONT_SIZE.xs,
+    color: COLORS.dark.textMuted,
+    marginTop: 1,
+  },
+  recentSiteBadge: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  // Voice command cards
+  sectionHeaderPressable: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: SPACING.md,
+  },
+  commandCardsGrid: {
+    gap: SPACING.md,
+  },
+  commandCard: {
+    backgroundColor: COLORS.dark.surface,
+    borderRadius: RADIUS.md,
+    padding: SPACING.md,
+    borderWidth: 1,
+    borderColor: COLORS.dark.border,
+    borderLeftWidth: 3,
+  },
+  commandCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: SPACING.sm,
+    gap: SPACING.sm,
+  },
+  commandCardCategory: {
+    fontSize: FONT_SIZE.md,
+    fontWeight: '700',
+  },
+  commandRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: SPACING.xs + 2,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.dark.border,
+  },
+  commandExample: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.dark.accent,
+    fontWeight: '600',
+    flex: 1,
+  },
+  commandDesc: {
+    fontSize: FONT_SIZE.xs,
+    color: COLORS.dark.textMuted,
+    marginLeft: SPACING.sm,
+  },
+  voiceExamplesScroll: {
+    gap: SPACING.sm,
+    paddingRight: SPACING.lg,
+  },
+  voiceExampleChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.dark.surface,
+    borderRadius: RADIUS.full,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    borderWidth: 1,
+    borderColor: COLORS.dark.border,
+    gap: SPACING.xs,
+  },
+  voiceExampleText: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.dark.text,
+    fontWeight: '500',
+  },
+
   section: { marginBottom: SPACING.lg },
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: SPACING.md },
   sectionTitle: { fontSize: FONT_SIZE.lg, fontWeight: '700', color: COLORS.dark.text, marginBottom: SPACING.md },

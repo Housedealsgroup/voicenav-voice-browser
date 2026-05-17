@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import {
   TouchableOpacity,
   Animated,
@@ -6,6 +6,7 @@ import {
   View,
   Text,
   Platform,
+  Vibration,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, FONT_SIZE } from '../a11y/theme';
@@ -20,6 +21,8 @@ type VoiceButtonProps = {
   accessibilityLabel?: string;
 };
 
+const HAPTIC_PATTERN = Platform.OS === 'android' ? [0, 30] : undefined;
+
 export default function VoiceButton({
   isListening,
   interimText,
@@ -31,6 +34,11 @@ export default function VoiceButton({
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const glowAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
+  const rippleAnim = useRef(new Animated.Value(0)).current;
+  const rippleOpacity = useRef(new Animated.Value(0.6)).current;
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [isLongPressing, setIsLongPressing] = useState(false);
+  const [showRipple, setShowRipple] = useState(false);
 
   useEffect(() => {
     let pulseLoop: Animated.CompositeAnimation | null = null;
@@ -62,12 +70,86 @@ export default function VoiceButton({
       ]).start();
     }
 
-    // Cleanup on unmount or when isListening changes
     return () => {
       if (pulseLoop) pulseLoop.stop();
       if (glowLoop) glowLoop.stop();
     };
   }, [isListening]);
+
+  // Haptic feedback on press
+  const triggerHaptic = useCallback(() => {
+    try {
+      if (Platform.OS === 'android') {
+        Vibration.vibrate(HAPTIC_PATTERN);
+      } else {
+        // iOS uses a light tap via Vibration
+        Vibration.vibrate();
+      }
+    } catch {
+      // Haptic may not be available on all devices
+    }
+  }, []);
+
+  // Ripple animation
+  const startRipple = useCallback(() => {
+    setShowRipple(true);
+    rippleAnim.setValue(0);
+    rippleOpacity.setValue(0.6);
+    Animated.parallel([
+      Animated.timing(rippleAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(rippleOpacity, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setShowRipple(false);
+    });
+  }, [rippleAnim, rippleOpacity]);
+
+  const handlePressIn = useCallback(() => {
+    // Scale down on press
+    Animated.spring(scaleAnim, { toValue: 0.92, useNativeDriver: true }).start();
+    triggerHaptic();
+
+    // Start long-press timer (500ms)
+    if (onLongPress) {
+      longPressTimerRef.current = setTimeout(() => {
+        setIsLongPressing(true);
+        onLongPress();
+        // Extra haptic for long press
+        try {
+          Vibration.vibrate([0, 50, 30, 50]);
+        } catch {}
+      }, 500);
+    }
+  }, [scaleAnim, triggerHaptic, onLongPress]);
+
+  const handlePressOut = useCallback(() => {
+    // Cancel long-press timer
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+    setIsLongPressing(false);
+
+    // Scale back
+    Animated.spring(scaleAnim, { toValue: isListening ? 1.1 : 1, useNativeDriver: true }).start();
+  }, [scaleAnim, isListening]);
+
+  const handlePress = useCallback(() => {
+    startRipple();
+    onPress();
+  }, [startRipple, onPress]);
+
+  const rippleScale = rippleAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 2.5],
+  });
 
   return (
     <View style={styles.wrapper}>
@@ -90,11 +172,47 @@ export default function VoiceButton({
         />
       )}
 
+      {/* Second pulse ring for depth */}
+      {isListening && (
+        <Animated.View
+          style={[
+            styles.pulseRing,
+            {
+              width: size + 60,
+              height: size + 60,
+              borderRadius: (size + 60) / 2,
+              transform: [{ scale: pulseAnim }],
+              opacity: glowAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 0.15],
+              }),
+            },
+          ]}
+        />
+      )}
+
       {/* Waveform behind button */}
       {isListening && (
         <View style={styles.waveformContainer}>
           <VoiceWaveform isActive={isListening} height={32} />
         </View>
+      )}
+
+      {/* Ripple effect */}
+      {showRipple && (
+        <Animated.View
+          style={[
+            styles.ripple,
+            {
+              width: size,
+              height: size,
+              borderRadius: size / 2,
+              transform: [{ scale: rippleScale }],
+              opacity: rippleOpacity,
+              backgroundColor: isListening ? COLORS.dark.error : COLORS.dark.primary,
+            },
+          ]}
+        />
       )}
 
       {/* Main button */}
@@ -119,25 +237,45 @@ export default function VoiceButton({
               borderRadius: size / 2,
               backgroundColor: isListening
                 ? COLORS.dark.error
+                : isLongPressing
+                ? COLORS.dark.accent
                 : COLORS.dark.primary,
             },
           ]}
-          onPress={onPress}
-          onLongPress={onLongPress}
-          activeOpacity={0.8}
+          onPress={handlePress}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          activeOpacity={0.9}
           accessibilityLabel={accessibilityLabel}
           accessibilityHint={
             isListening
-              ? 'Tap to stop listening'
-              : 'Tap to start voice command'
+              ? 'Tap to stop listening. Long press for continuous mode.'
+              : 'Tap to start voice command. Long press for continuous listening.'
           }
           accessibilityRole="button"
         >
-          <Ionicons
-            name={isListening ? 'stop' : 'mic'}
-            size={size * 0.42}
-            color={COLORS.dark.text}
-          />
+          <Animated.View
+            style={
+              isListening
+                ? {
+                    transform: [
+                      {
+                        rotate: glowAnim.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: ['0deg', '5deg'],
+                        }),
+                      },
+                    ],
+                  }
+                : undefined
+            }
+          >
+            <Ionicons
+              name={isListening ? 'stop' : isLongPressing ? 'mic-circle' : 'mic'}
+              size={size * 0.42}
+              color={COLORS.dark.text}
+            />
+          </Animated.View>
         </TouchableOpacity>
       </Animated.View>
 
@@ -149,9 +287,14 @@ export default function VoiceButton({
           </Text>
         </View>
       ) : (
-        <Text style={styles.hint}>
-          {isListening ? 'Listening...' : 'Tap to speak'}
-        </Text>
+        <View style={styles.hintContainer}>
+          <Text style={styles.hint}>
+            {isListening ? 'Listening...' : isLongPressing ? 'Continuous mode' : 'Tap to speak'}
+          </Text>
+          {!isListening && (
+            <Text style={styles.hintSub}>Long press for continuous</Text>
+          )}
+        </View>
       )}
     </View>
   );
@@ -174,6 +317,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: -1,
   },
+  ripple: {
+    position: 'absolute',
+  },
   button: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -194,9 +340,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontStyle: 'italic',
   },
-  hint: {
+  hintContainer: {
+    alignItems: 'center',
     marginTop: SPACING.sm,
+  },
+  hint: {
     color: COLORS.dark.textMuted,
     fontSize: FONT_SIZE.sm,
+  },
+  hintSub: {
+    color: COLORS.dark.textMuted,
+    fontSize: FONT_SIZE.xs,
+    marginTop: 2,
+    opacity: 0.6,
   },
 });

@@ -14,8 +14,8 @@ export default function OfflineBanner({ visible }: { visible: boolean }) {
   }, [visible]);
 
   return (
-    <Animated.View style={[styles.banner, { transform: [{ translateY }] }]}>
-      <Text style={styles.text}>📡 You are offline — commands will be queued</Text>
+    <Animated.View style={[styles.banner, { transform: [{ translateY }] }]} accessibilityLabel="You are offline. Commands will be queued." accessibilityRole="alert">
+      <Text style={styles.text}>You are offline — commands will be queued</Text>
     </Animated.View>
   );
 }

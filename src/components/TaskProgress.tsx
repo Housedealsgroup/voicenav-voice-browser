@@ -65,7 +65,7 @@ export default function TaskProgress({
             />
             <Text style={styles.title} numberOfLines={1}>{task.name}</Text>
           </View>
-          <TouchableOpacity onPress={onDismiss} style={styles.closeBtn}>
+          <TouchableOpacity onPress={onDismiss} style={styles.closeBtn} accessibilityLabel="Dismiss task progress">
             <Ionicons name="close" size={18} color={COLORS.dark.textMuted} />
           </TouchableOpacity>
         </View>
@@ -107,17 +107,17 @@ export default function TaskProgress({
         {!isComplete && (
           <View style={styles.controls}>
             {isPaused ? (
-              <TouchableOpacity style={styles.controlBtn} onPress={onResume}>
+              <TouchableOpacity style={styles.controlBtn} onPress={onResume} accessibilityLabel="Resume task">
                 <Ionicons name="play" size={16} color={COLORS.dark.success} />
                 <Text style={[styles.controlText, { color: COLORS.dark.success }]}>Resume</Text>
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity style={styles.controlBtn} onPress={onPause}>
+              <TouchableOpacity style={styles.controlBtn} onPress={onPause} accessibilityLabel="Pause task">
                 <Ionicons name="pause" size={16} color={COLORS.dark.warning} />
                 <Text style={[styles.controlText, { color: COLORS.dark.warning }]}>Pause</Text>
               </TouchableOpacity>
             )}
-            <TouchableOpacity style={styles.controlBtn} onPress={onCancel}>
+            <TouchableOpacity style={styles.controlBtn} onPress={onCancel} accessibilityLabel="Cancel task">
               <Ionicons name="stop" size={16} color={COLORS.dark.error} />
               <Text style={[styles.controlText, { color: COLORS.dark.error }]}>Cancel</Text>
             </TouchableOpacity>
@@ -130,7 +130,7 @@ export default function TaskProgress({
             <Text style={[styles.completionText, { color: task.status === 'completed' ? COLORS.dark.success : COLORS.dark.error }]}>
               {task.status === 'completed' ? 'Task completed!' : task.status === 'cancelled' ? 'Task cancelled' : 'Task failed'}
             </Text>
-            <TouchableOpacity style={styles.dismissBtn} onPress={onDismiss}>
+            <TouchableOpacity style={styles.dismissBtn} onPress={onDismiss} accessibilityLabel="Dismiss task result">
               <Text style={styles.dismissText}>Dismiss</Text>
             </TouchableOpacity>
           </View>
