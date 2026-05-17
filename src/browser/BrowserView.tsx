@@ -3,6 +3,7 @@ import React, { useRef, useCallback, useImperativeHandle, forwardRef, useEffect 
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { COLORS } from '../a11y/theme';
 import type { PageSnapshot, AgentAction } from './types';
+import { logger } from '../utils/logger';
 
 // Read injected scripts as raw strings via Metro's require + toString
 const DOM_EXTRACTOR = (() => {
@@ -179,7 +180,7 @@ const BrowserView = forwardRef<BrowserViewHandle, BrowserViewProps>(({
         }
       } catch (e) {
         // Log parse errors for debugging rather than silently swallowing
-        console.warn('[VoiceNav] Failed to parse WebView message:', e);
+        logger.browser('messageParseError', e);
       }
     },
     [onSnapshot, onAction, onError]

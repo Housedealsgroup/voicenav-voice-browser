@@ -1,6 +1,8 @@
 // VoiceNav NLU Engine — Natural Language Understanding with confidence scoring
 // Multi-layer intent classification, entity extraction, context resolution
 
+import { logger } from '../utils/logger';
+
 export type Intent =
   | 'navigate' | 'search' | 'click' | 'read' | 'scroll' | 'back' | 'forward'
   | 'refresh' | 'stop' | 'help' | 'home' | 'cart' | 'bookmark' | 'form'

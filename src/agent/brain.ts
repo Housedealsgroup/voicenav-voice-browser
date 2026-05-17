@@ -7,6 +7,7 @@ import {
 } from '../browser/types';
 import { understand, resolveSiteAlias, NLUResult, Intent } from './nlu';
 import { getSession, getContextForNLU, updateEntityMemory, resolveReference } from './sessionMemory';
+import { logger } from '../utils/logger';
 
 // Re-export NLU for direct access
 export { understand, resolveSiteAlias } from './nlu';
@@ -213,6 +214,7 @@ export function decideAction(
   snapshot: PageSnapshot,
   context: AgentContext
 ): { action: AgentAction; needsRetry: boolean } {
+  logger.agent('decideAction', { intent: intent.intent, target: intent.target, confidence: intent.confidence });
   const { elements } = snapshot;
 
   switch (intent.intent) {

@@ -1,4 +1,5 @@
 import * as Speech from 'expo-speech';
+import { logger } from '../utils/logger';
 
 type TTSOptions = {
   rate?: number;
@@ -27,6 +28,8 @@ export async function speak(text: string, options: TTSOptions = {}): Promise<voi
   }
 
   if (!text || text.trim().length === 0) return;
+
+  logger.voice('speak', { text: text.substring(0, 50), language: opts.language });
 
   isSpeaking = true;
   currentUtterance = text;

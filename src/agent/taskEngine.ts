@@ -3,6 +3,7 @@
 
 import type { PageSnapshot, AgentAction } from '../browser/types';
 import type { NLUResult, Intent } from './nlu';
+import { logger } from '../utils/logger';
 
 export type TaskStatus = 'pending' | 'running' | 'waiting' | 'paused' | 'completed' | 'failed' | 'cancelled';
 
@@ -175,6 +176,7 @@ export function matchTaskTemplate(text: string): TaskTemplate | null {
 }
 
 export function submitTask(task: TaskDefinition): void {
+  logger.agent('taskSubmit', { name: task.name, steps: task.steps.length, category: task.category });
   taskQueue.push(task);
   if (!activeTask) {
     startNextTask();

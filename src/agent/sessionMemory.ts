@@ -3,6 +3,7 @@
 
 import type { PageSnapshot, AgentAction } from '../browser/types';
 import type { NLUResult } from './nlu';
+import { logger } from '../utils/logger';
 
 export type ConversationTurn = {
   id: string;

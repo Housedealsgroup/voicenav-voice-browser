@@ -2,7 +2,8 @@
 // Barge-in support, silence detection, voice activity detection
 
 import { ExpoSpeechRecognitionModule } from 'expo-speech-recognition';
-import { stopSpeaking } from './textToSpeech';
+import { stopSpeaking, getIsSpeaking } from './textToSpeech';
+import { logger } from '../utils/logger';
 
 export type ContinuousMode = 'off' | 'wake_word' | 'always_on' | 'push_to_talk';
 
@@ -45,6 +46,7 @@ export function startContinuous(
   mode: ContinuousMode,
   cbs: Partial<ContinuousCallbacks> & { onCommand: (text: string) => void }
 ): void {
+  logger.voice('startContinuous', { mode });
   callbacks = cbs as ContinuousCallbacks;
   state.mode = mode;
   state.lastActivityTime = Date.now();
@@ -159,15 +161,19 @@ function resetSilenceTimer(): void {
 
 // --- Barge-in (interrupt TTS when user speaks) ---
 export function enableBargeIn(): void {
-  // This is handled by the volume threshold check
-  // When volume exceeds threshold while TTS is playing, we stop TTS
+  state.lastActivityTime = Date.now();
+  logger.voice('bargeIn enabled');
 }
 
 export function checkBargeIn(volume: number): boolean {
   if (volume > state.volumeThreshold) {
     state.lastActivityTime = Date.now();
     resetSilenceTimer();
-    return true;
+    if (getIsSpeaking()) {
+      logger.voice('bargeIn triggered', { volume, threshold: state.volumeThreshold });
+      stopSpeaking();
+      return true;
+    }
   }
   return false;
 }
@@ -191,6 +197,7 @@ export function handleSpeechResult(transcript: string, isFinal: boolean): void {
     resetSilenceTimer();
     return;
   }
+  logger.voice('speechResult', { transcript, isFinal, mode: state.mode });
 
   // Check for wake word in wake_word mode
   if (state.mode === 'wake_word' && !state.isWakeWordDetected) {

@@ -18,11 +18,13 @@ import { parseVoiceCommand, getAgentStep, analyzePage, getPageSuggestions } from
 import { addTurn, updateEntityMemory, addPageToHistory, getContextForNLU, resetSession } from '../src/agent/sessionMemory';
 import { createTask, submitTask, getActiveTask, advanceStep, cancelActiveTask, pauseActiveTask, resumeActiveTask, getTaskProgress, hasMultipleSteps, parseMultiStepCommand, matchTaskTemplate, createTaskFromTemplate } from '../src/agent/taskEngine';
 import { findMacroByVoice, expandMacro, markMacroUsed, loadMacros } from '../src/voice/voiceMacros';
-import { startContinuous, stopContinuous, handleSpeechResult, handleSpeechError, handleVolumeChange, isContinuousActive } from '../src/voice/continuousListener';
+import { startContinuous, stopContinuous, handleSpeechResult, handleSpeechError, handleVolumeChange, isContinuousActive, checkBargeIn } from '../src/voice/continuousListener';
 import VoiceButton from '../src/components/VoiceButton';
 import TaskProgress from '../src/components/TaskProgress';
 import CommandPalette from '../src/components/CommandPalette';
+import FloatingAssistant from '../src/components/FloatingAssistant';
 import type { CommandEntry } from '../src/components/CommandPalette';
+import { logger } from '../src/utils/logger';
 
 export default function BrowserScreen() {
   const router = useRouter();
@@ -46,6 +48,7 @@ export default function BrowserScreen() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [showTaskProgress, setShowTaskProgress] = useState(false);
+  const [showFloatingAssistant, setShowFloatingAssistant] = useState(true);
   const [currentTask, setCurrentTask] = useState<any>(null);
   const statusOpacity = useRef(new Animated.Value(0)).current;
   const timeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
@@ -55,6 +58,29 @@ export default function BrowserScreen() {
 
   // Load macros on mount
   useEffect(() => { loadMacros(); }, []);
+
+  // Wire continuous listener
+  useEffect(() => {
+    if (continuousMode !== 'off') {
+      logger.voice('continuousMode activated', { mode: continuousMode });
+      startContinuous(continuousMode, {
+        onCommand: (text) => processCommand(text),
+        onWakeWord: () => speak('Yes?'),
+        onListeningStart: () => addLog('Continuous listening started'),
+        onListeningEnd: () => addLog('Continuous listening stopped'),
+        onVolumeChange: (vol) => {
+          if (checkBargeIn(vol)) stopSpeaking();
+        },
+        onError: (err) => {
+          logger.voice('continuousListener error', err);
+          addLog(`Voice error: ${err}`);
+        },
+      });
+    } else {
+      stopContinuous();
+    }
+    return () => { stopContinuous(); };
+  }, [continuousMode]);
 
   // Cleanup
   useEffect(() => {
@@ -120,6 +146,7 @@ export default function BrowserScreen() {
   }, [addLog, setAgentStatus, flashStatus, speechRate, setIsAgentActive]);
 
   const processSingleCommand = useCallback((command: string, stepIndex: number, totalSteps: number) => {
+    logger.agent('processCommand', { command, step: stepIndex + 1, total: totalSteps });
     addCommandHistory(command);
     addLog(`Step ${stepIndex + 1}/${totalSteps}: ${command}`);
     addAssistantMessage(command, 'user');
@@ -195,6 +222,7 @@ export default function BrowserScreen() {
     }
 
     // Standard agent processing
+    logger.agent('standardProcessing', { command });
     setIsAgentActive(true);
     setAgentStatus('Thinking...');
     addAssistantMessage('Processing...', 'assistant');
@@ -409,6 +437,21 @@ export default function BrowserScreen() {
 
       {/* Command Palette */}
       <CommandPalette visible={showCommandPalette} onClose={() => setShowCommandPalette(false)} onExecute={processCommand} commands={commandEntries} recentCommands={commandHistory.slice(0, 10)} contextSuggestions={suggestions} />
+
+      {/* Floating Assistant */}
+      <FloatingAssistant
+        visible={showFloatingAssistant}
+        status={agentStatus}
+        isListening={isListening}
+        isProcessing={isAgentActive}
+        messages={assistantMessages}
+        suggestions={suggestions}
+        onVoiceToggle={handleVoiceToggle}
+        onSuggestionPress={handleSuggestionPress}
+        onExpand={() => setShowCommandPalette(true)}
+        currentTaskName={activeTaskName || undefined}
+        taskProgress={taskProgress}
+      />
     </KeyboardAvoidingView>
   );
 }
