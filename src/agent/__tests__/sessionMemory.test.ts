@@ -49,14 +49,14 @@ describe('Session Memory', () => {
 
   describe('Page history', () => {
     it('adds and retrieves page history', () => {
-      addPageToHistory('https://amazon.com', 'Amazon', Date.now());
+      addPageToHistory('https://amazon.com', 'Amazon', 'shopping');
       const history = getPageHistory();
       expect(history.length).toBe(1);
     });
 
     it('gets previous page', () => {
-      addPageToHistory('https://first.com', 'First', Date.now());
-      addPageToHistory('https://second.com', 'Second', Date.now());
+      addPageToHistory('https://first.com', 'First', 'general');
+      addPageToHistory('https://second.com', 'Second', 'general');
       const prev = getPreviousPage();
       expect(prev?.url).toBe('https://first.com');
     });

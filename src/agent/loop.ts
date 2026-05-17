@@ -1,4 +1,5 @@
 import { PageSnapshot, AgentAction, AgentContext } from '../browser/types';
+import type { VoiceCommand } from '../browser/types';
 import { parseVoiceCommand, getAgentStep, analyzePage } from './brain';
 import { speak, stopSpeaking, enqueueSpeech } from '../voice/textToSpeech';
 
@@ -12,18 +13,18 @@ type AgentCallbacks = {
 
 let isActive = false;
 let context: AgentContext = { stepHistory: [], retryCount: 0 };
-let currentIntent: ReturnType<typeof parseVoiceCommand> | null = null;
+let currentIntent: VoiceCommand | null = null;
 let snapshotBuffer: PageSnapshot | null = null;
 let callbacks: AgentCallbacks | null = null;
 
-export function startAgent(
+export async function startAgent(
   command: string,
   cbs: AgentCallbacks
-): void {
+): Promise<void> {
   isActive = true;
   context = { stepHistory: [], retryCount: 0 };
   callbacks = cbs;
-  currentIntent = parseVoiceCommand(command);
+  currentIntent = await parseVoiceCommand(command);
 
   cbs.onStatus(`Processing: ${command}`);
 

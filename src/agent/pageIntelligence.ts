@@ -198,7 +198,7 @@ function extractForm(elements: PageElement[]): FormAnalysis | null {
     if (el.typeable) {
       fields.push({
         name: el.label || el.placeholder || 'unknown',
-        type: el.formFieldType || el.type || 'text',
+        type: el.formFieldType || 'text',
         label: el.label || '',
         placeholder: el.placeholder || '',
         required: false,
@@ -337,9 +337,9 @@ export function analyzePageIntelligence(snapshot: PageSnapshot): PageIntelligenc
   });
 
   return {
-    article,
-    navigation,
-    form,
+    article: article ?? undefined,
+    navigation: navigation ?? undefined,
+    form: form ?? undefined,
     prices,
     ratings,
     media,

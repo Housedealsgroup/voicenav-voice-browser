@@ -161,7 +161,7 @@ export default function BrowserScreen() {
     }
   }, [addLog, setAgentStatus, flashStatus, speechRate, setIsAgentActive]);
 
-  const processSingleCommand = useCallback((command: string, stepIndex: number, totalSteps: number) => {
+  const processSingleCommand = useCallback(async (command: string, stepIndex: number, totalSteps: number) => {
     logger.agent('processCommand', { command, step: stepIndex + 1, total: totalSteps });
     addCommandHistory(command);
     addLog(`Step ${stepIndex + 1}/${totalSteps}: ${command}`);
@@ -243,7 +243,7 @@ export default function BrowserScreen() {
     setAgentStatus('Thinking...');
     addAssistantMessage('Processing...', 'assistant');
 
-    const intent = parseVoiceCommand(command, agentContextRef.current);
+    const intent = await parseVoiceCommand(command, agentContextRef.current);
     const snapshot = pageSnapshot;
 
     if (!snapshot) {

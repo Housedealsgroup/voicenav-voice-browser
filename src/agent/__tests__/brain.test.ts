@@ -4,7 +4,7 @@ import type { PageSnapshot, VoiceCommand, AgentContext, PageElement } from '../.
 const mockElement: PageElement = {
   id: 1, role: 'button', tag: 'button', text: 'Sign In', label: 'Sign In',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 100, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 100, height: 40 },
 };
 
 const mockSnapshot: PageSnapshot = {
@@ -30,134 +30,134 @@ function makeSnapshot(overrides: Partial<PageSnapshot> = {}, extraElements: Page
 const searchBox: PageElement = {
   id: 10, role: 'textbox', tag: 'input', text: '', label: 'Search',
   placeholder: 'Search...', href: '', clickable: true, typeable: true, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 200, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 200, height: 40 },
 };
 
 const playButton: PageElement = {
   id: 20, role: 'button', tag: 'button', text: 'Play', label: 'Play',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 80, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 80, height: 40 },
 };
 
 const pauseButton: PageElement = {
   id: 21, role: 'button', tag: 'button', text: 'Pause', label: 'Pause',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 80, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 80, height: 40 },
 };
 
 const nextButton: PageElement = {
   id: 22, role: 'button', tag: 'button', text: 'Next', label: 'Next',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 80, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 80, height: 40 },
 };
 
 const prevButton: PageElement = {
   id: 23, role: 'button', tag: 'button', text: 'Previous', label: 'Previous',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 80, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 80, height: 40 },
 };
 
 const cartButton: PageElement = {
   id: 30, role: 'button', tag: 'button', text: 'Add to Cart', label: 'Add to Cart',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 120, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 120, height: 40 },
 };
 
 const checkoutButton: PageElement = {
   id: 31, role: 'button', tag: 'button', text: 'Checkout', label: 'Checkout',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 120, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 120, height: 40 },
 };
 
 const sortButton: PageElement = {
   id: 40, role: 'button', tag: 'button', text: 'Sort by Price', label: 'Sort by Price',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 120, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 120, height: 40 },
 };
 
 const filterButton: PageElement = {
   id: 41, role: 'button', tag: 'button', text: 'Filter', label: 'Filter',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 80, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 80, height: 40 },
 };
 
 const signInButton: PageElement = {
   id: 50, role: 'button', tag: 'button', text: 'Sign In', label: 'Sign In',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 100, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 100, height: 40 },
 };
 
 const signUpButton: PageElement = {
   id: 51, role: 'button', tag: 'button', text: 'Sign Up', label: 'Sign Up',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 100, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 100, height: 40 },
 };
 
 const submitButton: PageElement = {
   id: 52, role: 'button', tag: 'button', text: 'Submit', label: 'Submit',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 100, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 100, height: 40 },
 };
 
 const sendButton: PageElement = {
   id: 53, role: 'button', tag: 'button', text: 'Send', label: 'Send',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 80, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 80, height: 40 },
 };
 
 const deleteButton: PageElement = {
   id: 54, role: 'button', tag: 'button', text: 'Delete', label: 'Delete',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 80, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 80, height: 40 },
 };
 
 const shareButton: PageElement = {
   id: 55, role: 'button', tag: 'button', text: 'Share', label: 'Share',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 80, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 80, height: 40 },
 };
 
 const downloadButton: PageElement = {
   id: 56, role: 'button', tag: 'button', text: 'Download', label: 'Download',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 100, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 100, height: 40 },
 };
 
 const composeButton: PageElement = {
   id: 57, role: 'button', tag: 'button', text: 'Compose', label: 'Compose',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 100, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 100, height: 40 },
 };
 
 const passwordField: PageElement = {
   id: 60, role: 'textbox', tag: 'input', text: '', label: 'Password',
   placeholder: 'Password', href: '', clickable: true, typeable: true, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 200, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 200, height: 40 },
   formFieldType: 'password',
 };
 
 const nameInput: PageElement = {
   id: 61, role: 'textbox', tag: 'input', text: '', label: 'Name',
   placeholder: 'Enter name', href: '', clickable: true, typeable: true, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 200, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 200, height: 40 },
 };
 
 const link: PageElement = {
   id: 70, role: 'link', tag: 'a', text: 'About Us', label: 'About Us',
   placeholder: '', href: 'https://example.com/about', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 100, height: 30 },
+  visible: true, rect: { top: 0, left: 0, width: 100, height: 30 },
 };
 
 const dropdown: PageElement = {
   id: 80, role: 'combobox', tag: 'select', text: 'Category', label: 'Category',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: true,
-  visible: true, rect: { x: 0, y: 0, width: 150, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 150, height: 40 },
 };
 
 const buyNowButton: PageElement = {
   id: 32, role: 'button', tag: 'button', text: 'Buy Now', label: 'Buy Now',
   placeholder: '', href: '', clickable: true, typeable: false, selectable: false,
-  visible: true, rect: { x: 0, y: 0, width: 100, height: 40 },
+  visible: true, rect: { top: 0, left: 0, width: 100, height: 40 },
 };
 
 describe('Brain Decision Engine', () => {

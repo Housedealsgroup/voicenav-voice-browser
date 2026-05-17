@@ -121,7 +121,8 @@ export type VoiceCommand = {
     | 'stop' | 'help' | 'cart' | 'bookmark' | 'form' | 'type' | 'select' | 'submit' | 'play'
     | 'pause' | 'next' | 'previous' | 'zoom' | 'share' | 'download' | 'copy' | 'find'
     | 'filter' | 'sort' | 'compare' | 'buy' | 'checkout' | 'login' | 'logout' | 'signup'
-    | 'compose' | 'send' | 'delete' | 'open' | 'close' | 'tab_new' | 'tab_close' | 'home' | 'unknown';
+    | 'compose' | 'send' | 'delete' | 'open' | 'close' | 'maximize' | 'minimize'
+    | 'tab_new' | 'tab_close' | 'tab_next' | 'tab_prev' | 'home' | 'unknown';
   target?: string;
   params?: Record<string, string>;
   confidence?: number;
