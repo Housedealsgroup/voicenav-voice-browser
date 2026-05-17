@@ -21,6 +21,10 @@ A fully accessible mobile browser powered by on-device AI that understands 116 l
 
 ---
 
+<img src="assets/demo.svg" alt="VoiceNav Demo" width="100%">
+
+---
+
 **Built by [HouseDealsGroup](https://github.com/Housedealsgroup)**
 
 **100% On-Device AI. No Cloud. No APIs. No Compromises.**
@@ -62,6 +66,22 @@ A fully accessible mobile browser powered by on-device AI that understands 116 l
 | **Gesture Navigation** | Voice-activated gesture simulation — swipe, pinch, double-tap |
 | **Command History** | Full history with search, replay, favorites, and analytics |
 | **Performance Monitor** | Tracks voice latency, navigation times, success rates |
+
+---
+
+## **Screenshots**
+
+<div align="center">
+
+<img src="assets/screenshots/home.svg" alt="Home Screen" width="45%">&nbsp;&nbsp;<img src="assets/screenshots/voice.svg" alt="Voice Command" width="45%">
+
+<img src="assets/screenshots/browser.svg" alt="Browser View" width="45%">&nbsp;&nbsp;<img src="assets/screenshots/bookmarks.svg" alt="Bookmarks" width="45%">
+
+<img src="assets/screenshots/palette.svg" alt="Command Palette" width="45%">&nbsp;&nbsp;<img src="assets/screenshots/task.svg" alt="Task Automation" width="45%">
+
+<img src="assets/screenshots/settings.svg" alt="Settings" width="45%">
+
+</div>
 
 ---
 
