@@ -703,9 +703,17 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 [![GitHub](https://img.shields.io/badge/GitHub-VoiceNav-181717?style=for-the-badge&logo=github)](https://github.com/Housedealsgroup/voicenav)
 [![Expo](https://img.shields.io/badge/Expo_Go-000020?style=for-the-badge&logo=expo&logoColor=white)](https://expo.dev)
-[![License](https://img.shields.io/badge/MIT_License-00E676?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/MIT_License-00E676?style=for-the-badge)](## 💰 Support VoiceNav
 
----
+VoiceNav is and will always be **free for individuals**. If it helps you or your organization, please consider supporting its development.
+
+**Bitcoin:**  
+`bc1qkgkhescdu30xn3fpkv52mcea9njn47u7snjj9k`
+
+Every donation, no matter how small, keeps this project alive. Thank you! 🙏
+
+
+
 
 **© 2026 HouseDealsGroup. All rights reserved.**
 
