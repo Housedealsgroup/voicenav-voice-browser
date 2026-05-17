@@ -19,7 +19,9 @@
       "infoPlist": {
         "NSMicrophoneUsageDescription": "VoiceNav needs microphone access for voice commands",
         "NSSpeechRecognitionUsageDescription": "VoiceNav needs speech recognition to understand your commands",
-        "UIBackgroundModes": ["audio"]
+        "UIBackgroundModes": [
+          "audio"
+        ]
       }
     },
     "android": {
@@ -41,7 +43,7 @@
     },
     "plugins": [
       "expo-router",
-      "expo-speech"
+      "expo-speech-recognition"
     ],
     "experiments": {
       "typedRoutes": true

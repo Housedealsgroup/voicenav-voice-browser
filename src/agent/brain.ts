@@ -23,7 +23,7 @@ const CLICK_PATTERNS = [
 ];
 
 const READ_PATTERNS = [
-  /(?:read|speak|tell me|what'?s on|what is on|describe|show me)\s*(?:the\s*)?(?:page|screen|content|this)?/i,
+  /(?:read|speak|tell me|what'?s on|what is on|describe|show me|what'?s here)\s*(?:the\s*)?(?:page|screen|content|this)?/i,
   /(?:read)\s+(?:the\s+)?(.+)/i,
 ];
 
@@ -35,16 +35,31 @@ const SCROLL_PATTERNS = [
 
 const CART_PATTERNS = [
   /(?:add|put)\s+(?:the\s+)?(.+?)\s+(?:to|in|into)\s+(?:my\s+)?(?:cart|basket|bag)/i,
-  /(?:add to cart|add to basket|put in cart)/i,
+  /(?:add to cart|add to basket|put in cart|buy now)/i,
   /(?:buy|purchase)\s+(.+)/i,
+];
+
+const BOOKMARK_PATTERNS = [
+  /(?:bookmark|save)\s+(?:this\s+)?(?:page|site|website|url)/i,
+  /(?:bookmark|save)\s+(?:this|it)/i,
+  /(?:add\s+(?:to\s+)?bookmarks?)/i,
+  /(?:remove|delete)\s+(?:the\s+)?bookmark/i,
+  /(?:unbookmark)/i,
 ];
 
 const NAV_COMMANDS = [
   /(?:go\s*back|back)/i,
-  /(?:go\s*forward|forward)/i,
+  /(?:go\s*forward|forward|go\s*next)/i,
   /(?:refresh|reload)/i,
   /(?:stop|cancel|halt)/i,
-  /(?:help|what can you do)/i,
+  /(?:help|what can you do|commands)/i,
+  /(?:close|exit)/i,
+];
+
+const FORM_PATTERNS = [
+  /(?:fill|type|enter)\s+(.+?)\s+(?:in|into|on)\s+(?:the\s+)?(.+)/i,
+  /(?:submit|send)\s+(?:the\s+)?(?:form|search|query)/i,
+  /(?:sign|log)\s*(?:in|out|up)/i,
 ];
 
 export function parseVoiceCommand(transcript: string): VoiceCommand {
@@ -55,7 +70,6 @@ export function parseVoiceCommand(transcript: string): VoiceCommand {
     const match = text.match(pattern);
     if (match) {
       let target = match[1].trim();
-      // Auto-add https:// if needed
       if (!target.startsWith('http') && /\.\w{2,}/.test(target)) {
         target = 'https://' + target;
       }
@@ -69,12 +83,32 @@ export function parseVoiceCommand(transcript: string): VoiceCommand {
     if (match) return { intent: 'search', target: match[1].trim() };
   }
 
+  // Bookmark
+  for (const pattern of BOOKMARK_PATTERNS) {
+    if (pattern.test(text)) {
+      if (/remove|delete|unbookmark/.test(text)) {
+        return { intent: 'click', target: 'remove bookmark' };
+      }
+      return { intent: 'click', target: 'bookmark this page' };
+    }
+  }
+
   // Cart
   for (const pattern of CART_PATTERNS) {
     const match = text.match(pattern);
     if (match) {
       if (match[1]) return { intent: 'cart', target: match[1].trim() };
       return { intent: 'cart', target: 'first item' };
+    }
+  }
+
+  // Form actions
+  for (const pattern of FORM_PATTERNS) {
+    const match = text.match(pattern);
+    if (match) {
+      if (/submit|send/.test(text)) return { intent: 'click', target: 'submit' };
+      if (/sign|log/.test(text)) return { intent: 'click', target: match[0] };
+      return { intent: 'click', target: match[2] || match[1] };
     }
   }
 
@@ -104,22 +138,23 @@ export function parseVoiceCommand(transcript: string): VoiceCommand {
   for (const pattern of NAV_COMMANDS) {
     if (pattern.test(text)) {
       if (/go\s*back|back/.test(text)) return { intent: 'back' };
+      if (/go\s*forward|forward|next/.test(text)) return { intent: 'click', target: 'forward' };
       if (/stop|cancel|halt/.test(text)) return { intent: 'stop' };
-      if (/help/.test(text)) return { intent: 'help' };
+      if (/help|commands/.test(text)) return { intent: 'help' };
+      if (/close|exit/.test(text)) return { intent: 'stop' };
       return { intent: 'scroll', target: 'refresh' };
     }
   }
 
-  // Default: treat as search or click on text
+  // Default: treat as search
   if (text.length > 0) {
-    return { intent: 'click', target: text };
+    return { intent: 'search', target: text };
   }
 
   return { intent: 'unknown' };
 }
 
 // --- Element Matching ---
-// Finds the best matching element for a given intent/target
 
 function normalizeText(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
@@ -129,6 +164,7 @@ function fuzzyMatch(target: string, candidate: string): number {
   const a = normalizeText(target);
   const b = normalizeText(candidate);
   if (!a || !b) return 0;
+  if (b === a) return 1;
   if (b.includes(a) || a.includes(b)) return 0.9;
   // Word overlap
   const wordsA = a.split(/\s+/);
@@ -143,7 +179,6 @@ function fuzzyMatch(target: string, candidate: string): number {
 }
 
 function findSearchBox(elements: PageElement[]): PageElement | null {
-  // Priority: role=searchbox, input[type=search], input[name=q], input with search-like placeholder
   const byRole = elements.find(e => e.role === 'searchbox' || e.role === 'search');
   if (byRole) return byRole;
 
@@ -154,21 +189,18 @@ function findSearchBox(elements: PageElement[]): PageElement | null {
   ));
   if (byType) return byType;
 
-  // Common search input names
   const byName = elements.find(e => e.tag === 'input' && /q|search|query|keyword/i.test(e.placeholder + e.label));
   if (byName) return byName;
 
-  // Any text input that looks prominent (large, near top)
   const textInputs = elements.filter(e => e.typeable && e.tag === 'input');
   if (textInputs.length > 0) return textInputs[0];
 
   return null;
 }
 
-function findAddToCartButton(elements: PageElement[], target?: string): PageElement | null {
+function findAddToCartButton(elements: PageElement[]): PageElement | null {
   const cartKeywords = ['add to cart', 'add to bag', 'add to basket', 'buy now', 'add to trolley', 'in den warenkorb', 'ajouter au panier'];
 
-  // Exact match first
   for (const el of elements) {
     if (!el.clickable) continue;
     const text = normalizeText(el.text + ' ' + el.label);
@@ -181,7 +213,7 @@ function findAddToCartButton(elements: PageElement[], target?: string): PageElem
 
 function findButton(elements: PageElement[], target: string): PageElement | null {
   let bestMatch: PageElement | null = null;
-  let bestScore = 0.3; // minimum threshold
+  let bestScore = 0.3;
 
   for (const el of elements) {
     if (!el.clickable) continue;
@@ -209,8 +241,63 @@ function findLink(elements: PageElement[], target: string): PageElement | null {
   return bestMatch;
 }
 
+function findAnyClickable(elements: PageElement[], target: string): PageElement | null {
+  let bestMatch: PageElement | null = null;
+  let bestScore = 0.25;
+
+  for (const el of elements) {
+    if (!el.clickable) continue;
+    const text = el.text + ' ' + el.label + ' ' + el.href;
+    const score = fuzzyMatch(target, text);
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = el;
+    }
+  }
+  return bestMatch;
+}
+
+// --- Site alias map ---
+const SITE_MAP: Record<string, string> = {
+  'google': 'https://www.google.com',
+  'gmail': 'https://mail.google.com',
+  'amazon': 'https://www.amazon.com',
+  'youtube': 'https://www.youtube.com',
+  'facebook': 'https://www.facebook.com',
+  'twitter': 'https://www.twitter.com',
+  'x': 'https://www.x.com',
+  'wikipedia': 'https://www.wikipedia.org',
+  'wiki': 'https://www.wikipedia.org',
+  'reddit': 'https://www.reddit.com',
+  'ebay': 'https://www.ebay.com',
+  'walmart': 'https://www.walmart.com',
+  'target': 'https://www.target.com',
+  'best buy': 'https://www.bestbuy.com',
+  'bestbuy': 'https://www.bestbuy.com',
+  'netflix': 'https://www.netflix.com',
+  'github': 'https://www.github.com',
+  'linkedin': 'https://www.linkedin.com',
+  'instagram': 'https://www.instagram.com',
+  'tiktok': 'https://www.tiktok.com',
+  'spotify': 'https://www.spotify.com',
+  'news': 'https://news.google.com',
+  'maps': 'https://maps.google.com',
+  'weather': 'https://weather.com',
+  'cnn': 'https://www.cnn.com',
+  'bbc': 'https://www.bbc.com',
+  'espn': 'https://www.espn.com',
+  'apple': 'https://www.apple.com',
+  'microsoft': 'https://www.microsoft.com',
+  'chatgpt': 'https://chat.openai.com',
+  'openai': 'https://www.openai.com',
+};
+
+function resolveSiteAlias(target: string): string {
+  const normalized = target.toLowerCase().replace(/https?:\/\/(www\.)?/, '').replace(/\.(com|org|net|io|dev)$/, '');
+  return SITE_MAP[normalized] || target;
+}
+
 // --- Agent Decision Engine ---
-// Given a page snapshot and user intent, decides what action to take
 
 export function decideAction(
   intent: VoiceCommand,
@@ -222,27 +309,7 @@ export function decideAction(
   switch (intent.intent) {
     case 'navigate': {
       let targetUrl = intent.target || '';
-      // Handle common site names
-      const siteMap: Record<string, string> = {
-        'google': 'https://www.google.com',
-        'amazon': 'https://www.amazon.com',
-        'youtube': 'https://www.youtube.com',
-        'facebook': 'https://www.facebook.com',
-        'twitter': 'https://www.twitter.com',
-        'x': 'https://www.x.com',
-        'wikipedia': 'https://www.wikipedia.org',
-        'reddit': 'https://www.reddit.com',
-        'ebay': 'https://www.ebay.com',
-        'walmart': 'https://www.walmart.com',
-        'target': 'https://www.target.com',
-        'best buy': 'https://www.bestbuy.com',
-        'netflix': 'https://www.netflix.com',
-        'github': 'https://www.github.com',
-        'linkedin': 'https://www.linkedin.com',
-        'instagram': 'https://www.instagram.com',
-      };
-      const normalized = targetUrl.toLowerCase().replace(/https?:\/\/(www\.)?/, '').replace(/\.(com|org|net|io)$/, '');
-      if (siteMap[normalized]) targetUrl = siteMap[normalized];
+      targetUrl = resolveSiteAlias(targetUrl);
       if (!targetUrl.startsWith('http')) targetUrl = 'https://' + targetUrl;
 
       return {
@@ -273,16 +340,7 @@ export function decideAction(
         }
       }
 
-      // If on Google, navigate to search
-      if (url.includes('google.com')) {
-        return {
-          action: 'navigate',
-          url: `https://www.google.com/search?q=${encodeURIComponent(query)}`,
-          speak: `Searching Google for ${query}`,
-        };
-      }
-
-      // Navigate to Google search
+      // Navigate to Google search directly
       return {
         action: 'navigate',
         url: `https://www.google.com/search?q=${encodeURIComponent(query)}`,
@@ -299,6 +357,14 @@ export function decideAction(
           speak: `Adding to cart`,
         };
       }
+      // Try scrolling to find it
+      if (step === 0) {
+        return {
+          action: 'scroll',
+          direction: 'down',
+          speak: 'Looking for add to cart button...',
+        };
+      }
       return {
         action: 'speak',
         text: `I couldn't find an add to cart button on this page.`,
@@ -308,7 +374,7 @@ export function decideAction(
     case 'click': {
       const target = intent.target || '';
 
-      // Check for index-based click ("click the 3rd link")
+      // Index-based click ("click the 3rd link")
       if (intent.params?.index) {
         const index = parseInt(intent.params.index) - 1;
         const clickable = elements.filter(e => e.clickable);
@@ -321,7 +387,7 @@ export function decideAction(
         }
       }
 
-      // Find by text match
+      // Find by text match (buttons first, then links, then any clickable)
       const button = findButton(elements, target);
       if (button) {
         return {
@@ -331,7 +397,6 @@ export function decideAction(
         };
       }
 
-      // Try link match
       const link = findLink(elements, target);
       if (link) {
         return {
@@ -341,26 +406,49 @@ export function decideAction(
         };
       }
 
-      // Try Google search for it
+      const any = findAnyClickable(elements, target);
+      if (any) {
+        return {
+          action: 'click',
+          elementId: any.id,
+          speak: `Clicking ${any.text || target}`,
+        };
+      }
+
+      // Fallback: Google search
       return {
         action: 'navigate',
         url: `https://www.google.com/search?q=${encodeURIComponent(target)}`,
-        speak: `I couldn't find "${target}" on this page. Searching Google for it.`,
+        speak: `I couldn't find "${target}" on this page. Searching for it.`,
       };
     }
 
     case 'read': {
-      // Summarize the page content
       const headings = elements
         .filter(e => e.role === 'heading' && e.text)
         .map(e => e.text)
         .slice(0, 5);
 
+      const inputs = elements.filter(e => e.typeable);
+      const buttons = elements.filter(e => e.clickable && e.role === 'button');
+      const links = elements.filter(e => e.role === 'link');
       const mainText = snapshot.textContent.substring(0, 500);
 
-      let summary = `This page is: ${title}. `;
+      let summary = `Page: ${title}. `;
       if (headings.length > 0) {
-        summary += `Main sections: ${headings.join('. ')}. `;
+        summary += `Sections: ${headings.join('. ')}. `;
+      }
+      if (inputs.length > 0) {
+        summary += `${inputs.length} input fields. `;
+      }
+      if (buttons.length > 0) {
+        const btnNames = buttons.slice(0, 5).map(b => b.text || b.label).filter(Boolean);
+        if (btnNames.length > 0) {
+          summary += `Buttons: ${btnNames.join(', ')}. `;
+        }
+      }
+      if (links.length > 0) {
+        summary += `${links.length} links. `;
       }
       if (mainText) {
         summary += mainText;
@@ -398,7 +486,7 @@ export function decideAction(
     case 'help': {
       return {
         action: 'speak',
-        text: `I can help you browse the web. Say things like: go to amazon dot com, search for headphones, click add to cart, read this page, scroll down, or go back. What would you like to do?`,
+        text: `I can help you browse the web. Say: go to a website, search for something, click an element, read this page, scroll up or down, bookmark this page, add to cart, or go back. What would you like to do?`,
       };
     }
 
@@ -412,7 +500,6 @@ export function decideAction(
 }
 
 // --- Multi-step Agent ---
-// Handles multi-step operations (search + submit, add to cart flow, etc.)
 
 export type AgentStep = {
   action: AgentAction;
@@ -432,21 +519,15 @@ export function getAgentStep(
     return { action, isComplete: false, nextStep: 1 };
   }
 
-  // Cart might need: find product, then click add to cart
-  if (intent.intent === 'cart' && action.action === 'speak' && currentStep === 0) {
-    // Try scrolling down to find more content
-    return {
-      action: { action: 'scroll', direction: 'down', speak: 'Looking for add to cart button...' },
-      isComplete: false,
-      nextStep: 1,
-    };
+  // Cart might need: scroll down first, then find button
+  if (intent.intent === 'cart' && action.action === 'scroll' && currentStep === 0) {
+    return { action, isComplete: false, nextStep: 1 };
   }
 
   return { action, isComplete: true, nextStep: 0 };
 }
 
 // --- Page Analysis ---
-// Provides natural language descriptions of page state
 
 export function analyzePage(snapshot: PageSnapshot): string {
   const { elements, title, url, textContent } = snapshot;
@@ -455,11 +536,15 @@ export function analyzePage(snapshot: PageSnapshot): string {
   const inputs = elements.filter(e => e.typeable);
   const links = elements.filter(e => e.role === 'link');
   const buttons = elements.filter(e => e.role === 'button');
+  const headings = elements.filter(e => e.role === 'heading' && e.text).slice(0, 5);
 
   let analysis = `Page: ${title}. `;
 
+  if (headings.length > 0) {
+    analysis += `Sections: ${headings.map(h => h.text).join('. ')}. `;
+  }
   if (inputs.length > 0) {
-    analysis += `${inputs.length} input field${inputs.length > 1 ? 's' : ''} available. `;
+    analysis += `${inputs.length} input field${inputs.length > 1 ? 's' : ''}. `;
   }
   if (buttons.length > 0) {
     const btnNames = buttons.slice(0, 5).map(b => b.text || b.label).filter(Boolean);
@@ -469,6 +554,12 @@ export function analyzePage(snapshot: PageSnapshot): string {
   }
   if (links.length > 0) {
     analysis += `${links.length} links on the page. `;
+  }
+
+  // Add first bit of text content
+  const snippet = textContent.substring(0, 300).trim();
+  if (snippet) {
+    analysis += snippet;
   }
 
   return analysis;

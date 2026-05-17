@@ -13,82 +13,85 @@ import {
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppStore } from '../src/store';
+import { useBookmarkStore } from '../src/store/bookmarks';
+import { useVoiceShortcutStore } from '../src/store/voiceCommands';
 import { COLORS, SPACING, FONT_SIZE, RADIUS } from '../src/a11y/theme';
 import { speak } from '../src/voice/textToSpeech';
-import { requestPermission } from '../src/voice/speechToText';
+import { useSpeechRecognition } from '../src/voice/speechToText';
+import VoiceButton from '../src/components/VoiceButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');
 
 const QUICK_LINKS = [
-  { name: 'Google', url: 'https://www.google.com', icon: 'search' as const },
-  { name: 'Amazon', url: 'https://www.amazon.com', icon: 'cart' as const },
-  { name: 'YouTube', url: 'https://www.youtube.com', icon: 'play-circle' as const },
-  { name: 'Wikipedia', url: 'https://www.wikipedia.org', icon: 'book' as const },
-  { name: 'Reddit', url: 'https://www.reddit.com', icon: 'chatbubbles' as const },
-  { name: 'GitHub', url: 'https://www.github.com', icon: 'logo-github' as const },
+  { name: 'Google', url: 'https://www.google.com', icon: 'search' as const, color: '#4285F4' },
+  { name: 'Amazon', url: 'https://www.amazon.com', icon: 'cart' as const, color: '#FF9900' },
+  { name: 'YouTube', url: 'https://www.youtube.com', icon: 'play-circle' as const, color: '#FF0000' },
+  { name: 'Wikipedia', url: 'https://www.wikipedia.org', icon: 'book' as const, color: '#000' },
+  { name: 'Reddit', url: 'https://www.reddit.com', icon: 'chatbubbles' as const, color: '#FF4500' },
+  { name: 'GitHub', url: 'https://www.github.com', icon: 'logo-github' as const, color: '#333' },
 ];
 
-const VOICE_COMMANDS = [
+const VOICE_EXAMPLES = [
   'Go to amazon.com',
   'Search for headphones',
   'Click add to cart',
   'Read this page',
   'Scroll down',
-  'Go back',
+  'Bookmark this',
 ];
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { setCurrentUrl, addBrowsingHistory, addCommandHistory, speechRate } = useAppStore();
+  const {
+    setCurrentUrl, addBrowsingHistory, addCommandHistory, speechRate,
+    browsingHistory,
+  } = useAppStore();
+  const { bookmarks } = useBookmarkStore();
+  const { findShortcut } = useVoiceShortcutStore();
   const [inputUrl, setInputUrl] = useState('');
-  const [pulseAnim] = useState(new Animated.Value(1));
   const [fadeAnim] = useState(new Animated.Value(0));
+  const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
 
+  const {
+    isListening,
+    transcript,
+    interimTranscript,
+    start: startListening,
+    stop: stopListening,
+  } = useSpeechRecognition();
+
+  // Check onboarding
+  useEffect(() => {
+    AsyncStorage.getItem('voicenav-onboarded').then((val) => {
+      if (val !== 'true') {
+        router.replace('/onboarding');
+      } else {
+        setHasOnboarded(true);
+      }
+    });
+  }, []);
+
+  // Fade in animation
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 800,
+      duration: 600,
       useNativeDriver: true,
     }).start();
-
-    // Request speech permissions on mount
-    requestPermission();
-
-    // Welcome message
-    const timer = setTimeout(() => {
-      speak('Welcome to VoiceNav. Tap the microphone and say a command, or type a web address to get started.', {
-        rate: speechRate,
-      });
-    }, 1000);
-
-    return () => clearTimeout(timer);
   }, []);
 
-  const startPulse = useCallback(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 1.15,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-  }, [pulseAnim]);
-
-  const stopPulse = useCallback(() => {
-    pulseAnim.stopAnimation();
-    Animated.timing(pulseAnim, {
-      toValue: 1,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
-  }, [pulseAnim]);
+  // Welcome speech
+  useEffect(() => {
+    if (hasOnboarded) {
+      const timer = setTimeout(() => {
+        speak('Welcome to VoiceNav. Tap the microphone and say a command, or type a web address.', {
+          rate: speechRate,
+        });
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [hasOnboarded]);
 
   const navigateTo = useCallback(
     (url: string) => {
@@ -111,24 +114,80 @@ export default function HomeScreen() {
 
   const handleVoiceCommand = useCallback(
     (command: string) => {
+      if (!command.trim()) return;
       addCommandHistory(command);
-      // Parse simple navigation commands
-      const navMatch = command.match(/(?:go to|open|visit)\s+(.+)/i);
+
+      // Check voice shortcuts first
+      const shortcut = findShortcut(command);
+      if (shortcut) {
+        if (shortcut.action === 'navigate') {
+          speak(`Opening shortcut: ${shortcut.phrase}`);
+          navigateTo(shortcut.target);
+          return;
+        }
+      }
+
+      // Parse navigation
+      const navMatch = command.match(/(?:go to|open|visit|navigate to)\s+(.+)/i);
       if (navMatch) {
-        navigateTo(navMatch[1].trim());
+        let target = navMatch[1].trim();
+        if (!target.startsWith('http') && /\.\w{2,}/.test(target)) {
+          target = 'https://' + target;
+        }
+        navigateTo(target);
         return;
       }
-      const searchMatch = command.match(/(?:search for|search|find)\s+(.+)/i);
+
+      // Parse search
+      const searchMatch = command.match(/(?:search for|search|find|look up|google)\s+(.+)/i);
       if (searchMatch) {
         navigateTo(`https://www.google.com/search?q=${encodeURIComponent(searchMatch[1].trim())}`);
         return;
       }
-      // Default: open browser and let agent handle it
-      setCurrentUrl('https://www.google.com');
-      router.push('/browser');
+
+      // Bookmark command
+      if (/bookmark|save/i.test(command)) {
+        speak('Open a page first, then say bookmark this page.');
+        return;
+      }
+
+      // Help
+      if (/help|what can you do/i.test(command)) {
+        speak(
+          'You can say things like: go to Amazon, search for headphones, click a button, read this page, scroll down, or bookmark this. What would you like to do?'
+        );
+        return;
+      }
+
+      // Default: open browser with Google search
+      speak(`Let me search for ${command}`);
+      navigateTo(`https://www.google.com/search?q=${encodeURIComponent(command)}`);
     },
-    [navigateTo, setCurrentUrl, addCommandHistory, router]
+    [navigateTo, addCommandHistory, findShortcut]
   );
+
+  const handleVoiceToggle = useCallback(() => {
+    if (isListening) {
+      stopListening();
+      if (transcript) {
+        handleVoiceCommand(transcript);
+      }
+    } else {
+      startListening({
+        onResult: (text, isFinal) => {
+          if (isFinal) {
+            handleVoiceCommand(text);
+          }
+        },
+        onError: (err) => {
+          speak('Voice recognition error. Try again or type your command.');
+        },
+      });
+    }
+  }, [isListening, transcript, startListening, stopListening, handleVoiceCommand]);
+
+  const recentHistory = browsingHistory.slice(0, 5);
+  const recentBookmarks = bookmarks.slice(0, 4);
 
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
@@ -139,11 +198,18 @@ export default function HomeScreen() {
         {/* Logo */}
         <View style={styles.logoContainer}>
           <View style={styles.logoCircle}>
-            <Ionicons name="mic" size={48} color={COLORS.dark.primary} />
+            <Ionicons name="mic" size={40} color={COLORS.dark.text} />
           </View>
           <Text style={styles.appName}>VoiceNav</Text>
           <Text style={styles.tagline}>Browse the web with your voice</Text>
         </View>
+
+        {/* Voice Button */}
+        <VoiceButton
+          isListening={isListening}
+          interimText={interimTranscript}
+          onPress={handleVoiceToggle}
+        />
 
         {/* URL Input */}
         <View style={styles.inputContainer}>
@@ -169,28 +235,6 @@ export default function HomeScreen() {
           )}
         </View>
 
-        {/* Voice Mic Button */}
-        <View style={styles.micSection}>
-          <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
-            <TouchableOpacity
-              style={styles.micButton}
-              onPress={() => {
-                startPulse();
-                speak('Voice commands are coming soon. For now, type a web address or tap a quick link.', {
-                  rate: speechRate,
-                  onDone: stopPulse,
-                });
-              }}
-              accessibilityLabel="Voice command"
-              accessibilityHint="Tap to speak a command"
-              activeOpacity={0.8}
-            >
-              <Ionicons name="mic" size={36} color={COLORS.dark.text} />
-            </TouchableOpacity>
-          </Animated.View>
-          <Text style={styles.micHint}>Tap to speak</Text>
-        </View>
-
         {/* Quick Links */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Quick Links</Text>
@@ -204,8 +248,8 @@ export default function HomeScreen() {
                 accessibilityHint={`Opens ${link.name} in the browser`}
                 activeOpacity={0.7}
               >
-                <View style={styles.quickLinkIcon}>
-                  <Ionicons name={link.icon} size={24} color={COLORS.dark.primary} />
+                <View style={[styles.quickLinkIcon, { backgroundColor: link.color + '20' }]}>
+                  <Ionicons name={link.icon} size={22} color={link.color} />
                 </View>
                 <Text style={styles.quickLinkText}>{link.name}</Text>
               </TouchableOpacity>
@@ -213,11 +257,56 @@ export default function HomeScreen() {
           </View>
         </View>
 
+        {/* Bookmarks section */}
+        {recentBookmarks.length > 0 && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Bookmarks</Text>
+              <TouchableOpacity onPress={() => router.push('/bookmarks')}>
+                <Text style={styles.seeAllText}>See all</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.bookmarksRow}>
+              {recentBookmarks.map((bm) => (
+                <TouchableOpacity
+                  key={bm.id}
+                  style={styles.bookmarkChip}
+                  onPress={() => navigateTo(bm.url)}
+                >
+                  <Ionicons name="bookmark" size={14} color={COLORS.dark.primary} />
+                  <Text style={styles.bookmarkChipText} numberOfLines={1}>
+                    {bm.title}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* Recent History */}
+        {recentHistory.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Recent</Text>
+            {recentHistory.map((url, i) => (
+              <TouchableOpacity
+                key={i}
+                style={styles.historyItem}
+                onPress={() => navigateTo(url)}
+              >
+                <Ionicons name="time-outline" size={16} color={COLORS.dark.textMuted} />
+                <Text style={styles.historyText} numberOfLines={1}>
+                  {url.replace(/^https?:\/\/(www\.)?/, '').substring(0, 50)}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
         {/* Voice Commands Guide */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Voice Commands</Text>
           <View style={styles.commandsList}>
-            {VOICE_COMMANDS.map((cmd, i) => (
+            {VOICE_EXAMPLES.map((cmd, i) => (
               <TouchableOpacity
                 key={i}
                 style={styles.commandItem}
@@ -225,7 +314,9 @@ export default function HomeScreen() {
                 accessibilityLabel={`Try command: ${cmd}`}
                 activeOpacity={0.7}
               >
-                <Ionicons name="chevron-forward" size={16} color={COLORS.dark.accent} />
+                <View style={styles.commandIcon}>
+                  <Ionicons name="chevron-forward" size={14} color={COLORS.dark.accent} />
+                </View>
                 <Text style={styles.commandText}>{cmd}</Text>
               </TouchableOpacity>
             ))}
@@ -233,15 +324,24 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
 
-      {/* Settings button */}
-      <TouchableOpacity
-        style={styles.settingsButton}
-        onPress={() => router.push('/settings')}
-        accessibilityLabel="Settings"
-        accessibilityHint="Open app settings"
-      >
-        <Ionicons name="settings-outline" size={24} color={COLORS.dark.textSecondary} />
-      </TouchableOpacity>
+      {/* Settings + Bookmarks buttons */}
+      <View style={styles.topButtons}>
+        <TouchableOpacity
+          style={styles.topButton}
+          onPress={() => router.push('/bookmarks')}
+          accessibilityLabel="Bookmarks"
+        >
+          <Ionicons name="bookmark-outline" size={22} color={COLORS.dark.textSecondary} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.topButton}
+          onPress={() => router.push('/settings')}
+          accessibilityLabel="Settings"
+          accessibilityHint="Open app settings"
+        >
+          <Ionicons name="settings-outline" size={22} color={COLORS.dark.textSecondary} />
+        </TouchableOpacity>
+      </View>
     </Animated.View>
   );
 }
@@ -253,23 +353,43 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: SPACING.lg,
-    paddingTop: Platform.OS === 'ios' ? 60 : 40,
+    paddingTop: Platform.OS === 'ios' ? 80 : 60,
     paddingBottom: SPACING.xxl,
   },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: SPACING.xl,
+  topButtons: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 60 : 40,
+    right: SPACING.lg,
+    flexDirection: 'row',
+    gap: SPACING.sm,
   },
-  logoCircle: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
+  topButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: COLORS.dark.surface,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: COLORS.dark.primary,
+    borderWidth: 1,
+    borderColor: COLORS.dark.border,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: SPACING.lg,
+  },
+  logoCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: COLORS.dark.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: SPACING.md,
+    shadowColor: COLORS.dark.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 8,
   },
   appName: {
     fontSize: FONT_SIZE.hero,
@@ -309,36 +429,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  micSection: {
-    alignItems: 'center',
-    marginBottom: SPACING.xl,
-  },
-  micButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: COLORS.dark.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: COLORS.dark.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  micHint: {
-    fontSize: FONT_SIZE.sm,
-    color: COLORS.dark.textMuted,
-    marginTop: SPACING.sm,
-  },
   section: {
     marginBottom: SPACING.lg,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: SPACING.md,
   },
   sectionTitle: {
     fontSize: FONT_SIZE.lg,
     fontWeight: '700',
     color: COLORS.dark.text,
     marginBottom: SPACING.md,
+  },
+  seeAllText: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.dark.primary,
+    fontWeight: '600',
   },
   quickLinksGrid: {
     flexDirection: 'row',
@@ -359,7 +468,6 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: COLORS.dark.surfaceLight,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: SPACING.xs,
@@ -368,6 +476,43 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE.sm,
     color: COLORS.dark.text,
     fontWeight: '600',
+  },
+  bookmarksRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: SPACING.sm,
+  },
+  bookmarkChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.dark.surface,
+    borderRadius: RADIUS.full,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    borderWidth: 1,
+    borderColor: COLORS.dark.border,
+    gap: SPACING.xs,
+  },
+  bookmarkChipText: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.dark.text,
+    fontWeight: '500',
+    maxWidth: 120,
+  },
+  historyItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: SPACING.sm + 2,
+    paddingHorizontal: SPACING.md,
+    backgroundColor: COLORS.dark.surface,
+    borderRadius: RADIUS.sm,
+    marginBottom: SPACING.xs,
+    gap: SPACING.sm,
+  },
+  historyText: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.dark.textSecondary,
+    flex: 1,
   },
   commandsList: {
     backgroundColor: COLORS.dark.surface,
@@ -384,23 +529,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.dark.border,
   },
+  commandIcon: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: COLORS.dark.accent + '20',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: SPACING.sm,
+  },
   commandText: {
     fontSize: FONT_SIZE.md,
     color: COLORS.dark.text,
-    marginLeft: SPACING.sm,
     fontWeight: '500',
-  },
-  settingsButton: {
-    position: 'absolute',
-    top: Platform.OS === 'ios' ? 60 : 40,
-    right: SPACING.lg,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: COLORS.dark.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.dark.border,
   },
 });

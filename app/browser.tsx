@@ -13,12 +13,15 @@ import {
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppStore } from '../src/store';
+import { useBookmarkStore } from '../src/store/bookmarks';
+import { useVoiceShortcutStore } from '../src/store/voiceCommands';
 import { COLORS, SPACING, FONT_SIZE, RADIUS } from '../src/a11y/theme';
 import BrowserView, { BrowserViewHandle } from '../src/browser/BrowserView';
 import { PageSnapshot, AgentAction } from '../src/browser/types';
 import { speak, stopSpeaking } from '../src/voice/textToSpeech';
+import { useSpeechRecognition } from '../src/voice/speechToText';
 import { parseVoiceCommand, getAgentStep, analyzePage } from '../src/agent/brain';
-import * as Haptics from 'expo-haptics';
+import VoiceButton from '../src/components/VoiceButton';
 
 export default function BrowserScreen() {
   const router = useRouter();
@@ -27,11 +30,11 @@ export default function BrowserScreen() {
     currentUrl, setCurrentUrl, isLoading, setIsLoading,
     pageSnapshot, setPageSnapshot, pageTitle, setPageTitle,
     isAgentActive, setIsAgentActive, agentStatus, setAgentStatus,
-    isListening, setIsListening, isSpeaking, setIsSpeaking,
-    voiceTranscript, setVoiceTranscript, error, setError,
-    canGoBack, setCanGoBack, canGoForward, setCanGoForward,
+    error, setError,
     addBrowsingHistory, addCommandHistory, speechRate,
   } = useAppStore();
+  const { addBookmark, isBookmarked, removeBookmark, getBookmarkByUrl } = useBookmarkStore();
+  const { findShortcut } = useVoiceShortcutStore();
 
   const [showUrlBar, setShowUrlBar] = useState(false);
   const [urlInput, setUrlInput] = useState(currentUrl);
@@ -39,6 +42,14 @@ export default function BrowserScreen() {
   const [agentLog, setAgentLog] = useState<string[]>([]);
   const [showAgentPanel, setShowAgentPanel] = useState(false);
   const statusOpacity = useRef(new Animated.Value(0)).current;
+
+  const {
+    isListening,
+    transcript,
+    interimTranscript,
+    start: startListening,
+    stop: stopListening,
+  } = useSpeechRecognition();
 
   useEffect(() => {
     addBrowsingHistory(currentUrl);
@@ -76,7 +87,6 @@ export default function BrowserScreen() {
 
   const handleLoadEnd = useCallback(() => {
     setIsLoading(false);
-    // Extract DOM after load
     setTimeout(() => {
       browserRef.current?.extractDOM();
     }, 300);
@@ -93,14 +103,12 @@ export default function BrowserScreen() {
 
   const handleNavigationStateChange = useCallback(
     (navState: any) => {
-      setCanGoBack(navState.canGoBack);
-      setCanGoForward(navState.canGoForward);
       if (navState.url !== currentUrl) {
         setCurrentUrl(navState.url);
         setUrlInput(navState.url);
       }
     },
-    [currentUrl, setCurrentUrl, setCanGoBack, setCanGoForward]
+    [currentUrl, setCurrentUrl]
   );
 
   const executeAgentAction = useCallback(
@@ -111,23 +119,15 @@ export default function BrowserScreen() {
 
       switch (action.action) {
         case 'click':
-          browserRef.current?.executeAction(action);
-          break;
         case 'type':
-          browserRef.current?.executeAction(action);
-          break;
         case 'select':
-          browserRef.current?.executeAction(action);
-          break;
         case 'scroll':
+        case 'submit':
           browserRef.current?.executeAction(action);
           break;
         case 'navigate':
           setUrlInput(action.url);
           browserRef.current?.navigate(action.url);
-          break;
-        case 'submit':
-          browserRef.current?.executeAction(action);
           break;
         case 'back':
           browserRef.current?.goBack();
@@ -138,9 +138,6 @@ export default function BrowserScreen() {
         case 'done':
           setIsAgentActive(false);
           speak(action.speak, { rate: speechRate });
-          break;
-        case 'wait':
-          // handled by the loop
           break;
       }
     },
@@ -153,6 +150,57 @@ export default function BrowserScreen() {
 
       addCommandHistory(command);
       addLog(`Command: ${command}`);
+
+      // Check voice shortcuts
+      const shortcut = findShortcut(command);
+      if (shortcut) {
+        speak(`Shortcut: ${shortcut.phrase}`);
+        if (shortcut.action === 'navigate') {
+          browserRef.current?.navigate(shortcut.target);
+          return;
+        }
+      }
+
+      // Bookmark commands
+      if (/bookmark this|save this page|add bookmark/i.test(command)) {
+        if (pageSnapshot) {
+          const title = pageSnapshot.title || pageSnapshot.url;
+          const url = pageSnapshot.url;
+          if (isBookmarked(url)) {
+            speak('This page is already bookmarked.');
+          } else {
+            addBookmark(title, url);
+            speak(`Bookmarked: ${title}`);
+          }
+        } else {
+          speak('No page loaded to bookmark.');
+        }
+        return;
+      }
+
+      if (/remove bookmark|unbookmark/i.test(command)) {
+        if (pageSnapshot && isBookmarked(pageSnapshot.url)) {
+          const bm = getBookmarkByUrl(pageSnapshot.url);
+          if (bm) {
+            removeBookmark(bm.id);
+            speak('Bookmark removed.');
+          }
+        } else {
+          speak('This page is not bookmarked.');
+        }
+        return;
+      }
+
+      // Page analysis
+      if (/describe|what'?s on|what is on|analyze/i.test(command)) {
+        if (pageSnapshot) {
+          const summary = analyzePage(pageSnapshot);
+          speak(summary, { rate: speechRate });
+        }
+        return;
+      }
+
+      // Standard agent processing
       setIsAgentActive(true);
       setAgentStatus('Thinking...');
 
@@ -173,7 +221,6 @@ export default function BrowserScreen() {
       }
 
       if (!isComplete && action.action !== 'done' && action.action !== 'speak') {
-        // Multi-step: wait and continue
         setTimeout(() => {
           browserRef.current?.extractDOM();
           setTimeout(() => {
@@ -192,8 +239,30 @@ export default function BrowserScreen() {
         setTimeout(() => setIsAgentActive(false), 1000);
       }
     },
-    [pageSnapshot, addCommandHistory, addLog, setIsAgentActive, setAgentStatus, executeAgentAction, speechRate]
+    [pageSnapshot, addCommandHistory, addLog, setIsAgentActive, setAgentStatus,
+      executeAgentAction, speechRate, findShortcut, isBookmarked, addBookmark,
+      removeBookmark, getBookmarkByUrl]
   );
+
+  const handleVoiceToggle = useCallback(() => {
+    if (isListening) {
+      stopListening();
+      if (transcript) {
+        processCommand(transcript);
+      }
+    } else {
+      startListening({
+        onResult: (text, isFinal) => {
+          if (isFinal) {
+            processCommand(text);
+          }
+        },
+        onError: () => {
+          speak('Voice error. Type your command instead.');
+        },
+      });
+    }
+  }, [isListening, transcript, startListening, stopListening, processCommand]);
 
   const handleSubmitCommand = useCallback(() => {
     if (commandInput.trim()) {
@@ -211,6 +280,22 @@ export default function BrowserScreen() {
     }
   }, [urlInput]);
 
+  const handleToggleBookmark = useCallback(() => {
+    if (!pageSnapshot) return;
+    const title = pageSnapshot.title || pageSnapshot.url;
+    const url = pageSnapshot.url;
+    if (isBookmarked(url)) {
+      const bm = getBookmarkByUrl(url);
+      if (bm) {
+        removeBookmark(bm.id);
+        speak('Bookmark removed');
+      }
+    } else {
+      addBookmark(title, url);
+      speak(`Bookmarked: ${title}`);
+    }
+  }, [pageSnapshot, isBookmarked, addBookmark, removeBookmark, getBookmarkByUrl]);
+
   const handleAction = useCallback((result: any) => {
     if (result.success) {
       addLog('Action completed');
@@ -218,6 +303,8 @@ export default function BrowserScreen() {
       addLog(`Action failed: ${result.error}`);
     }
   }, [addLog]);
+
+  const bookmarked = pageSnapshot ? isBookmarked(pageSnapshot.url) : false;
 
   return (
     <KeyboardAvoidingView
@@ -248,6 +335,18 @@ export default function BrowserScreen() {
           <Text style={styles.urlText} numberOfLines={1}>
             {pageTitle || currentUrl.replace(/^https?:\/\//, '').substring(0, 40)}
           </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={handleToggleBookmark}
+          style={[styles.navButton, bookmarked && styles.navButtonActive]}
+          accessibilityLabel={bookmarked ? 'Remove bookmark' : 'Bookmark this page'}
+        >
+          <Ionicons
+            name={bookmarked ? 'bookmark' : 'bookmark-outline'}
+            size={22}
+            color={bookmarked ? COLORS.dark.primary : COLORS.dark.text}
+          />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -300,9 +399,9 @@ export default function BrowserScreen() {
         />
       </View>
 
-      {/* Bottom Agent Panel */}
+      {/* Bottom Panel */}
       <View style={styles.bottomPanel}>
-        {/* Agent quick actions */}
+        {/* Quick actions */}
         <View style={styles.quickActions}>
           <TouchableOpacity
             style={styles.quickAction}
@@ -332,9 +431,7 @@ export default function BrowserScreen() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.quickAction}
-            onPress={() => {
-              stopSpeaking();
-            }}
+            onPress={() => stopSpeaking()}
             accessibilityLabel="Stop speaking"
           >
             <Ionicons name="volume-mute" size={20} color={COLORS.dark.warning} />
@@ -348,9 +445,14 @@ export default function BrowserScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Command Input */}
+        {/* Command Input + Voice */}
         <View style={styles.commandBar}>
-          <Ionicons name="mic" size={20} color={COLORS.dark.primary} style={{ marginRight: 8 }} />
+          <VoiceButton
+            isListening={isListening}
+            interimText={interimTranscript}
+            onPress={handleVoiceToggle}
+            size={38}
+          />
           <TextInput
             style={styles.commandInput}
             value={commandInput}
@@ -403,6 +505,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.dark.surface,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.dark.border,
+    gap: SPACING.xs,
   },
   navButton: {
     width: 38,
@@ -412,6 +515,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  navButtonActive: {
+    backgroundColor: COLORS.dark.primary + '20',
+  },
   urlBar: {
     flex: 1,
     flexDirection: 'row',
@@ -420,7 +526,6 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.sm,
     paddingHorizontal: SPACING.sm,
     paddingVertical: SPACING.sm,
-    marginHorizontal: SPACING.sm,
     height: 38,
   },
   urlText: {
@@ -505,6 +610,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.sm,
+    gap: SPACING.sm,
   },
   commandInput: {
     flex: 1,
@@ -522,7 +628,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.dark.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: SPACING.sm,
   },
   agentPanel: {
     maxHeight: 150,

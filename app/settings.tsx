@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -7,10 +7,14 @@ import {
   ScrollView,
   Platform,
   Switch,
+  TextInput,
+  Alert,
+  FlatList,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppStore } from '../src/store';
+import { useVoiceShortcutStore, VoiceShortcut } from '../src/store/voiceCommands';
 import { COLORS, SPACING, FONT_SIZE, RADIUS } from '../src/a11y/theme';
 import { speak } from '../src/voice/textToSpeech';
 
@@ -28,6 +32,75 @@ export default function SettingsScreen() {
     autoRead, setAutoRead,
     hapticFeedback, setHapticFeedback,
   } = useAppStore();
+  const { shortcuts, addShortcut, removeShortcut } = useVoiceShortcutStore();
+
+  const [showAddShortcut, setShowAddShortcut] = useState(false);
+  const [newPhrase, setNewPhrase] = useState('');
+  const [newTarget, setNewTarget] = useState('');
+  const [newAction, setNewAction] = useState<'navigate' | 'search'>('navigate');
+
+  const handleAddShortcut = useCallback(() => {
+    if (!newPhrase.trim() || !newTarget.trim()) {
+      speak('Please fill in both fields.');
+      return;
+    }
+    addShortcut(newPhrase.trim(), newAction, newTarget.trim());
+    speak(`Shortcut added: ${newPhrase}`);
+    setNewPhrase('');
+    setNewTarget('');
+    setShowAddShortcut(false);
+  }, [newPhrase, newTarget, newAction, addShortcut]);
+
+  const handleDeleteShortcut = useCallback(
+    (shortcut: VoiceShortcut) => {
+      Alert.alert(
+        'Delete Shortcut',
+        `Remove "${shortcut.phrase}" shortcut?`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Delete',
+            style: 'destructive',
+            onPress: () => {
+              removeShortcut(shortcut.id);
+              speak('Shortcut removed');
+            },
+          },
+        ]
+      );
+    },
+    [removeShortcut]
+  );
+
+  const renderShortcut = useCallback(
+    ({ item }: { item: VoiceShortcut }) => (
+      <View style={styles.shortcutItem}>
+        <View style={styles.shortcutIcon}>
+          <Ionicons
+            name={item.action === 'navigate' ? 'globe-outline' : 'search-outline'}
+            size={18}
+            color={COLORS.dark.accent}
+          />
+        </View>
+        <View style={styles.shortcutInfo}>
+          <Text style={styles.shortcutPhrase}>"{item.phrase}"</Text>
+          <Text style={styles.shortcutTarget} numberOfLines={1}>
+            {item.target}
+          </Text>
+        </View>
+        {item.createdAt > 0 && (
+          <TouchableOpacity
+            onPress={() => handleDeleteShortcut(item)}
+            style={styles.shortcutDelete}
+            accessibilityLabel={`Delete shortcut ${item.phrase}`}
+          >
+            <Ionicons name="trash-outline" size={18} color={COLORS.dark.error} />
+          </TouchableOpacity>
+        )}
+      </View>
+    ),
+    [handleDeleteShortcut]
+  );
 
   return (
     <View style={styles.container}>
@@ -114,6 +187,92 @@ export default function SettingsScreen() {
           </View>
         </View>
 
+        {/* Voice Shortcuts */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <View>
+              <Text style={styles.sectionTitle}>Voice Shortcuts</Text>
+              <Text style={styles.sectionDescription}>
+                Custom phrases that trigger actions
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => setShowAddShortcut(!showAddShortcut)}
+              style={styles.addButton}
+              accessibilityLabel="Add voice shortcut"
+            >
+              <Ionicons
+                name={showAddShortcut ? 'close' : 'add'}
+                size={22}
+                color={COLORS.dark.text}
+              />
+            </TouchableOpacity>
+          </View>
+
+          {/* Add shortcut form */}
+          {showAddShortcut && (
+            <View style={styles.addForm}>
+              <TextInput
+                style={styles.formInput}
+                placeholder='Voice phrase (e.g. "go home")'
+                placeholderTextColor={COLORS.dark.textMuted}
+                value={newPhrase}
+                onChangeText={setNewPhrase}
+                autoCapitalize="none"
+                accessibilityLabel="Voice phrase"
+              />
+              <View style={styles.actionPicker}>
+                <TouchableOpacity
+                  style={[
+                    styles.actionOption,
+                    newAction === 'navigate' && styles.actionOptionActive,
+                  ]}
+                  onPress={() => setNewAction('navigate')}
+                >
+                  <Ionicons name="globe-outline" size={16} color={newAction === 'navigate' ? COLORS.dark.text : COLORS.dark.textSecondary} />
+                  <Text style={[styles.actionOptionText, newAction === 'navigate' && styles.actionOptionTextActive]}>
+                    Navigate
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.actionOption,
+                    newAction === 'search' && styles.actionOptionActive,
+                  ]}
+                  onPress={() => setNewAction('search')}
+                >
+                  <Ionicons name="search-outline" size={16} color={newAction === 'search' ? COLORS.dark.text : COLORS.dark.textSecondary} />
+                  <Text style={[styles.actionOptionText, newAction === 'search' && styles.actionOptionTextActive]}>
+                    Search
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <TextInput
+                style={styles.formInput}
+                placeholder={newAction === 'navigate' ? 'URL (e.g. https://gmail.com)' : 'Search query'}
+                placeholderTextColor={COLORS.dark.textMuted}
+                value={newTarget}
+                onChangeText={setNewTarget}
+                autoCapitalize="none"
+                keyboardType={newAction === 'navigate' ? 'url' : 'default'}
+                accessibilityLabel="Target URL or search query"
+              />
+              <TouchableOpacity style={styles.saveButton} onPress={handleAddShortcut}>
+                <Text style={styles.saveButtonText}>Save Shortcut</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {/* Shortcuts list */}
+          <View style={styles.shortcutsList}>
+            {shortcuts.map((shortcut) => (
+              <View key={shortcut.id}>
+                {renderShortcut({ item: shortcut })}
+              </View>
+            ))}
+          </View>
+        </View>
+
         {/* Voice Commands Reference */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Voice Commands</Text>
@@ -128,6 +287,7 @@ export default function SettingsScreen() {
               { cmd: 'Add to cart', desc: 'Click the add to cart button' },
               { cmd: 'Read this page', desc: 'Read the page content aloud' },
               { cmd: 'Scroll down/up', desc: 'Scroll the page' },
+              { cmd: 'Bookmark this', desc: 'Save current page' },
               { cmd: 'Go back', desc: 'Go to the previous page' },
               { cmd: 'Stop', desc: 'Stop the current action' },
               { cmd: 'Help', desc: 'List available commands' },
@@ -194,6 +354,11 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: SPACING.xl,
   },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
   sectionTitle: {
     fontSize: FONT_SIZE.lg,
     fontWeight: '700',
@@ -204,6 +369,14 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE.sm,
     color: COLORS.dark.textSecondary,
     marginBottom: SPACING.md,
+  },
+  addButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: COLORS.dark.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   rateOptions: {
     flexDirection: 'row',
@@ -255,6 +428,105 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE.sm,
     color: COLORS.dark.textSecondary,
     marginTop: 2,
+  },
+  addForm: {
+    backgroundColor: COLORS.dark.surfaceLight,
+    borderRadius: RADIUS.md,
+    padding: SPACING.md,
+    marginBottom: SPACING.md,
+    borderWidth: 1,
+    borderColor: COLORS.dark.border,
+    gap: SPACING.sm,
+  },
+  formInput: {
+    backgroundColor: COLORS.dark.surface,
+    borderRadius: RADIUS.sm,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    color: COLORS.dark.text,
+    fontSize: FONT_SIZE.md,
+    borderWidth: 1,
+    borderColor: COLORS.dark.border,
+  },
+  actionPicker: {
+    flexDirection: 'row',
+    gap: SPACING.sm,
+  },
+  actionOption: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: SPACING.xs,
+    paddingVertical: SPACING.sm,
+    borderRadius: RADIUS.sm,
+    backgroundColor: COLORS.dark.surface,
+    borderWidth: 1,
+    borderColor: COLORS.dark.border,
+  },
+  actionOptionActive: {
+    backgroundColor: COLORS.dark.primary,
+    borderColor: COLORS.dark.primary,
+  },
+  actionOptionText: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.dark.textSecondary,
+    fontWeight: '600',
+  },
+  actionOptionTextActive: {
+    color: COLORS.dark.text,
+  },
+  saveButton: {
+    backgroundColor: COLORS.dark.primary,
+    borderRadius: RADIUS.sm,
+    paddingVertical: SPACING.sm + 2,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    color: COLORS.dark.text,
+    fontSize: FONT_SIZE.md,
+    fontWeight: '700',
+  },
+  shortcutsList: {
+    gap: SPACING.xs,
+  },
+  shortcutItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.dark.surface,
+    borderRadius: RADIUS.sm,
+    padding: SPACING.md,
+    borderWidth: 1,
+    borderColor: COLORS.dark.border,
+  },
+  shortcutIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: COLORS.dark.accent + '20',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: SPACING.md,
+  },
+  shortcutInfo: {
+    flex: 1,
+  },
+  shortcutPhrase: {
+    fontSize: FONT_SIZE.md,
+    fontWeight: '600',
+    color: COLORS.dark.accent,
+  },
+  shortcutTarget: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.dark.textSecondary,
+    marginTop: 2,
+  },
+  shortcutDelete: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   commandsList: {
     backgroundColor: COLORS.dark.surface,
