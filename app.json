@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "VoiceNav",
+    "slug": "voicenav",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "scheme": "voicenav",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0A0A1A"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.voicenav.app",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "VoiceNav needs microphone access for voice commands",
+        "NSSpeechRecognitionUsageDescription": "VoiceNav needs speech recognition to understand your commands",
+        "UIBackgroundModes": ["audio"]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0A0A1A"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.voicenav.app",
+      "permissions": [
+        "RECORD_AUDIO",
+        "INTERNET",
+        "VIBRATE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-speech"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
