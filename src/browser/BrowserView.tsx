@@ -1,30 +1,68 @@
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
-import React, { useRef, useCallback, useImperativeHandle, forwardRef } from 'react';
+import React, { useRef, useCallback, useImperativeHandle, forwardRef, useEffect } from 'react';
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { COLORS } from '../a11y/theme';
+import type { PageSnapshot, AgentAction } from './types';
 
-const DOM_EXTRACTOR = require('./domExtractor.js').default || '';
-const ACTION_EXECUTOR = require('./actionExecutor.js').default || '';
+// Read injected scripts as raw strings via Metro's require + toString
+const DOM_EXTRACTOR = (() => {
+  try {
+    // Metro bundles .js files as modules; we need the source as a string.
+    // The files are IIFEs, so we wrap them in a function and call toString().
+    const fn = require('./domExtractor.js');
+    return typeof fn === 'string' ? fn : '';
+  } catch {
+    return '';
+  }
+})();
+
+const ACTION_EXECUTOR = (() => {
+  try {
+    const fn = require('./actionExecutor.js');
+    return typeof fn === 'string' ? fn : '';
+  } catch {
+    return '';
+  }
+})();
 
 type BrowserViewProps = {
   url: string;
-  onSnapshot: (snapshot: any) => void;
-  onAction: (result: any) => void;
+  onSnapshot: (snapshot: PageSnapshot) => void;
+  onAction: (result: { success: boolean; error?: string }) => void;
   onLoadStart: () => void;
   onLoadEnd: () => void;
   onError: (error: string) => void;
-  onNavigationStateChange?: (navState: any) => void;
+  onNavigationStateChange?: (navState: { url: string; canGoBack: boolean; canGoForward: boolean; loading: boolean; title: string }) => void;
 };
 
 export type BrowserViewHandle = {
   extractDOM: () => void;
-  executeAction: (action: any) => void;
+  executeAction: (action: AgentAction) => void;
   navigate: (url: string) => void;
   goBack: () => void;
   goForward: () => void;
   reload: () => void;
-  injectJS: (js: string) => void;
 };
+
+// Escape a string for safe embedding inside a single-quoted JS string literal
+function escapeForJS(str: string): string {
+  return str
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r');
+}
+
+// Validate URL scheme — only allow http/https
+function isSafeUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    // If URL parsing fails, check for dangerous schemes
+    return !/^\s*(javascript|data|blob|vbscript):/i.test(url);
+  }
+}
 
 const INJECTED_SCRIPTS = `
   ${DOM_EXTRACTOR}
@@ -42,108 +80,140 @@ const BrowserView = forwardRef<BrowserViewHandle, BrowserViewProps>(({
   onNavigationStateChange,
 }, ref) => {
   const webViewRef = useRef<WebView>(null);
+  const extractTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (extractTimeoutRef.current) {
+        clearTimeout(extractTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useImperativeHandle(ref, () => ({
     extractDOM: () => {
       webViewRef.current?.injectJavaScript(`
         (function() {
-          var event = new CustomEvent('extractDOM');
-          window.dispatchEvent(event);
-          // Run the extractor
           try {
-            var result = (function() {
-              ${DOM_EXTRACTOR.replace(/.*return JSON\.stringify\(snapshot\);.*/, 'return JSON.stringify(snapshot);')}
-            })();
+            var snapshot = __vn_extractDOM();
+            if (window.ReactNativeWebView && snapshot) {
+              window.ReactNativeWebView.postMessage(JSON.stringify({type: 'SNAPSHOT', data: snapshot}));
+            }
           } catch(e) {
             if (window.ReactNativeWebView) {
               window.ReactNativeWebView.postMessage(JSON.stringify({type: 'ERROR', data: {message: e.message}}));
             }
           }
-          true;
         })();
+        true;
       `);
     },
-    executeAction: (action: any) => {
-      const js = `
+
+    executeAction: (action: AgentAction) => {
+      // Serialize action data safely via JSON.stringify, then escape for JS embedding
+      const actionJson = JSON.stringify(action);
+      const escaped = escapeForJS(actionJson);
+      webViewRef.current?.injectJavaScript(`
         (function() {
-          var data = JSON.parse('${JSON.stringify(action)}');
           try {
-            var result = (function(action) {
-              ${ACTION_EXECUTOR.replace(/.*executeAction\(data\.action\);/, '').replace(/function executeAction/, 'function doAction')}
-              // Inline the executeAction function
-              var el = document.querySelector('[data-vn-id="' + action.elementId + '"]');
-              if (action.action === 'click' && el) {
-                el.scrollIntoView({behavior:'smooth',block:'center'});
-                setTimeout(function(){el.click();},300);
-                return {success:true};
-              } else if (action.action === 'type' && el) {
-                el.scrollIntoView({behavior:'smooth',block:'center'});
-                el.focus();
-                el.value = action.text;
-                el.dispatchEvent(new Event('input',{bubbles:true}));
-                el.dispatchEvent(new Event('change',{bubbles:true}));
-                return {success:true};
-              } else if (action.action === 'scroll') {
-                var amt = window.innerHeight * 0.7;
-                if(action.direction==='down') window.scrollBy(0,amt);
-                else if(action.direction==='up') window.scrollBy(0,-amt);
-                else if(action.direction==='top') window.scrollTo(0,0);
-                else if(action.direction==='bottom') window.scrollTo(0,document.documentElement.scrollHeight);
-                return {success:true};
-              } else if (action.action === 'navigate') {
-                window.location.href = action.url;
-                return {success:true};
-              } else if (action.action === 'back') {
-                window.history.back();
-                return {success:true};
-              } else if (action.action === 'submit' && el) {
-                var form = el.closest('form');
-                if(form){form.submit();return {success:true};}
-                el.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',bubbles:true}));
-                return {success:true};
-              }
-              return {success:false, error:'action failed'};
-            })(data);
+            var action = JSON.parse('${escaped}');
+            var result = __vn_executeAction(action);
             if (window.ReactNativeWebView) {
-              window.ReactNativeWebView.postMessage(JSON.stringify({type:'ACTION_RESULT',data:result}));
+              window.ReactNativeWebView.postMessage(JSON.stringify({type: 'ACTION_RESULT', data: result}));
             }
           } catch(e) {
             if (window.ReactNativeWebView) {
-              window.ReactNativeWebView.postMessage(JSON.stringify({type:'ACTION_RESULT',data:{success:false,error:e.message}}));
+              window.ReactNativeWebView.postMessage(JSON.stringify({type: 'ACTION_RESULT', data: {success: false, error: e.message}}));
             }
           }
-          true;
         })();
-      `;
-      webViewRef.current?.injectJavaScript(js);
+        true;
+      `);
     },
+
     navigate: (newUrl: string) => {
-      webViewRef.current?.injectJavaScript(`window.location.href='${newUrl}';true;`);
+      if (!isSafeUrl(newUrl)) {
+        onError('Blocked unsafe URL: ' + newUrl.substring(0, 50));
+        return;
+      }
+      // Use postMessage to safely communicate URL to injected script
+      webViewRef.current?.injectJavaScript(`
+        (function() {
+          try {
+            var url = decodeURIComponent('${encodeURIComponent(newUrl)}');
+            window.location.href = url;
+          } catch(e) {}
+        })();
+        true;
+      `);
     },
-    goBack: () => webViewRef.current?.goBack(),
-    goForward: () => webViewRef.current?.goForward(),
-    reload: () => webViewRef.current?.reload(),
-    injectJS: (js: string) => webViewRef.current?.injectJavaScript(js),
+
+    goBack: () => {
+      webViewRef.current?.goBack();
+    },
+
+    goForward: () => {
+      webViewRef.current?.goForward();
+    },
+
+    reload: () => {
+      webViewRef.current?.reload();
+    },
   }));
 
-  const handleMessage = useCallback((event: WebViewMessageEvent) => {
-    try {
-      const msg = JSON.parse(event.nativeEvent.data);
-      switch (msg.type) {
-        case 'PAGE_SNAPSHOT':
-          onSnapshot(msg.data);
-          break;
-        case 'ACTION_RESULT':
-          onAction(msg.data);
-          break;
-        case 'ERROR':
-          onError(msg.data.message);
-          break;
+  const handleMessage = useCallback(
+    (event: WebViewMessageEvent) => {
+      try {
+        const msg = JSON.parse(event.nativeEvent.data);
+        switch (msg.type) {
+          case 'SNAPSHOT':
+            onSnapshot(msg.data as PageSnapshot);
+            break;
+          case 'ACTION_RESULT':
+            onAction(msg.data as { success: boolean; error?: string });
+            break;
+          case 'ERROR':
+            onError(msg.data?.message || 'Unknown error from page');
+            break;
+        }
+      } catch (e) {
+        // Log parse errors for debugging rather than silently swallowing
+        console.warn('[VoiceNav] Failed to parse WebView message:', e);
       }
-    } catch (e) {
-      // ignore parse errors
+    },
+    [onSnapshot, onAction, onError]
+  );
+
+  const handleLoadEnd = useCallback(() => {
+    onLoadEnd();
+    // Auto-extract DOM after page load with cleanup tracking
+    if (extractTimeoutRef.current) {
+      clearTimeout(extractTimeoutRef.current);
     }
-  }, [onSnapshot, onAction, onError]);
+    extractTimeoutRef.current = setTimeout(() => {
+      webViewRef.current?.injectJavaScript(`
+        (function() {
+          try {
+            var snapshot = __vn_extractDOM();
+            if (window.ReactNativeWebView && snapshot) {
+              window.ReactNativeWebView.postMessage(JSON.stringify({type: 'SNAPSHOT', data: snapshot}));
+            }
+          } catch(e) {}
+        })();
+        true;
+      `);
+    }, 500);
+  }, [onLoadEnd]);
+
+  const handleShouldStartLoad = useCallback((request: { url: string }) => {
+    // Block dangerous URL schemes
+    if (!isSafeUrl(request.url)) {
+      onError('Blocked navigation to unsafe URL');
+      return false;
+    }
+    return true;
+  }, [onError]);
 
   return (
     <View style={styles.container}>
@@ -155,34 +225,27 @@ const BrowserView = forwardRef<BrowserViewHandle, BrowserViewProps>(({
         domStorageEnabled={true}
         startInLoadingState={true}
         injectedJavaScript={INJECTED_SCRIPTS}
-        injectedJavaScriptBeforeContentLoaded={`
-          window.VoiceNavReady = true;
-          true;
-        `}
         onMessage={handleMessage}
         onLoadStart={onLoadStart}
-        onLoadEnd={() => {
-          onLoadEnd();
-          // Auto-extract DOM after page loads
-          setTimeout(() => {
-            webViewRef.current?.injectJavaScript(`
-              (function() {
-                ${DOM_EXTRACTOR}
-                true;
-              })();
-            `);
-          }, 500);
-        }}
+        onLoadEnd={handleLoadEnd}
         onError={(e) => onError(e.nativeEvent.description)}
+        onHttpError={(e) => onError(`HTTP ${e.nativeEvent.statusCode}`)}
         onNavigationStateChange={onNavigationStateChange}
+        onShouldStartLoadWithRequest={handleShouldStartLoad}
         allowsBackForwardNavigationGestures={true}
-        sharedCookiesEnabled={true}
-        thirdPartyCookiesEnabled={true}
-        userAgent="Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36 VoiceNav/1.0"
+        decelerationRate="normal"
+        // Security: no shared cookies across sites
+        sharedCookiesEnabled={false}
+        thirdPartyCookiesEnabled={false}
+        // Accessibility
+        accessibilityLabel="Web browser"
+        accessibilityHint="VoiceNav browser view"
       />
     </View>
   );
 });
+
+BrowserView.displayName = 'BrowserView';
 
 const styles = StyleSheet.create({
   container: {
@@ -191,6 +254,7 @@ const styles = StyleSheet.create({
   },
   webview: {
     flex: 1,
+    backgroundColor: COLORS.dark.background,
   },
 });
 

@@ -1,7 +1,6 @@
-import { PageSnapshot, AgentAction } from '../browser/types';
+import { PageSnapshot, AgentAction, AgentContext } from '../browser/types';
 import { parseVoiceCommand, getAgentStep, analyzePage } from './brain';
 import { speak, stopSpeaking, enqueueSpeech } from '../voice/textToSpeech';
-import * as Haptics from 'expo-haptics';
 
 type AgentCallbacks = {
   onAction: (action: AgentAction) => void;
@@ -12,7 +11,7 @@ type AgentCallbacks = {
 };
 
 let isActive = false;
-let currentStep = 0;
+let context: AgentContext = { stepHistory: [], retryCount: 0 };
 let currentIntent: ReturnType<typeof parseVoiceCommand> | null = null;
 let snapshotBuffer: PageSnapshot | null = null;
 let callbacks: AgentCallbacks | null = null;
@@ -22,12 +21,11 @@ export function startAgent(
   cbs: AgentCallbacks
 ): void {
   isActive = true;
-  currentStep = 0;
+  context = { stepHistory: [], retryCount: 0 };
   callbacks = cbs;
   currentIntent = parseVoiceCommand(command);
 
   cbs.onStatus(`Processing: ${command}`);
-  hapticFeedback('light');
 
   // Request a fresh snapshot
   cbs.onSnapshotRequest();
@@ -38,11 +36,10 @@ export function handleSnapshot(snapshot: PageSnapshot): void {
 
   snapshotBuffer = snapshot;
 
-  const { action, isComplete, nextStep } = getAgentStep(currentIntent, snapshot, currentStep);
+  const { action, isComplete, nextStep, needsRetry } = getAgentStep(currentIntent, snapshot, context);
 
   callbacks.onAction(action);
 
-  // Speak the action
   if (action.speak) {
     enqueueSpeech(action.speak);
   }
@@ -50,39 +47,43 @@ export function handleSnapshot(snapshot: PageSnapshot): void {
   if (action.action === 'done' || action.action === 'speak') {
     isActive = false;
     callbacks.onComplete(action.speak || 'Done');
-    hapticFeedback('success');
     return;
   }
 
-  if (isComplete) {
-    // Wait for page to update, then check again
-    currentStep = 0;
+  if (needsRetry) {
+    context.retryCount++;
+    context.stepHistory.push('retry');
     setTimeout(() => {
       if (isActive && callbacks) {
         callbacks.onSnapshotRequest();
       }
     }, 1500);
-  } else {
-    currentStep = nextStep;
-    // Execute next step after a delay
+  } else if (!isComplete) {
+    context.stepHistory.push('step');
     setTimeout(() => {
       if (isActive && callbacks && snapshotBuffer) {
         handleSnapshot(snapshotBuffer);
       }
     }, 800);
+  } else {
+    // Wait for page to update, then check again
+    setTimeout(() => {
+      if (isActive && callbacks) {
+        callbacks.onSnapshotRequest();
+      }
+    }, 1500);
   }
 }
 
 export function stopAgent(): void {
   isActive = false;
   currentIntent = null;
-  currentStep = 0;
+  context = { stepHistory: [], retryCount: 0 };
   snapshotBuffer = null;
   stopSpeaking();
   if (callbacks) {
     callbacks.onStatus('Stopped');
   }
-  hapticFeedback('warning');
 }
 
 export function getIsActive(): boolean {
@@ -91,20 +92,4 @@ export function getIsActive(): boolean {
 
 export function getSnapshot(): PageSnapshot | null {
   return snapshotBuffer;
-}
-
-function hapticFeedback(type: 'light' | 'success' | 'warning'): void {
-  try {
-    switch (type) {
-      case 'light':
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        break;
-      case 'success':
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        break;
-      case 'warning':
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-        break;
-    }
-  } catch {}
 }

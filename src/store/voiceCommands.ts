@@ -49,8 +49,9 @@ export const useVoiceShortcutStore = create<VoiceShortcutState>()(
 
       findShortcut: (phrase) => {
         const normalized = phrase.toLowerCase().trim();
+        // Exact match first, then prefix match (shortcut phrase is a prefix of the command)
         return get().shortcuts.find((s) =>
-          normalized.includes(s.phrase) || s.phrase.includes(normalized)
+          normalized === s.phrase || normalized.startsWith(s.phrase + ' ')
         );
       },
 

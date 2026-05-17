@@ -17,10 +17,13 @@ import { useBookmarkStore } from '../src/store/bookmarks';
 import { useVoiceShortcutStore } from '../src/store/voiceCommands';
 import { COLORS, SPACING, FONT_SIZE, RADIUS } from '../src/a11y/theme';
 import BrowserView, { BrowserViewHandle } from '../src/browser/BrowserView';
-import { PageSnapshot, AgentAction } from '../src/browser/types';
+import { PageSnapshot, AgentAction, AgentContext } from '../src/browser/types';
 import { speak, stopSpeaking } from '../src/voice/textToSpeech';
 import { useSpeechRecognition } from '../src/voice/speechToText';
-import { parseVoiceCommand, getAgentStep, analyzePage } from '../src/agent/brain';
+import {
+  parseVoiceCommand, getAgentStep, analyzePage, getPageSuggestions,
+  hasMultipleSteps, splitIntoSteps
+} from '../src/agent/brain';
 import VoiceButton from '../src/components/VoiceButton';
 
 export default function BrowserScreen() {
@@ -41,7 +44,10 @@ export default function BrowserScreen() {
   const [commandInput, setCommandInput] = useState('');
   const [agentLog, setAgentLog] = useState<string[]>([]);
   const [showAgentPanel, setShowAgentPanel] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const statusOpacity = useRef(new Animated.Value(0)).current;
+  const timeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+  const agentContextRef = useRef<AgentContext>({ stepHistory: [], retryCount: 0 });
 
   const {
     isListening,
@@ -51,8 +57,28 @@ export default function BrowserScreen() {
     stop: stopListening,
   } = useSpeechRecognition();
 
+  // Helper: track timeouts for cleanup
+  const trackedSetTimeout = useCallback((fn: () => void, ms: number) => {
+    const id = setTimeout(() => {
+      timeoutsRef.current.delete(id);
+      fn();
+    }, ms);
+    timeoutsRef.current.add(id);
+    return id;
+  }, []);
+
+  // Cleanup all timeouts on unmount
+  useEffect(() => {
+    return () => {
+      timeoutsRef.current.forEach(id => clearTimeout(id));
+      timeoutsRef.current.clear();
+    };
+  }, []);
+
+  // Track initial URL in history
   useEffect(() => {
     addBrowsingHistory(currentUrl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const flashStatus = useCallback(() => {
@@ -76,6 +102,9 @@ export default function BrowserScreen() {
         setUrlInput(snapshot.url);
         addBrowsingHistory(snapshot.url);
       }
+      // Update suggestions based on page context
+      const newSuggestions = getPageSuggestions(snapshot);
+      setSuggestions(newSuggestions);
     },
     [currentUrl, setCurrentUrl, setPageSnapshot, setPageTitle, addBrowsingHistory]
   );
@@ -87,10 +116,10 @@ export default function BrowserScreen() {
 
   const handleLoadEnd = useCallback(() => {
     setIsLoading(false);
-    setTimeout(() => {
+    trackedSetTimeout(() => {
       browserRef.current?.extractDOM();
     }, 300);
-  }, [setIsLoading]);
+  }, [setIsLoading, trackedSetTimeout]);
 
   const handleError = useCallback(
     (errorMsg: string) => {
@@ -102,7 +131,7 @@ export default function BrowserScreen() {
   );
 
   const handleNavigationStateChange = useCallback(
-    (navState: any) => {
+    (navState: { url: string; canGoBack: boolean; canGoForward: boolean; loading: boolean; title: string }) => {
       if (navState.url !== currentUrl) {
         setCurrentUrl(navState.url);
         setUrlInput(navState.url);
@@ -113,8 +142,8 @@ export default function BrowserScreen() {
 
   const executeAgentAction = useCallback(
     (action: AgentAction) => {
-      addLog(`> ${action.action}: ${action.speak || ''}`);
-      setAgentStatus(action.speak || action.action);
+      addLog(`> ${action.action}: ${'speak' in action ? action.speak || '' : ''}`);
+      setAgentStatus('speak' in action ? action.speak || action.action : action.action);
       flashStatus();
 
       switch (action.action) {
@@ -139,17 +168,19 @@ export default function BrowserScreen() {
           setIsAgentActive(false);
           speak(action.speak, { rate: speechRate });
           break;
+        case 'wait':
+          // Handled by caller
+          break;
       }
     },
     [addLog, setAgentStatus, flashStatus, speechRate, setIsAgentActive]
   );
 
-  const processCommand = useCallback(
-    (command: string) => {
-      if (!command.trim()) return;
-
+  // Process a single command with retry support
+  const processSingleCommand = useCallback(
+    (command: string, stepIndex: number, totalSteps: number) => {
       addCommandHistory(command);
-      addLog(`Command: ${command}`);
+      addLog(`Step ${stepIndex + 1}/${totalSteps}: ${command}`);
 
       // Check voice shortcuts
       const shortcut = findShortcut(command);
@@ -181,10 +212,7 @@ export default function BrowserScreen() {
       if (/remove bookmark|unbookmark/i.test(command)) {
         if (pageSnapshot && isBookmarked(pageSnapshot.url)) {
           const bm = getBookmarkByUrl(pageSnapshot.url);
-          if (bm) {
-            removeBookmark(bm.id);
-            speak('Bookmark removed.');
-          }
+          if (bm) { removeBookmark(bm.id); speak('Bookmark removed.'); }
         } else {
           speak('This page is not bookmarked.');
         }
@@ -213,22 +241,28 @@ export default function BrowserScreen() {
         return;
       }
 
-      const { action, isComplete, nextStep } = getAgentStep(intent, snapshot, 0);
+      // Reset context for new command
+      agentContextRef.current = { stepHistory: [], retryCount: 0 };
+      const context = agentContextRef.current;
+
+      const { action, isComplete, needsRetry } = getAgentStep(intent, snapshot, context);
       executeAgentAction(action);
 
-      if (action.speak) {
+      if ('speak' in action && action.speak) {
         speak(action.speak, { rate: speechRate });
       }
 
-      if (!isComplete && action.action !== 'done' && action.action !== 'speak') {
-        setTimeout(() => {
+      if (!isComplete || needsRetry) {
+        context.stepHistory.push(command);
+        trackedSetTimeout(() => {
           browserRef.current?.extractDOM();
-          setTimeout(() => {
+          trackedSetTimeout(() => {
             const updatedSnapshot = useAppStore.getState().pageSnapshot;
             if (updatedSnapshot) {
-              const step2 = getAgentStep(intent, updatedSnapshot, nextStep);
+              if (needsRetry) context.retryCount++;
+              const step2 = getAgentStep(intent, updatedSnapshot, context);
               executeAgentAction(step2.action);
-              if (step2.action.speak) {
+              if ('speak' in step2.action && step2.action.speak) {
                 speak(step2.action.speak, { rate: speechRate });
               }
             }
@@ -236,12 +270,32 @@ export default function BrowserScreen() {
           }, 800);
         }, 1500);
       } else {
-        setTimeout(() => setIsAgentActive(false), 1000);
+        trackedSetTimeout(() => setIsAgentActive(false), 1000);
       }
     },
     [pageSnapshot, addCommandHistory, addLog, setIsAgentActive, setAgentStatus,
       executeAgentAction, speechRate, findShortcut, isBookmarked, addBookmark,
-      removeBookmark, getBookmarkByUrl]
+      removeBookmark, getBookmarkByUrl, trackedSetTimeout]
+  );
+
+  // Main command processor — handles multi-step commands
+  const processCommand = useCallback(
+    (command: string) => {
+      if (!command.trim()) return;
+
+      if (hasMultipleSteps(command)) {
+        const steps = splitIntoSteps(command);
+        addLog(`Multi-step: ${steps.length} commands`);
+        steps.forEach((step, i) => {
+          trackedSetTimeout(() => {
+            processSingleCommand(step, i, steps.length);
+          }, i * 3000); // Stagger steps by 3 seconds
+        });
+      } else {
+        processSingleCommand(command, 0, 1);
+      }
+    },
+    [processSingleCommand, addLog, trackedSetTimeout]
   );
 
   const handleVoiceToggle = useCallback(() => {
@@ -251,11 +305,10 @@ export default function BrowserScreen() {
         processCommand(transcript);
       }
     } else {
+      stopSpeaking(); // Barge-in: stop TTS when user starts speaking
       startListening({
         onResult: (text, isFinal) => {
-          if (isFinal) {
-            processCommand(text);
-          }
+          if (isFinal) processCommand(text);
         },
         onError: () => {
           speak('Voice error. Type your command instead.');
@@ -286,23 +339,24 @@ export default function BrowserScreen() {
     const url = pageSnapshot.url;
     if (isBookmarked(url)) {
       const bm = getBookmarkByUrl(url);
-      if (bm) {
-        removeBookmark(bm.id);
-        speak('Bookmark removed');
-      }
+      if (bm) { removeBookmark(bm.id); speak('Bookmark removed'); }
     } else {
       addBookmark(title, url);
       speak(`Bookmarked: ${title}`);
     }
   }, [pageSnapshot, isBookmarked, addBookmark, removeBookmark, getBookmarkByUrl]);
 
-  const handleAction = useCallback((result: any) => {
+  const handleAction = useCallback((result: { success: boolean; error?: string }) => {
     if (result.success) {
       addLog('Action completed');
     } else {
       addLog(`Action failed: ${result.error}`);
     }
   }, [addLog]);
+
+  const handleSuggestionPress = useCallback((suggestion: string) => {
+    processCommand(suggestion);
+  }, [processCommand]);
 
   const bookmarked = pageSnapshot ? isBookmarked(pageSnapshot.url) : false;
 
@@ -313,20 +367,11 @@ export default function BrowserScreen() {
     >
       {/* Top Bar */}
       <View style={styles.topBar}>
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={styles.navButton}
-          accessibilityLabel="Go back to home"
-        >
+        <TouchableOpacity onPress={() => router.back()} style={styles.navButton} accessibilityLabel="Go home">
           <Ionicons name="home" size={22} color={COLORS.dark.text} />
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.urlBar}
-          onPress={() => setShowUrlBar(!showUrlBar)}
-          accessibilityLabel="Current URL"
-          accessibilityHint="Tap to edit the web address"
-        >
+        <TouchableOpacity style={styles.urlBar} onPress={() => setShowUrlBar(!showUrlBar)} accessibilityLabel="Current URL">
           {isLoading ? (
             <ActivityIndicator size="small" color={COLORS.dark.primary} style={{ marginRight: 8 }} />
           ) : (
@@ -337,23 +382,11 @@ export default function BrowserScreen() {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={handleToggleBookmark}
-          style={[styles.navButton, bookmarked && styles.navButtonActive]}
-          accessibilityLabel={bookmarked ? 'Remove bookmark' : 'Bookmark this page'}
-        >
-          <Ionicons
-            name={bookmarked ? 'bookmark' : 'bookmark-outline'}
-            size={22}
-            color={bookmarked ? COLORS.dark.primary : COLORS.dark.text}
-          />
+        <TouchableOpacity onPress={handleToggleBookmark} style={[styles.navButton, bookmarked && styles.navButtonActive]} accessibilityLabel={bookmarked ? 'Remove bookmark' : 'Bookmark page'}>
+          <Ionicons name={bookmarked ? 'bookmark' : 'bookmark-outline'} size={22} color={bookmarked ? COLORS.dark.primary : COLORS.dark.text} />
         </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => browserRef.current?.extractDOM()}
-          style={styles.navButton}
-          accessibilityLabel="Refresh page"
-        >
+        <TouchableOpacity onPress={() => browserRef.current?.extractDOM()} style={styles.navButton} accessibilityLabel="Refresh page">
           <Ionicons name="refresh" size={22} color={COLORS.dark.text} />
         </TouchableOpacity>
       </View>
@@ -361,19 +394,7 @@ export default function BrowserScreen() {
       {/* URL Edit Bar */}
       {showUrlBar && (
         <View style={styles.urlEditBar}>
-          <TextInput
-            style={styles.urlInput}
-            value={urlInput}
-            onChangeText={setUrlInput}
-            onSubmitEditing={handleSubmitUrl}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="url"
-            returnKeyType="go"
-            placeholder="Enter URL..."
-            placeholderTextColor={COLORS.dark.textMuted}
-            accessibilityLabel="Web address"
-          />
+          <TextInput style={styles.urlInput} value={urlInput} onChangeText={setUrlInput} onSubmitEditing={handleSubmitUrl} autoCapitalize="none" autoCorrect={false} keyboardType="url" returnKeyType="go" placeholder="Enter URL..." placeholderTextColor={COLORS.dark.textMuted} accessibilityLabel="Web address" />
           <TouchableOpacity onPress={handleSubmitUrl} style={styles.urlGoButton}>
             <Ionicons name="arrow-forward" size={20} color={COLORS.dark.text} />
           </TouchableOpacity>
@@ -399,71 +420,44 @@ export default function BrowserScreen() {
         />
       </View>
 
+      {/* Suggestions Bar */}
+      {suggestions.length > 0 && !isAgentActive && (
+        <View style={styles.suggestionsBar}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.suggestionsContent}>
+            {suggestions.map((s, i) => (
+              <TouchableOpacity key={i} style={styles.suggestionChip} onPress={() => handleSuggestionPress(s)} accessibilityLabel={`Suggestion: ${s}`}>
+                <Text style={styles.suggestionText}>{s}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      )}
+
       {/* Bottom Panel */}
       <View style={styles.bottomPanel}>
         {/* Quick actions */}
         <View style={styles.quickActions}>
-          <TouchableOpacity
-            style={styles.quickAction}
-            onPress={() => browserRef.current?.goBack()}
-            accessibilityLabel="Go back"
-          >
+          <TouchableOpacity style={styles.quickAction} onPress={() => browserRef.current?.goBack()} accessibilityLabel="Go back">
             <Ionicons name="arrow-back" size={20} color={COLORS.dark.text} />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.quickAction}
-            onPress={() => browserRef.current?.goForward()}
-            accessibilityLabel="Go forward"
-          >
+          <TouchableOpacity style={styles.quickAction} onPress={() => browserRef.current?.goForward()} accessibilityLabel="Go forward">
             <Ionicons name="arrow-forward" size={20} color={COLORS.dark.text} />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.quickAction}
-            onPress={() => {
-              if (pageSnapshot) {
-                const summary = analyzePage(pageSnapshot);
-                speak(summary, { rate: speechRate });
-              }
-            }}
-            accessibilityLabel="Describe page"
-          >
+          <TouchableOpacity style={styles.quickAction} onPress={() => { if (pageSnapshot) speak(analyzePage(pageSnapshot), { rate: speechRate }); }} accessibilityLabel="Describe page">
             <Ionicons name="eye" size={20} color={COLORS.dark.accent} />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.quickAction}
-            onPress={() => stopSpeaking()}
-            accessibilityLabel="Stop speaking"
-          >
+          <TouchableOpacity style={styles.quickAction} onPress={() => stopSpeaking()} accessibilityLabel="Stop speaking">
             <Ionicons name="volume-mute" size={20} color={COLORS.dark.warning} />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.quickAction, showAgentPanel && styles.quickActionActive]}
-            onPress={() => setShowAgentPanel(!showAgentPanel)}
-            accessibilityLabel="Toggle agent log"
-          >
+          <TouchableOpacity style={[styles.quickAction, showAgentPanel && styles.quickActionActive]} onPress={() => setShowAgentPanel(!showAgentPanel)} accessibilityLabel="Toggle agent log">
             <Ionicons name="terminal" size={20} color={showAgentPanel ? COLORS.dark.primary : COLORS.dark.text} />
           </TouchableOpacity>
         </View>
 
         {/* Command Input + Voice */}
         <View style={styles.commandBar}>
-          <VoiceButton
-            isListening={isListening}
-            interimText={interimTranscript}
-            onPress={handleVoiceToggle}
-            size={38}
-          />
-          <TextInput
-            style={styles.commandInput}
-            value={commandInput}
-            onChangeText={setCommandInput}
-            onSubmitEditing={handleSubmitCommand}
-            placeholder="Say or type a command..."
-            placeholderTextColor={COLORS.dark.textMuted}
-            returnKeyType="send"
-            accessibilityLabel="Command input"
-            accessibilityHint="Type a command like go to amazon or search for headphones"
-          />
+          <VoiceButton isListening={isListening} interimText={interimTranscript} onPress={handleVoiceToggle} size={38} />
+          <TextInput style={styles.commandInput} value={commandInput} onChangeText={setCommandInput} onSubmitEditing={handleSubmitCommand} placeholder="Say or type a command..." placeholderTextColor={COLORS.dark.textMuted} returnKeyType="send" accessibilityLabel="Command input" />
           {commandInput.length > 0 && (
             <TouchableOpacity onPress={handleSubmitCommand} style={styles.sendButton}>
               <Ionicons name="send" size={18} color={COLORS.dark.text} />
@@ -479,9 +473,7 @@ export default function BrowserScreen() {
               <Text style={styles.agentPanelEmpty}>No actions yet</Text>
             ) : (
               agentLog.map((log, i) => (
-                <Text key={i} style={styles.agentPanelLog}>
-                  {log}
-                </Text>
+                <Text key={i} style={styles.agentPanelLog}>{log}</Text>
               ))
             )}
           </View>
@@ -491,166 +483,87 @@ export default function BrowserScreen() {
   );
 }
 
+// Need ScrollView import for suggestions
+import { ScrollView } from 'react-native';
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.dark.background,
-  },
+  container: { flex: 1, backgroundColor: COLORS.dark.background },
   topBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: SPACING.sm,
-    paddingTop: Platform.OS === 'ios' ? 56 : 36,
-    paddingBottom: SPACING.sm,
-    backgroundColor: COLORS.dark.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.dark.border,
-    gap: SPACING.xs,
+    flexDirection: 'row', alignItems: 'center', paddingHorizontal: SPACING.sm,
+    paddingTop: Platform.OS === 'ios' ? 56 : 36, paddingBottom: SPACING.sm,
+    backgroundColor: COLORS.dark.surface, borderBottomWidth: 1, borderBottomColor: COLORS.dark.border, gap: SPACING.xs,
   },
   navButton: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: COLORS.dark.surfaceLight,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: 38, height: 38, borderRadius: 19, backgroundColor: COLORS.dark.surfaceLight,
+    justifyContent: 'center', alignItems: 'center',
   },
-  navButtonActive: {
-    backgroundColor: COLORS.dark.primary + '20',
-  },
+  navButtonActive: { backgroundColor: COLORS.dark.primary + '20' },
   urlBar: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.dark.surfaceLight,
-    borderRadius: RADIUS.sm,
-    paddingHorizontal: SPACING.sm,
-    paddingVertical: SPACING.sm,
-    height: 38,
+    flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.dark.surfaceLight,
+    borderRadius: RADIUS.sm, paddingHorizontal: SPACING.sm, paddingVertical: SPACING.sm, height: 38,
   },
-  urlText: {
-    flex: 1,
-    fontSize: FONT_SIZE.sm,
-    color: COLORS.dark.text,
-  },
+  urlText: { flex: 1, fontSize: FONT_SIZE.sm, color: COLORS.dark.text },
   urlEditBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.dark.surface,
-    paddingHorizontal: SPACING.md,
-    paddingVertical: SPACING.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.dark.border,
+    flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.dark.surface,
+    paddingHorizontal: SPACING.md, paddingVertical: SPACING.sm, borderBottomWidth: 1, borderBottomColor: COLORS.dark.border,
   },
   urlInput: {
-    flex: 1,
-    height: 40,
-    backgroundColor: COLORS.dark.surfaceLight,
-    borderRadius: RADIUS.sm,
-    paddingHorizontal: SPACING.sm,
-    color: COLORS.dark.text,
-    fontSize: FONT_SIZE.sm,
-    marginRight: SPACING.sm,
+    flex: 1, height: 40, backgroundColor: COLORS.dark.surfaceLight, borderRadius: RADIUS.sm,
+    paddingHorizontal: SPACING.sm, color: COLORS.dark.text, fontSize: FONT_SIZE.sm, marginRight: SPACING.sm,
   },
   urlGoButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: COLORS.dark.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: 36, height: 36, borderRadius: 18, backgroundColor: COLORS.dark.primary,
+    justifyContent: 'center', alignItems: 'center',
   },
   statusBar: {
-    backgroundColor: COLORS.dark.primary,
-    paddingVertical: 4,
-    paddingHorizontal: SPACING.md,
-    position: 'absolute',
-    top: Platform.OS === 'ios' ? 96 : 76,
-    left: 0,
-    right: 0,
-    zIndex: 10,
+    backgroundColor: COLORS.dark.primary, paddingVertical: 4, paddingHorizontal: SPACING.md,
+    position: 'absolute', top: Platform.OS === 'ios' ? 96 : 76, left: 0, right: 0, zIndex: 10,
   },
-  statusText: {
-    color: COLORS.dark.text,
-    fontSize: FONT_SIZE.xs,
-    fontWeight: '600',
-    textAlign: 'center',
+  statusText: { color: COLORS.dark.text, fontSize: FONT_SIZE.xs, fontWeight: '600', textAlign: 'center' },
+  browserContainer: { flex: 1 },
+  suggestionsBar: {
+    backgroundColor: COLORS.dark.surface, borderTopWidth: 1, borderTopColor: COLORS.dark.border,
+    paddingVertical: SPACING.xs,
   },
-  browserContainer: {
-    flex: 1,
+  suggestionsContent: { paddingHorizontal: SPACING.md, gap: SPACING.xs },
+  suggestionChip: {
+    paddingHorizontal: SPACING.md, paddingVertical: SPACING.xs + 2,
+    backgroundColor: COLORS.dark.accent + '15', borderRadius: RADIUS.full,
+    borderWidth: 1, borderColor: COLORS.dark.accent + '30',
   },
+  suggestionText: { fontSize: FONT_SIZE.sm, color: COLORS.dark.accent, fontWeight: '500' },
   bottomPanel: {
-    backgroundColor: COLORS.dark.surface,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.dark.border,
+    backgroundColor: COLORS.dark.surface, borderTopWidth: 1, borderTopColor: COLORS.dark.border,
   },
   quickActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: SPACING.sm,
-    paddingHorizontal: SPACING.md,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.dark.border,
+    flexDirection: 'row', justifyContent: 'space-around', paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.md, borderBottomWidth: 1, borderBottomColor: COLORS.dark.border,
   },
   quickAction: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: COLORS.dark.surfaceLight,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: 38, height: 38, borderRadius: 19, backgroundColor: COLORS.dark.surfaceLight,
+    justifyContent: 'center', alignItems: 'center',
   },
-  quickActionActive: {
-    backgroundColor: COLORS.dark.primary + '30',
-    borderWidth: 1,
-    borderColor: COLORS.dark.primary,
-  },
+  quickActionActive: { backgroundColor: COLORS.dark.primary + '30', borderWidth: 1, borderColor: COLORS.dark.primary },
   commandBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: SPACING.md,
-    paddingVertical: SPACING.sm,
-    gap: SPACING.sm,
+    flexDirection: 'row', alignItems: 'center', paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm, gap: SPACING.sm,
   },
   commandInput: {
-    flex: 1,
-    height: 42,
-    backgroundColor: COLORS.dark.surfaceLight,
-    borderRadius: RADIUS.sm,
-    paddingHorizontal: SPACING.sm,
-    color: COLORS.dark.text,
-    fontSize: FONT_SIZE.md,
+    flex: 1, height: 42, backgroundColor: COLORS.dark.surfaceLight, borderRadius: RADIUS.sm,
+    paddingHorizontal: SPACING.sm, color: COLORS.dark.text, fontSize: FONT_SIZE.md,
   },
   sendButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: COLORS.dark.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: 36, height: 36, borderRadius: 18, backgroundColor: COLORS.dark.primary,
+    justifyContent: 'center', alignItems: 'center',
   },
-  agentPanel: {
-    maxHeight: 150,
-    paddingHorizontal: SPACING.md,
-    paddingBottom: SPACING.sm,
-  },
+  agentPanel: { maxHeight: 150, paddingHorizontal: SPACING.md, paddingBottom: SPACING.sm },
   agentPanelTitle: {
-    fontSize: FONT_SIZE.xs,
-    fontWeight: '700',
-    color: COLORS.dark.accent,
-    marginBottom: 4,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
+    fontSize: FONT_SIZE.xs, fontWeight: '700', color: COLORS.dark.accent,
+    marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1,
   },
-  agentPanelEmpty: {
-    fontSize: FONT_SIZE.xs,
-    color: COLORS.dark.textMuted,
-    fontStyle: 'italic',
-  },
+  agentPanelEmpty: { fontSize: FONT_SIZE.xs, color: COLORS.dark.textMuted, fontStyle: 'italic' },
   agentPanelLog: {
-    fontSize: FONT_SIZE.xs,
-    color: COLORS.dark.textSecondary,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-    marginBottom: 2,
+    fontSize: FONT_SIZE.xs, color: COLORS.dark.textSecondary,
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace', marginBottom: 2,
   },
 });

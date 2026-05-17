@@ -33,65 +33,40 @@ export default function VoiceButton({
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
+    let pulseLoop: Animated.CompositeAnimation | null = null;
+    let glowLoop: Animated.CompositeAnimation | null = null;
+
     if (isListening) {
-      // Pulse animation
-      Animated.loop(
+      pulseLoop = Animated.loop(
         Animated.sequence([
-          Animated.timing(pulseAnim, {
-            toValue: 1.2,
-            duration: 800,
-            useNativeDriver: true,
-          }),
-          Animated.timing(pulseAnim, {
-            toValue: 1,
-            duration: 800,
-            useNativeDriver: true,
-          }),
+          Animated.timing(pulseAnim, { toValue: 1.2, duration: 800, useNativeDriver: true }),
+          Animated.timing(pulseAnim, { toValue: 1, duration: 800, useNativeDriver: true }),
         ])
-      ).start();
+      );
+      pulseLoop.start();
 
-      // Glow animation
-      Animated.loop(
+      glowLoop = Animated.loop(
         Animated.sequence([
-          Animated.timing(glowAnim, {
-            toValue: 1,
-            duration: 600,
-            useNativeDriver: true,
-          }),
-          Animated.timing(glowAnim, {
-            toValue: 0.3,
-            duration: 600,
-            useNativeDriver: true,
-          }),
+          Animated.timing(glowAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
+          Animated.timing(glowAnim, { toValue: 0.3, duration: 600, useNativeDriver: true }),
         ])
-      ).start();
+      );
+      glowLoop.start();
 
-      // Scale up
-      Animated.spring(scaleAnim, {
-        toValue: 1.1,
-        useNativeDriver: true,
-      }).start();
+      Animated.spring(scaleAnim, { toValue: 1.1, useNativeDriver: true }).start();
     } else {
-      pulseAnim.stopAnimation();
-      glowAnim.stopAnimation();
       Animated.parallel([
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(glowAnim, {
-          toValue: 0,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(scaleAnim, {
-          toValue: 1,
-          duration: 200,
-          useNativeDriver: true,
-        }),
+        Animated.timing(pulseAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+        Animated.timing(glowAnim, { toValue: 0, duration: 200, useNativeDriver: true }),
+        Animated.timing(scaleAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
       ]).start();
     }
+
+    // Cleanup on unmount or when isListening changes
+    return () => {
+      if (pulseLoop) pulseLoop.stop();
+      if (glowLoop) glowLoop.stop();
+    };
   }, [isListening]);
 
   return (

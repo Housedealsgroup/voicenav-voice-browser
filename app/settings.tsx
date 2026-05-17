@@ -17,6 +17,7 @@ import { useAppStore } from '../src/store';
 import { useVoiceShortcutStore, VoiceShortcut } from '../src/store/voiceCommands';
 import { COLORS, SPACING, FONT_SIZE, RADIUS } from '../src/a11y/theme';
 import { speak } from '../src/voice/textToSpeech';
+import { SUPPORTED_LANGUAGES, getLanguageName } from '../src/voice/languages';
 
 const SPEECH_RATES = [
   { label: 'Slow', value: 0.6 },
@@ -31,6 +32,8 @@ export default function SettingsScreen() {
     speechRate, setSpeechRate,
     autoRead, setAutoRead,
     hapticFeedback, setHapticFeedback,
+    continuousListening, setContinuousListening,
+    language, setLanguage,
   } = useAppStore();
   const { shortcuts, addShortcut, removeShortcut } = useVoiceShortcutStore();
 
@@ -184,6 +187,46 @@ export default function SettingsScreen() {
               thumbColor={COLORS.dark.text}
               accessibilityLabel="Haptic feedback"
             />
+          </View>
+
+          <View style={styles.toggleRow}>
+            <View style={styles.toggleInfo}>
+              <Text style={styles.toggleLabel}>Continuous listening</Text>
+              <Text style={styles.toggleDescription}>
+                Keep listening after each command until you say "stop"
+              </Text>
+            </View>
+            <Switch
+              value={continuousListening}
+              onValueChange={setContinuousListening}
+              trackColor={{ false: COLORS.dark.border, true: COLORS.dark.primary }}
+              thumbColor={COLORS.dark.text}
+              accessibilityLabel="Continuous listening"
+            />
+          </View>
+        </View>
+
+        {/* Language */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Language</Text>
+          <Text style={styles.sectionDescription}>Voice recognition and speech language</Text>
+          <View style={styles.languageGrid}>
+            {SUPPORTED_LANGUAGES.slice(0, 12).map((lang) => (
+              <TouchableOpacity
+                key={lang.code}
+                style={[styles.languageOption, language === lang.code && styles.languageOptionActive]}
+                onPress={() => {
+                  setLanguage(lang.code);
+                  speak(`Language set to ${lang.name}`);
+                }}
+                accessibilityLabel={`${lang.name} (${lang.nativeName})`}
+                accessibilityState={{ selected: language === lang.code }}
+              >
+                <Text style={[styles.languageText, language === lang.code && styles.languageTextActive]}>
+                  {lang.nativeName}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
 
@@ -556,5 +599,30 @@ const styles = StyleSheet.create({
     color: COLORS.dark.textSecondary,
     lineHeight: 22,
     marginBottom: SPACING.sm,
+  },
+  languageGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: SPACING.sm,
+  },
+  languageOption: {
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    backgroundColor: COLORS.dark.surface,
+    borderRadius: RADIUS.sm,
+    borderWidth: 1,
+    borderColor: COLORS.dark.border,
+  },
+  languageOptionActive: {
+    backgroundColor: COLORS.dark.primary,
+    borderColor: COLORS.dark.primary,
+  },
+  languageText: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.dark.text,
+    fontWeight: '600',
+  },
+  languageTextActive: {
+    color: COLORS.dark.text,
   },
 });

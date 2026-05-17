@@ -1,126 +1,93 @@
 import { create } from 'zustand';
-import { PageSnapshot, AgentAction } from '../browser/types';
+import { PageSnapshot } from '../browser/types';
 
 type AppState = {
-  // Navigation
+  // Browser state
   currentUrl: string;
-  canGoBack: boolean;
-  canGoForward: boolean;
-
-  // Page state
   isLoading: boolean;
-  pageSnapshot: PageSnapshot | null;
   pageTitle: string;
+  pageSnapshot: PageSnapshot | null;
+  error: string | null;
 
   // Agent state
   isAgentActive: boolean;
   agentStatus: string;
-  lastAction: AgentAction | null;
-  agentStep: number;
 
-  // Voice state
-  isListening: boolean;
-  isSpeaking: boolean;
-  voiceTranscript: string;
-  lastSpoken: string;
-
-  // UI state
-  showSettings: boolean;
-  showHelp: boolean;
-  error: string | null;
-
-  // Settings
+  // Voice settings
   speechRate: number;
   autoRead: boolean;
   hapticFeedback: boolean;
+  continuousListening: boolean;
+  language: string; // language code
 
   // History
-  commandHistory: string[];
   browsingHistory: string[];
+  commandHistory: string[];
 
   // Actions
   setCurrentUrl: (url: string) => void;
-  setCanGoBack: (can: boolean) => void;
-  setCanGoForward: (can: boolean) => void;
   setIsLoading: (loading: boolean) => void;
-  setPageSnapshot: (snapshot: PageSnapshot | null) => void;
   setPageTitle: (title: string) => void;
+  setPageSnapshot: (snapshot: PageSnapshot | null) => void;
+  setError: (error: string | null) => void;
   setIsAgentActive: (active: boolean) => void;
   setAgentStatus: (status: string) => void;
-  setLastAction: (action: AgentAction | null) => void;
-  setAgentStep: (step: number) => void;
-  incrementAgentStep: () => void;
-  setIsListening: (listening: boolean) => void;
-  setIsSpeaking: (speaking: boolean) => void;
-  setVoiceTranscript: (transcript: string) => void;
-  setLastSpoken: (text: string) => void;
-  setShowSettings: (show: boolean) => void;
-  setShowHelp: (show: boolean) => void;
-  setError: (error: string | null) => void;
   setSpeechRate: (rate: number) => void;
-  setAutoRead: (auto: boolean) => void;
+  setAutoRead: (autoRead: boolean) => void;
   setHapticFeedback: (haptic: boolean) => void;
-  addCommandHistory: (command: string) => void;
+  setContinuousListening: (continuous: boolean) => void;
+  setLanguage: (lang: string) => void;
   addBrowsingHistory: (url: string) => void;
+  addCommandHistory: (command: string) => void;
+  clearHistory: () => void;
   reset: () => void;
 };
 
 const initialState = {
   currentUrl: 'https://www.google.com',
-  canGoBack: false,
-  canGoForward: false,
   isLoading: false,
-  pageSnapshot: null as PageSnapshot | null,
   pageTitle: '',
+  pageSnapshot: null as PageSnapshot | null,
+  error: null as string | null,
   isAgentActive: false,
   agentStatus: '',
-  lastAction: null as AgentAction | null,
-  agentStep: 0,
-  isListening: false,
-  isSpeaking: false,
-  voiceTranscript: '',
-  lastSpoken: '',
-  showSettings: false,
-  showHelp: false,
-  error: null as string | null,
   speechRate: 0.9,
-  autoRead: true,
+  autoRead: false,
   hapticFeedback: true,
-  commandHistory: [] as string[],
+  continuousListening: false,
+  language: 'en',
   browsingHistory: [] as string[],
+  commandHistory: [] as string[],
 };
 
-export const useAppStore = create<AppState>((set) => ({
+export const useAppStore = create<AppState>()((set, get) => ({
   ...initialState,
 
   setCurrentUrl: (url) => set({ currentUrl: url }),
-  setCanGoBack: (can) => set({ canGoBack: can }),
-  setCanGoForward: (can) => set({ canGoForward: can }),
   setIsLoading: (loading) => set({ isLoading: loading }),
-  setPageSnapshot: (snapshot) => set({ pageSnapshot: snapshot }),
   setPageTitle: (title) => set({ pageTitle: title }),
+  setPageSnapshot: (snapshot) => set({ pageSnapshot: snapshot }),
+  setError: (error) => set({ error }),
   setIsAgentActive: (active) => set({ isAgentActive: active }),
   setAgentStatus: (status) => set({ agentStatus: status }),
-  setLastAction: (action) => set({ lastAction: action }),
-  setAgentStep: (step) => set({ agentStep: step }),
-  incrementAgentStep: () => set((state) => ({ agentStep: state.agentStep + 1 })),
-  setIsListening: (listening) => set({ isListening: listening }),
-  setIsSpeaking: (speaking) => set({ isSpeaking: speaking }),
-  setVoiceTranscript: (transcript) => set({ voiceTranscript: transcript }),
-  setLastSpoken: (text) => set({ lastSpoken: text }),
-  setShowSettings: (show) => set({ showSettings: show }),
-  setShowHelp: (show) => set({ showHelp: show }),
-  setError: (error) => set({ error }),
   setSpeechRate: (rate) => set({ speechRate: rate }),
-  setAutoRead: (auto) => set({ autoRead: auto }),
+  setAutoRead: (autoRead) => set({ autoRead }),
   setHapticFeedback: (haptic) => set({ hapticFeedback: haptic }),
-  addCommandHistory: (command) =>
-    set((state) => ({
-      commandHistory: [command, ...state.commandHistory].slice(0, 50),
-    })),
-  addBrowsingHistory: (url) =>
-    set((state) => ({
-      browsingHistory: [url, ...state.browsingHistory.filter((u) => u !== url)].slice(0, 100),
-    })),
+  setContinuousListening: (continuous) => set({ continuousListening: continuous }),
+  setLanguage: (lang) => set({ language: lang }),
+
+  addBrowsingHistory: (url) => {
+    const history = get().browsingHistory;
+    const filtered = history.filter((h) => h !== url);
+    set({ browsingHistory: [url, ...filtered].slice(0, 50) });
+  },
+
+  addCommandHistory: (command) => {
+    const history = get().commandHistory;
+    set({ commandHistory: [command, ...history].slice(0, 100) });
+  },
+
+  clearHistory: () => set({ browsingHistory: [], commandHistory: [] }),
+
   reset: () => set(initialState),
 }));
