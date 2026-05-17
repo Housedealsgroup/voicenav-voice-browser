@@ -2,53 +2,205 @@
 
 # VoiceNav
 
-### Voice-Controlled Web Browser for Blind & Visually Impaired Users
+### Supercomputer-Level Voice Navigation Browser
 
-A fully accessible mobile browser that lets you navigate the web using only your voice. No external APIs needed — everything runs on-device.
+**Speak naturally. Get things done. One button. Zero limits.**
+
+A fully accessible mobile browser that understands your voice and completes complex tasks automatically. No external APIs — everything runs on-device.
 
 [![Expo](https://img.shields.io/badge/Expo-54-blue.svg)](https://expo.dev)
-[![React Native](https://img.shields.io/badge/React%20Native-0.81-61dafb.svg)](https://reactnative.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6.svg)](https://www.typescriptlang.org)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![React Native](https://img.shields.io/React%20Native-0.81-61dafb.svg)](https://reactnative.dev)
+[![TypeScript](https://img.shields.io/TypeScript-5.9-3178c6.svg)](https://www.typescriptlang.org)
+[![License](https://img.shields.io/License-MIT-green.svg)](LICENSE)
 
 </div>
 
 ---
 
-## What It Does
+## Screenshots
 
-VoiceNav is a **voice-first browser** designed from the ground up for people who can't see the screen. Just speak naturally — the app understands your intent and does the rest.
+<div align="center">
 
-### Core Features
+### Home Screen
+![Home Screen](assets/screenshots/home.png)
 
-- **Real Voice Commands** — Full speech-to-text via expo-speech-recognition, no external API
-- **Voice Navigation** — "Go to Amazon", "Search for headphones", "Click add to cart"
-- **Page Reading** — "Read this page" and the app speaks the content back to you
-- **Smart Scrolling** — "Scroll down", "Go to top", "Page down"
-- **Bookmarks** — Save pages with categories, search & filter, persistent storage
-- **Voice Shortcuts** — Custom phrases like "go home" or "watch videos" trigger actions
-- **Onboarding** — Guided walkthrough for first-time users
-- **Form Interaction** — Type into search boxes, fill forms, submit — all by voice
-- **Cart Commands** — "Add to cart" finds and clicks buy buttons automatically
-- **Animated Mic Button** — Pulse ring, glow effect, and live audio waveform
-- **Haptic Feedback** — Vibration cues confirm actions without looking
-- **Quick Links** — One-tap access to Google, Amazon, YouTube, Wikipedia, Reddit, GitHub
-- **Dark & Light Themes** — High-contrast, accessible color schemes
-- **Adjustable Speech Rate** — Slow, Normal, Fast, Very Fast
+### Voice Command
+![Voice Command](assets/screenshots/voice.png)
 
-### Voice Commands
+### Browser with AI Agent
+![Browser](assets/screenshots/browser.png)
 
-| Command | What It Does |
-|---------|-------------|
-| "Go to amazon.com" | Navigates to Amazon (30+ site aliases built-in) |
-| "Search for headphones" | Types and submits a search |
-| "Click add to cart" | Finds and clicks the button (fuzzy matching) |
-| "Read this page" | Speaks page content and structure aloud |
-| "Scroll down" | Scrolls the page |
-| "Bookmark this" | Saves current page to bookmarks |
-| "Add to cart" | Finds and clicks the add-to-cart button |
-| "Go back" | Goes to previous page |
-| "Help" | Lists available commands |
+### Task Automation
+![Task Progress](assets/screenshots/task.png)
+
+### Command Palette
+![Command Palette](assets/screenshots/palette.png)
+
+### Bookmarks
+![Bookmarks](assets/screenshots/bookmarks.png)
+
+### Settings
+![Settings](assets/screenshots/settings.png)
+
+</div>
+
+---
+
+## What's New in v4
+
+### Supercomputer-Level Intelligence
+
+- **NLU Engine** — Natural Language Understanding with confidence scoring, entity extraction, fuzzy matching, and context resolution
+- **Task Automation Engine** — Multi-step task execution with state machine, templates, conditional logic, and error recovery
+- **Session Memory** — Tracks conversation context, entity references, page history, and pronoun resolution
+- **Continuous Listening** — Always-on voice mode with wake word detection and barge-in support
+- **Voice Macros** — Record and replay command sequences, built-in macros for common workflows
+- **Command Palette** — Searchable command palette with categories, recent commands, and context suggestions
+- **Task Progress Tracker** — Visual step-by-step progress with pause, resume, and cancel controls
+- **Floating Assistant** — Persistent bubble with quick actions, suggestions, and conversation history
+
+### 100+ Voice Commands
+
+| Category | Commands |
+|----------|----------|
+| **Navigation** | Go to, Open, Visit, Navigate to, Go back, Go forward, Refresh, Go home |
+| **Search** | Search for, Find, Look up, Google, What is, Who is, How to |
+| **Click** | Click, Tap, Press, Select, Click the first/second/third, Click it |
+| **Shopping** | Add to cart, Buy, Purchase, Compare prices, Sort by price, Filter, Checkout |
+| **Reading** | Read this page, Summarize, Describe, What's on screen, Scroll up/down |
+| **Forms** | Fill, Type, Enter, Submit, Sign in, Log in, Sign up, Register |
+| **Media** | Play, Pause, Next, Previous, Skip |
+| **Bookmarks** | Bookmark this, Save page, Remove bookmark |
+| **Tabs** | New tab, Close tab, Next tab, Previous tab |
+| **Utility** | Copy, Share, Download, Zoom in/out, Find on page, Help |
+
+### Multi-Step Commands
+
+Chain commands with "then":
+```
+"Search for headphones then click the first result"
+"Go to Amazon then search for laptop then sort by price"
+"Read this page then scroll down then read again"
+```
+
+### Task Templates
+
+Built-in automation for common workflows:
+```
+"Shop for headphones on Amazon"     → Navigates, searches, reads results
+"Compare prices for laptop"         → Searches across stores
+"Check my email"                    → Opens Gmail, reads inbox
+"Read news"                         → Opens Google News, reads headlines
+"Watch youtube"                     → Opens YouTube, reads trending
+```
+
+### Voice Macros
+
+Record and replay command sequences:
+```
+"Morning routine"    → Check email, read news, check weather
+"Amazon shop for X"  → Navigate to Amazon, search, read results
+"Compare prices for X" → Search Google, open top results, compare
+```
+
+### 60+ Site Aliases
+
+Just say the name — VoiceNav knows where to go:
+```
+"Go to amazon"      → amazon.com
+"Open gmail"        → mail.google.com
+"Go to github"      → github.com
+"Open youtube"      → youtube.com
+"Check news"        → news.google.com
+"Go to spotify"     → spotify.com
+```
+
+### 25+ Languages
+
+Full voice support for: English, Spanish, French, German, Italian, Portuguese, Russian, Japanese, Korean, Chinese, Arabic, Hindi, Dutch, Polish, Swedish, Danish, Finnish, Norwegian, Czech, Romanian, Hungarian, Turkish, Thai, Vietnamese, Indonesian, Greek, Hebrew
+
+---
+
+## Architecture
+
+```
+voicenav/
+├── app/                          # Expo Router screens
+│   ├── index.tsx                 # Home — voice, quick tasks, links, history
+│   ├── browser.tsx               # Browser — AI agent, command palette, tasks
+│   ├── bookmarks.tsx             # Bookmark manager with search & categories
+│   ├── onboarding.tsx            # Guided walkthrough for first-time users
+│   └── settings.tsx              # Speech, shortcuts, accessibility settings
+├── src/
+│   ├── agent/                    # AI Brain
+│   │   ├── nlu.ts                # NLU engine — intent, entities, confidence
+│   │   ├── brain.ts              # Decision engine — action selection
+│   │   ├── sessionMemory.ts      # Conversation context & entity tracking
+│   │   ├── taskEngine.ts         # Multi-step task automation
+│   │   ├── assistant.ts          # Proactive suggestions
+│   │   └── loop.ts               # Agent execution loop
+│   ├── browser/                  # WebView Integration
+│   │   ├── BrowserView.tsx       # WebView wrapper with JS injection
+│   │   ├── domExtractor.js       # Smart DOM extraction with relevance scoring
+│   │   ├── actionExecutor.js     # Click, type, scroll, form fill, keyboard
+│   │   └── types.ts              # TypeScript definitions
+│   ├── components/               # UI Components
+│   │   ├── VoiceButton.tsx       # Animated mic with pulse/glow/waveform
+│   │   ├── VoiceWaveform.tsx     # Live audio waveform bars
+│   │   ├── CommandPalette.tsx    # Searchable command palette
+│   │   ├── TaskProgress.tsx      # Task progress overlay
+│   │   └── FloatingAssistant.tsx # Persistent floating assistant
+│   ├── voice/                    # Speech I/O
+│   │   ├── speechToText.ts       # Real STT via expo-speech-recognition
+│   │   ├── textToSpeech.ts       # TTS with queue & interrupt
+│   │   ├── continuousListener.ts # Always-on voice mode
+│   │   ├── voiceMacros.ts        # Record & replay macros
+│   │   └── languages.ts          # 25+ language support
+│   ├── store/                    # State Management (Zustand)
+│   │   ├── index.ts              # App state with task & assistant state
+│   │   ├── theme.ts              # Dark/Light theme
+│   │   ├── bookmarks.ts          # Persistent bookmarks
+│   │   └── voiceCommands.ts      # Persistent voice shortcuts
+│   ├── a11y/                     # Accessibility themes
+│   └── utils/                    # Logging
+└── assets/                       # Icons & splash screens
+```
+
+---
+
+## How It Works
+
+```
+  ┌─────────────┐     ┌──────────────┐     ┌──────────────┐
+  │  You Speak  │────▶│  NLU Engine  │────▶│   Decision   │
+  │  or Type    │     │  Intent +    │     │   Engine     │
+  └─────────────┘     │  Entities +  │     │  (brain.ts)  │
+                      │  Confidence  │     └──────┬───────┘
+                      └──────────────┘            │
+                                                   ▼
+  ┌─────────────┐     ┌──────────────┐     ┌──────────────┐
+  │  You Hear   │◀────│  Text-to-    │◀────│   Action     │
+  │  Feedback   │     │  Speech      │     │   Executor   │
+  └─────────────┘     └──────────────┘     └──────┬───────┘
+                                                   │
+                      ┌──────────────┐            ▼
+                      │  Session     │     ┌──────────────┐
+                      │  Memory      │◀───▶│  DOM Extract │
+                      │  (context)   │     │  (WebView)   │
+                      └──────────────┘     └──────────────┘
+```
+
+1. **You speak** — VoiceNav captures your command via speech-to-text
+2. **NLU processes** — Intent classification, entity extraction, confidence scoring
+3. **Context resolves** — Session memory resolves pronouns and references
+4. **Brain decides** — The decision engine selects the best action
+5. **Action executes** — Click, type, scroll, navigate in the WebView
+6. **You hear feedback** — Text-to-speech confirms every action
+7. **Memory updates** — Session context tracks what happened
+
+No cloud APIs. No subscriptions. Everything runs locally on your device.
+
+---
 
 ## Getting Started
 
@@ -87,60 +239,22 @@ npm run web
 2. Run `npm start`
 3. Scan the QR code with your phone camera
 
-## Architecture
-
-```
-voicenav/
-├── app/                    # Expo Router screens
-│   ├── _layout.tsx         # Root layout with theme
-│   ├── index.tsx           # Home screen with voice, quick links, history
-│   ├── browser.tsx         # Main browser with voice control & bookmarks
-│   ├── bookmarks.tsx       # Bookmark manager with search & categories
-│   ├── onboarding.tsx      # 4-step feature walkthrough
-│   └── settings.tsx        # Speech rate, shortcuts, accessibility
-├── src/
-│   ├── agent/              # On-device AI brain
-│   │   ├── brain.ts        # Intent parser, 30+ site aliases, fuzzy matching
-│   │   └── loop.ts         # Multi-step agent execution loop
-│   ├── browser/            # WebView integration
-│   │   ├── BrowserView.tsx # WebView wrapper with JS injection
-│   │   ├── domExtractor.js # Page structure extraction
-│   │   ├── actionExecutor.js # Click, type, scroll, navigate actions
-│   │   └── types.ts        # TypeScript definitions
-│   ├── components/         # Reusable UI components
-│   │   ├── VoiceButton.tsx # Animated mic with pulse/glow/waveform
-│   │   └── VoiceWaveform.tsx # Live audio waveform bars
-│   ├── voice/              # Speech I/O
-│   │   ├── textToSpeech.ts # TTS with queue & interrupt
-│   │   └── speechToText.ts # Real STT via expo-speech-recognition
-│   ├── store/              # State management (Zustand + AsyncStorage)
-│   │   ├── index.ts        # App state
-│   │   ├── theme.ts        # Theme state
-│   │   ├── bookmarks.ts    # Persistent bookmarks
-│   │   └── voiceCommands.ts # Persistent voice shortcuts
-│   ├── a11y/               # Accessibility themes
-│   └── utils/              # Logging
-└── assets/                 # Icons & splash screens
-```
-
-## How It Works
-
-1. **You speak** — VoiceNav captures your command via speech-to-text
-2. **Brain parses intent** — Pattern matching identifies what you want (navigate, search, click, read, scroll)
-3. **Page is analyzed** — DOM extractor scans the WebView for interactive elements
-4. **Action executes** — The agent clicks buttons, types text, scrolls, or navigates
-5. **You hear feedback** — Text-to-speech confirms every action
-
-No cloud APIs. No subscriptions. Everything runs locally on your device.
+---
 
 ## Tech Stack
 
-- **Expo SDK 54** — Cross-platform React Native framework
-- **Expo Router** — File-based navigation
-- **React Native WebView** — Embedded browser
-- **Zustand** — Lightweight state management
-- **Expo Speech** — Text-to-speech
-- **Expo Haptics** — Vibration feedback
+| Technology | Purpose |
+|-----------|---------|
+| **Expo SDK 54** | Cross-platform React Native framework |
+| **Expo Router** | File-based navigation |
+| **React Native WebView** | Embedded browser with JS injection |
+| **Zustand** | Lightweight state management |
+| **expo-speech-recognition** | On-device speech-to-text |
+| **expo-speech** | Text-to-speech |
+| **expo-haptics** | Vibration feedback |
+| **AsyncStorage** | Persistent local storage |
+
+---
 
 ## Contributing
 
@@ -159,5 +273,7 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 <div align="center">
 
 **Built with care for accessibility**
+
+*VoiceNav — Because the web should be for everyone.*
 
 </div>

@@ -18,11 +18,19 @@ type AppState = {
   autoRead: boolean;
   hapticFeedback: boolean;
   continuousListening: boolean;
-  language: string; // language code
+  language: string;
+  continuousMode: 'off' | 'wake_word' | 'always_on' | 'push_to_talk';
 
   // History
   browsingHistory: string[];
   commandHistory: string[];
+
+  // Task state
+  activeTaskName: string | null;
+  taskProgress: { current: number; total: number } | null;
+
+  // Assistant messages
+  assistantMessages: Array<{ id: string; text: string; type: 'user' | 'assistant' | 'system'; timestamp: number }>;
 
   // Actions
   setCurrentUrl: (url: string) => void;
@@ -37,9 +45,14 @@ type AppState = {
   setHapticFeedback: (haptic: boolean) => void;
   setContinuousListening: (continuous: boolean) => void;
   setLanguage: (lang: string) => void;
+  setContinuousMode: (mode: 'off' | 'wake_word' | 'always_on' | 'push_to_talk') => void;
   addBrowsingHistory: (url: string) => void;
   addCommandHistory: (command: string) => void;
   clearHistory: () => void;
+  setActiveTaskName: (name: string | null) => void;
+  setTaskProgress: (progress: { current: number; total: number } | null) => void;
+  addAssistantMessage: (text: string, type: 'user' | 'assistant' | 'system') => void;
+  clearAssistantMessages: () => void;
   reset: () => void;
 };
 
@@ -56,8 +69,12 @@ const initialState = {
   hapticFeedback: true,
   continuousListening: false,
   language: 'en',
+  continuousMode: 'off' as const,
   browsingHistory: [] as string[],
   commandHistory: [] as string[],
+  activeTaskName: null as string | null,
+  taskProgress: null as { current: number; total: number } | null,
+  assistantMessages: [] as Array<{ id: string; text: string; type: 'user' | 'assistant' | 'system'; timestamp: number }>,
 };
 
 export const useAppStore = create<AppState>()((set, get) => ({
@@ -75,6 +92,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
   setHapticFeedback: (haptic) => set({ hapticFeedback: haptic }),
   setContinuousListening: (continuous) => set({ continuousListening: continuous }),
   setLanguage: (lang) => set({ language: lang }),
+  setContinuousMode: (mode) => set({ continuousMode: mode }),
 
   addBrowsingHistory: (url) => {
     const history = get().browsingHistory;
@@ -88,6 +106,17 @@ export const useAppStore = create<AppState>()((set, get) => ({
   },
 
   clearHistory: () => set({ browsingHistory: [], commandHistory: [] }),
+
+  setActiveTaskName: (name) => set({ activeTaskName: name }),
+  setTaskProgress: (progress) => set({ taskProgress: progress }),
+
+  addAssistantMessage: (text, type) => {
+    const messages = get().assistantMessages;
+    const newMsg = { id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, text, type, timestamp: Date.now() };
+    set({ assistantMessages: [...messages, newMsg].slice(-50) });
+  },
+
+  clearAssistantMessages: () => set({ assistantMessages: [] }),
 
   reset: () => set(initialState),
 }));

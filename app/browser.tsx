@@ -1,14 +1,7 @@
 import React, { useRef, useCallback, useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  ActivityIndicator,
-  Animated,
-  Platform,
-  KeyboardAvoidingView,
+  View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator,
+  Animated, Platform, KeyboardAvoidingView, ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -20,11 +13,16 @@ import BrowserView, { BrowserViewHandle } from '../src/browser/BrowserView';
 import { PageSnapshot, AgentAction, AgentContext } from '../src/browser/types';
 import { speak, stopSpeaking } from '../src/voice/textToSpeech';
 import { useSpeechRecognition } from '../src/voice/speechToText';
-import {
-  parseVoiceCommand, getAgentStep, analyzePage, getPageSuggestions,
-  hasMultipleSteps, splitIntoSteps
-} from '../src/agent/brain';
+import { understand, resolveSiteAlias } from '../src/agent/nlu';
+import { parseVoiceCommand, getAgentStep, analyzePage, getPageSuggestions } from '../src/agent/brain';
+import { addTurn, updateEntityMemory, addPageToHistory, getContextForNLU, resetSession } from '../src/agent/sessionMemory';
+import { createTask, submitTask, getActiveTask, advanceStep, cancelActiveTask, pauseActiveTask, resumeActiveTask, getTaskProgress, hasMultipleSteps, parseMultiStepCommand, matchTaskTemplate, createTaskFromTemplate } from '../src/agent/taskEngine';
+import { findMacroByVoice, expandMacro, markMacroUsed, loadMacros } from '../src/voice/voiceMacros';
+import { startContinuous, stopContinuous, handleSpeechResult, handleSpeechError, handleVolumeChange, isContinuousActive } from '../src/voice/continuousListener';
 import VoiceButton from '../src/components/VoiceButton';
+import TaskProgress from '../src/components/TaskProgress';
+import CommandPalette from '../src/components/CommandPalette';
+import type { CommandEntry } from '../src/components/CommandPalette';
 
 export default function BrowserScreen() {
   const router = useRouter();
@@ -33,8 +31,9 @@ export default function BrowserScreen() {
     currentUrl, setCurrentUrl, isLoading, setIsLoading,
     pageSnapshot, setPageSnapshot, pageTitle, setPageTitle,
     isAgentActive, setIsAgentActive, agentStatus, setAgentStatus,
-    error, setError,
-    addBrowsingHistory, addCommandHistory, speechRate,
+    error, setError, addBrowsingHistory, addCommandHistory, speechRate,
+    continuousMode, setContinuousMode, addAssistantMessage, assistantMessages,
+    activeTaskName, setActiveTaskName, taskProgress, setTaskProgress, commandHistory,
   } = useAppStore();
   const { addBookmark, isBookmarked, removeBookmark, getBookmarkByUrl } = useBookmarkStore();
   const { findShortcut } = useVoiceShortcutStore();
@@ -45,40 +44,29 @@ export default function BrowserScreen() {
   const [agentLog, setAgentLog] = useState<string[]>([]);
   const [showAgentPanel, setShowAgentPanel] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showCommandPalette, setShowCommandPalette] = useState(false);
+  const [showTaskProgress, setShowTaskProgress] = useState(false);
+  const [currentTask, setCurrentTask] = useState<any>(null);
   const statusOpacity = useRef(new Animated.Value(0)).current;
   const timeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
   const agentContextRef = useRef<AgentContext>({ stepHistory: [], retryCount: 0 });
 
-  const {
-    isListening,
-    transcript,
-    interimTranscript,
-    start: startListening,
-    stop: stopListening,
-  } = useSpeechRecognition();
+  const { isListening, transcript, interimTranscript, start: startListening, stop: stopListening } = useSpeechRecognition();
 
-  // Helper: track timeouts for cleanup
+  // Load macros on mount
+  useEffect(() => { loadMacros(); }, []);
+
+  // Cleanup
+  useEffect(() => {
+    return () => { timeoutsRef.current.forEach(id => clearTimeout(id)); timeoutsRef.current.clear(); };
+  }, []);
+
+  useEffect(() => { addBrowsingHistory(currentUrl); }, []);
+
   const trackedSetTimeout = useCallback((fn: () => void, ms: number) => {
-    const id = setTimeout(() => {
-      timeoutsRef.current.delete(id);
-      fn();
-    }, ms);
+    const id = setTimeout(() => { timeoutsRef.current.delete(id); fn(); }, ms);
     timeoutsRef.current.add(id);
     return id;
-  }, []);
-
-  // Cleanup all timeouts on unmount
-  useEffect(() => {
-    return () => {
-      timeoutsRef.current.forEach(id => clearTimeout(id));
-      timeoutsRef.current.clear();
-    };
-  }, []);
-
-  // Track initial URL in history
-  useEffect(() => {
-    addBrowsingHistory(currentUrl);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const flashStatus = useCallback(() => {
@@ -89,239 +77,208 @@ export default function BrowserScreen() {
     ]).start();
   }, [statusOpacity]);
 
-  const addLog = useCallback((msg: string) => {
-    setAgentLog((prev) => [msg, ...prev].slice(0, 30));
-  }, []);
+  const addLog = useCallback((msg: string) => { setAgentLog(prev => [msg, ...prev].slice(0, 30)); }, []);
 
-  const handleSnapshot = useCallback(
-    (snapshot: PageSnapshot) => {
-      setPageSnapshot(snapshot);
-      setPageTitle(snapshot.title);
-      if (snapshot.url !== currentUrl) {
-        setCurrentUrl(snapshot.url);
-        setUrlInput(snapshot.url);
-        addBrowsingHistory(snapshot.url);
-      }
-      // Update suggestions based on page context
-      const newSuggestions = getPageSuggestions(snapshot);
-      setSuggestions(newSuggestions);
-    },
-    [currentUrl, setCurrentUrl, setPageSnapshot, setPageTitle, addBrowsingHistory]
-  );
+  const handleSnapshot = useCallback((snapshot: PageSnapshot) => {
+    setPageSnapshot(snapshot);
+    setPageTitle(snapshot.title);
+    if (snapshot.url !== currentUrl) {
+      setCurrentUrl(snapshot.url);
+      setUrlInput(snapshot.url);
+      addBrowsingHistory(snapshot.url);
+      addPageToHistory(snapshot.url, snapshot.title, snapshot.pageType, snapshot);
+    }
+    const newSuggestions = getPageSuggestions(snapshot);
+    setSuggestions(newSuggestions);
+  }, [currentUrl, setCurrentUrl, setPageSnapshot, setPageTitle, addBrowsingHistory]);
 
-  const handleLoadStart = useCallback(() => {
-    setIsLoading(true);
-    setError(null);
-  }, [setIsLoading, setError]);
-
+  const handleLoadStart = useCallback(() => { setIsLoading(true); setError(null); }, [setIsLoading, setError]);
   const handleLoadEnd = useCallback(() => {
     setIsLoading(false);
-    trackedSetTimeout(() => {
-      browserRef.current?.extractDOM();
-    }, 300);
+    trackedSetTimeout(() => { browserRef.current?.extractDOM(); }, 300);
   }, [setIsLoading, trackedSetTimeout]);
+  const handleError = useCallback((errorMsg: string) => { setIsLoading(false); setError(errorMsg); speak('Page failed to load.'); }, [setIsLoading, setError]);
+  const handleNavigationStateChange = useCallback((navState: { url: string; canGoBack: boolean; canGoForward: boolean; loading: boolean; title: string }) => {
+    if (navState.url !== currentUrl) { setCurrentUrl(navState.url); setUrlInput(navState.url); }
+  }, [currentUrl, setCurrentUrl]);
 
-  const handleError = useCallback(
-    (errorMsg: string) => {
-      setIsLoading(false);
-      setError(errorMsg);
-      speak('Page failed to load.');
-    },
-    [setIsLoading, setError]
-  );
+  const executeAgentAction = useCallback((action: AgentAction) => {
+    addLog(`> ${action.action}: ${'speak' in action ? action.speak || '' : ''}`);
+    setAgentStatus('speak' in action ? action.speak || action.action : action.action);
+    flashStatus();
+    switch (action.action) {
+      case 'click': case 'type': case 'select': case 'scroll': case 'submit': case 'focus': case 'hover': case 'doubleClick': case 'rightClick': case 'keypress': case 'fillForm': case 'multiClick':
+        browserRef.current?.executeAction(action); break;
+      case 'navigate': setUrlInput(action.url); browserRef.current?.navigate(action.url); break;
+      case 'back': browserRef.current?.goBack(); break;
+      case 'forward': browserRef.current?.goForward(); break;
+      case 'refresh': browserRef.current?.reload(); break;
+      case 'speak': speak(action.text, { rate: speechRate }); break;
+      case 'done': setIsAgentActive(false); speak(action.speak, { rate: speechRate }); break;
+      case 'wait': break;
+    }
+  }, [addLog, setAgentStatus, flashStatus, speechRate, setIsAgentActive]);
 
-  const handleNavigationStateChange = useCallback(
-    (navState: { url: string; canGoBack: boolean; canGoForward: boolean; loading: boolean; title: string }) => {
-      if (navState.url !== currentUrl) {
-        setCurrentUrl(navState.url);
-        setUrlInput(navState.url);
+  const processSingleCommand = useCallback((command: string, stepIndex: number, totalSteps: number) => {
+    addCommandHistory(command);
+    addLog(`Step ${stepIndex + 1}/${totalSteps}: ${command}`);
+    addAssistantMessage(command, 'user');
+
+    // Check voice shortcuts
+    const shortcut = findShortcut(command);
+    if (shortcut) {
+      speak(`Shortcut: ${shortcut.phrase}`);
+      if (shortcut.action === 'navigate') { browserRef.current?.navigate(shortcut.target); return; }
+    }
+
+    // Check macros
+    const macroMatch = findMacroByVoice(command);
+    if (macroMatch) {
+      const { macro, variables } = macroMatch;
+      markMacroUsed(macro.id);
+      const steps = expandMacro(macro, variables);
+      speak(`Running macro: ${macro.name}`);
+      const task = createTask(macro.name, steps.map(s => ({ name: s.command, command: s.command })), macro.description);
+      submitTask(task);
+      setCurrentTask(task);
+      setActiveTaskName(macro.name);
+      setShowTaskProgress(true);
+      // Execute first step
+      if (steps.length > 0 && steps[0].command) {
+        processSingleCommand(steps[0].command, 0, steps.length);
       }
-    },
-    [currentUrl, setCurrentUrl]
-  );
+      return;
+    }
 
-  const executeAgentAction = useCallback(
-    (action: AgentAction) => {
-      addLog(`> ${action.action}: ${'speak' in action ? action.speak || '' : ''}`);
-      setAgentStatus('speak' in action ? action.speak || action.action : action.action);
-      flashStatus();
-
-      switch (action.action) {
-        case 'click':
-        case 'type':
-        case 'select':
-        case 'scroll':
-        case 'submit':
-          browserRef.current?.executeAction(action);
-          break;
-        case 'navigate':
-          setUrlInput(action.url);
-          browserRef.current?.navigate(action.url);
-          break;
-        case 'back':
-          browserRef.current?.goBack();
-          break;
-        case 'speak':
-          speak(action.text, { rate: speechRate });
-          break;
-        case 'done':
-          setIsAgentActive(false);
-          speak(action.speak, { rate: speechRate });
-          break;
-        case 'wait':
-          // Handled by caller
-          break;
+    // Check task templates
+    const template = matchTaskTemplate(command);
+    if (template) {
+      const variables: Record<string, string> = {};
+      const itemMatch = command.match(/(?:for|search for|buy|find|order)\s+(.+)/i);
+      if (itemMatch) variables.item = itemMatch[1].trim();
+      const storeMatch = command.match(/(?:on|from|at)\s+(\w+)/i);
+      if (storeMatch) variables.store = storeMatch[1].trim();
+      const task = createTaskFromTemplate(template, variables);
+      submitTask(task);
+      setCurrentTask(task);
+      setActiveTaskName(task.name);
+      setShowTaskProgress(true);
+      speak(`Starting task: ${task.name}`);
+      if (task.steps[0]?.command) {
+        processSingleCommand(task.steps[0].command, 0, task.steps.length);
       }
-    },
-    [addLog, setAgentStatus, flashStatus, speechRate, setIsAgentActive]
-  );
+      return;
+    }
 
-  // Process a single command with retry support
-  const processSingleCommand = useCallback(
-    (command: string, stepIndex: number, totalSteps: number) => {
-      addCommandHistory(command);
-      addLog(`Step ${stepIndex + 1}/${totalSteps}: ${command}`);
+    // Bookmark commands
+    if (/bookmark this|save this page|add bookmark/i.test(command)) {
+      if (pageSnapshot) {
+        const title = pageSnapshot.title || pageSnapshot.url;
+        const url = pageSnapshot.url;
+        if (isBookmarked(url)) { speak('This page is already bookmarked.'); }
+        else { addBookmark(title, url); speak(`Bookmarked: ${title}`); }
+      } else { speak('No page loaded to bookmark.'); }
+      return;
+    }
+    if (/remove bookmark|unbookmark/i.test(command)) {
+      if (pageSnapshot && isBookmarked(pageSnapshot.url)) {
+        const bm = getBookmarkByUrl(pageSnapshot.url);
+        if (bm) { removeBookmark(bm.id); speak('Bookmark removed.'); }
+      } else { speak('This page is not bookmarked.'); }
+      return;
+    }
 
-      // Check voice shortcuts
-      const shortcut = findShortcut(command);
-      if (shortcut) {
-        speak(`Shortcut: ${shortcut.phrase}`);
-        if (shortcut.action === 'navigate') {
-          browserRef.current?.navigate(shortcut.target);
-          return;
-        }
+    // Page analysis
+    if (/describe|what'?s on|what is on|analyze/i.test(command)) {
+      if (pageSnapshot) { speak(analyzePage(pageSnapshot), { rate: speechRate }); }
+      return;
+    }
+
+    // Standard agent processing
+    setIsAgentActive(true);
+    setAgentStatus('Thinking...');
+    addAssistantMessage('Processing...', 'assistant');
+
+    const intent = parseVoiceCommand(command, agentContextRef.current);
+    const snapshot = pageSnapshot;
+
+    if (!snapshot) {
+      speak('Page is still loading. Please wait.');
+      setIsAgentActive(false);
+      return;
+    }
+
+    agentContextRef.current = { stepHistory: [], retryCount: 0 };
+    const context = agentContextRef.current;
+
+    const { action, isComplete, needsRetry } = getAgentStep(intent, snapshot, context);
+    executeAgentAction(action);
+
+    if ('speak' in action && action.speak) { speak(action.speak, { rate: speechRate }); }
+
+    // Update session memory
+    addTurn({ command, nluResult: understand(command), action, result: 'success', pageUrl: snapshot.url, pageTitle: snapshot.title });
+    if (intent.target) updateEntityMemory({ lastElement: { id: 0, text: intent.target, role: '', label: '' } });
+
+    // Update task progress
+    const active = getActiveTask();
+    if (active) {
+      advanceStep();
+      const progress = getTaskProgress();
+      if (progress) {
+        setTaskProgress({ current: progress.current, total: progress.total });
+        setCurrentTask({ ...active });
       }
+    }
 
-      // Bookmark commands
-      if (/bookmark this|save this page|add bookmark/i.test(command)) {
-        if (pageSnapshot) {
-          const title = pageSnapshot.title || pageSnapshot.url;
-          const url = pageSnapshot.url;
-          if (isBookmarked(url)) {
-            speak('This page is already bookmarked.');
-          } else {
-            addBookmark(title, url);
-            speak(`Bookmarked: ${title}`);
-          }
-        } else {
-          speak('No page loaded to bookmark.');
-        }
-        return;
-      }
-
-      if (/remove bookmark|unbookmark/i.test(command)) {
-        if (pageSnapshot && isBookmarked(pageSnapshot.url)) {
-          const bm = getBookmarkByUrl(pageSnapshot.url);
-          if (bm) { removeBookmark(bm.id); speak('Bookmark removed.'); }
-        } else {
-          speak('This page is not bookmarked.');
-        }
-        return;
-      }
-
-      // Page analysis
-      if (/describe|what'?s on|what is on|analyze/i.test(command)) {
-        if (pageSnapshot) {
-          const summary = analyzePage(pageSnapshot);
-          speak(summary, { rate: speechRate });
-        }
-        return;
-      }
-
-      // Standard agent processing
-      setIsAgentActive(true);
-      setAgentStatus('Thinking...');
-
-      const intent = parseVoiceCommand(command);
-      const snapshot = pageSnapshot;
-
-      if (!snapshot) {
-        speak('Page is still loading. Please wait.');
-        setIsAgentActive(false);
-        return;
-      }
-
-      // Reset context for new command
-      agentContextRef.current = { stepHistory: [], retryCount: 0 };
-      const context = agentContextRef.current;
-
-      const { action, isComplete, needsRetry } = getAgentStep(intent, snapshot, context);
-      executeAgentAction(action);
-
-      if ('speak' in action && action.speak) {
-        speak(action.speak, { rate: speechRate });
-      }
-
-      if (!isComplete || needsRetry) {
-        context.stepHistory.push(command);
+    if (!isComplete || needsRetry) {
+      context.stepHistory.push(command);
+      trackedSetTimeout(() => {
+        browserRef.current?.extractDOM();
         trackedSetTimeout(() => {
-          browserRef.current?.extractDOM();
-          trackedSetTimeout(() => {
-            const updatedSnapshot = useAppStore.getState().pageSnapshot;
-            if (updatedSnapshot) {
-              if (needsRetry) context.retryCount++;
-              const step2 = getAgentStep(intent, updatedSnapshot, context);
-              executeAgentAction(step2.action);
-              if ('speak' in step2.action && step2.action.speak) {
-                speak(step2.action.speak, { rate: speechRate });
-              }
-            }
-            setIsAgentActive(false);
-          }, 800);
-        }, 1500);
-      } else {
-        trackedSetTimeout(() => setIsAgentActive(false), 1000);
-      }
-    },
-    [pageSnapshot, addCommandHistory, addLog, setIsAgentActive, setAgentStatus,
-      executeAgentAction, speechRate, findShortcut, isBookmarked, addBookmark,
-      removeBookmark, getBookmarkByUrl, trackedSetTimeout]
-  );
+          const updatedSnapshot = useAppStore.getState().pageSnapshot;
+          if (updatedSnapshot) {
+            if (needsRetry) context.retryCount++;
+            const step2 = getAgentStep(intent, updatedSnapshot, context);
+            executeAgentAction(step2.action);
+            if ('speak' in step2.action && step2.action.speak) { speak(step2.action.speak, { rate: speechRate }); }
+          }
+          setIsAgentActive(false);
+        }, 800);
+      }, 1500);
+    } else {
+      trackedSetTimeout(() => setIsAgentActive(false), 1000);
+    }
+  }, [pageSnapshot, addCommandHistory, addLog, setIsAgentActive, setAgentStatus, executeAgentAction, speechRate, findShortcut, isBookmarked, addBookmark, removeBookmark, getBookmarkByUrl, trackedSetTimeout, addAssistantMessage, setActiveTaskName, setTaskProgress]);
 
-  // Main command processor — handles multi-step commands
-  const processCommand = useCallback(
-    (command: string) => {
-      if (!command.trim()) return;
-
-      if (hasMultipleSteps(command)) {
-        const steps = splitIntoSteps(command);
-        addLog(`Multi-step: ${steps.length} commands`);
-        steps.forEach((step, i) => {
-          trackedSetTimeout(() => {
-            processSingleCommand(step, i, steps.length);
-          }, i * 3000); // Stagger steps by 3 seconds
-        });
-      } else {
-        processSingleCommand(command, 0, 1);
-      }
-    },
-    [processSingleCommand, addLog, trackedSetTimeout]
-  );
+  const processCommand = useCallback((command: string) => {
+    if (!command.trim()) return;
+    if (hasMultipleSteps(command)) {
+      const steps = parseMultiStepCommand(command);
+      addLog(`Multi-step: ${steps.length} commands`);
+      steps.forEach((step, i) => {
+        trackedSetTimeout(() => { processSingleCommand(step, i, steps.length); }, i * 3000);
+      });
+    } else {
+      processSingleCommand(command, 0, 1);
+    }
+  }, [processSingleCommand, addLog, trackedSetTimeout]);
 
   const handleVoiceToggle = useCallback(() => {
     if (isListening) {
       stopListening();
-      if (transcript) {
-        processCommand(transcript);
-      }
+      if (transcript) processCommand(transcript);
     } else {
-      stopSpeaking(); // Barge-in: stop TTS when user starts speaking
+      stopSpeaking();
       startListening({
-        onResult: (text, isFinal) => {
-          if (isFinal) processCommand(text);
-        },
-        onError: () => {
-          speak('Voice error. Type your command instead.');
-        },
+        onResult: (text, isFinal) => { if (isFinal) processCommand(text); },
+        onError: () => { speak('Voice error. Type your command instead.'); },
       });
     }
   }, [isListening, transcript, startListening, stopListening, processCommand]);
 
   const handleSubmitCommand = useCallback(() => {
-    if (commandInput.trim()) {
-      processCommand(commandInput.trim());
-      setCommandInput('');
-    }
+    if (commandInput.trim()) { processCommand(commandInput.trim()); setCommandInput(''); }
   }, [commandInput, processCommand]);
 
   const handleSubmitUrl = useCallback(() => {
@@ -340,84 +297,72 @@ export default function BrowserScreen() {
     if (isBookmarked(url)) {
       const bm = getBookmarkByUrl(url);
       if (bm) { removeBookmark(bm.id); speak('Bookmark removed'); }
-    } else {
-      addBookmark(title, url);
-      speak(`Bookmarked: ${title}`);
-    }
+    } else { addBookmark(title, url); speak(`Bookmarked: ${title}`); }
   }, [pageSnapshot, isBookmarked, addBookmark, removeBookmark, getBookmarkByUrl]);
 
   const handleAction = useCallback((result: { success: boolean; error?: string }) => {
-    if (result.success) {
-      addLog('Action completed');
-    } else {
-      addLog(`Action failed: ${result.error}`);
-    }
+    addLog(result.success ? 'Action completed' : `Action failed: ${result.error}`);
   }, [addLog]);
 
-  const handleSuggestionPress = useCallback((suggestion: string) => {
-    processCommand(suggestion);
-  }, [processCommand]);
+  const handleSuggestionPress = useCallback((suggestion: string) => { processCommand(suggestion); }, [processCommand]);
+
+  // Command palette entries
+  const commandEntries: CommandEntry[] = [
+    { id: 'nav-home', name: 'Go Home', description: 'Navigate to Google homepage', category: 'Navigation', icon: 'home', action: 'go home' },
+    { id: 'nav-back', name: 'Go Back', description: 'Go to previous page', category: 'Navigation', icon: 'arrow-back', action: 'go back' },
+    { id: 'nav-forward', name: 'Go Forward', description: 'Go to next page', category: 'Navigation', icon: 'arrow-forward', action: 'go forward' },
+    { id: 'nav-refresh', name: 'Refresh', description: 'Reload current page', category: 'Navigation', icon: 'refresh', action: 'refresh' },
+    { id: 'shop-cart', name: 'Add to Cart', description: 'Add current item to shopping cart', category: 'Shopping', icon: 'cart', action: 'add to cart' },
+    { id: 'shop-buy', name: 'Buy Now', description: 'Purchase current item', category: 'Shopping', icon: 'card', action: 'buy now' },
+    { id: 'shop-compare', name: 'Compare Prices', description: 'Search for price comparisons', category: 'Shopping', icon: 'pricetag', action: 'compare prices' },
+    { id: 'read-page', name: 'Read Page', description: 'Read and summarize current page', category: 'Reading', icon: 'book', action: 'read this page' },
+    { id: 'read-scroll', name: 'Scroll Down', description: 'Scroll page down', category: 'Reading', icon: 'arrow-down', action: 'scroll down' },
+    { id: 'form-submit', name: 'Submit Form', description: 'Submit the current form', category: 'Forms', icon: 'send', action: 'submit the form' },
+    { id: 'form-login', name: 'Sign In', description: 'Click sign in button', category: 'Forms', icon: 'log-in', action: 'sign in' },
+    { id: 'media-play', name: 'Play', description: 'Play video or audio', category: 'Media', icon: 'play', action: 'play' },
+    { id: 'media-pause', name: 'Pause', description: 'Pause playback', category: 'Media', icon: 'pause', action: 'pause' },
+    { id: 'bm-save', name: 'Bookmark Page', description: 'Save current page as bookmark', category: 'Custom', icon: 'bookmark', action: 'bookmark this page' },
+    { id: 'help', name: 'Help', description: 'Show available commands', category: 'Custom', icon: 'help-circle', action: 'help' },
+  ];
 
   const bookmarked = pageSnapshot ? isBookmarked(pageSnapshot.url) : false;
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       {/* Top Bar */}
       <View style={styles.topBar}>
         <TouchableOpacity onPress={() => router.back()} style={styles.navButton} accessibilityLabel="Go home">
           <Ionicons name="home" size={22} color={COLORS.dark.text} />
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.urlBar} onPress={() => setShowUrlBar(!showUrlBar)} accessibilityLabel="Current URL">
-          {isLoading ? (
-            <ActivityIndicator size="small" color={COLORS.dark.primary} style={{ marginRight: 8 }} />
-          ) : (
-            <Ionicons name="lock-closed" size={14} color={COLORS.dark.textMuted} style={{ marginRight: 8 }} />
-          )}
-          <Text style={styles.urlText} numberOfLines={1}>
-            {pageTitle || currentUrl.replace(/^https?:\/\//, '').substring(0, 40)}
-          </Text>
+          {isLoading ? <ActivityIndicator size="small" color={COLORS.dark.primary} style={{ marginRight: 8 }} /> : <Ionicons name="lock-closed" size={14} color={COLORS.dark.textMuted} style={{ marginRight: 8 }} />}
+          <Text style={styles.urlText} numberOfLines={1}>{pageTitle || currentUrl.replace(/^https?:\/\//, '').substring(0, 40)}</Text>
         </TouchableOpacity>
-
         <TouchableOpacity onPress={handleToggleBookmark} style={[styles.navButton, bookmarked && styles.navButtonActive]} accessibilityLabel={bookmarked ? 'Remove bookmark' : 'Bookmark page'}>
           <Ionicons name={bookmarked ? 'bookmark' : 'bookmark-outline'} size={22} color={bookmarked ? COLORS.dark.primary : COLORS.dark.text} />
         </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => browserRef.current?.extractDOM()} style={styles.navButton} accessibilityLabel="Refresh page">
-          <Ionicons name="refresh" size={22} color={COLORS.dark.text} />
+        <TouchableOpacity onPress={() => setShowCommandPalette(true)} style={styles.navButton} accessibilityLabel="Command palette">
+          <Ionicons name="terminal" size={22} color={COLORS.dark.accent} />
         </TouchableOpacity>
       </View>
 
       {/* URL Edit Bar */}
       {showUrlBar && (
         <View style={styles.urlEditBar}>
-          <TextInput style={styles.urlInput} value={urlInput} onChangeText={setUrlInput} onSubmitEditing={handleSubmitUrl} autoCapitalize="none" autoCorrect={false} keyboardType="url" returnKeyType="go" placeholder="Enter URL..." placeholderTextColor={COLORS.dark.textMuted} accessibilityLabel="Web address" />
-          <TouchableOpacity onPress={handleSubmitUrl} style={styles.urlGoButton}>
-            <Ionicons name="arrow-forward" size={20} color={COLORS.dark.text} />
-          </TouchableOpacity>
+          <TextInput style={styles.urlInput} value={urlInput} onChangeText={setUrlInput} onSubmitEditing={handleSubmitUrl} autoCapitalize="none" autoCorrect={false} keyboardType="url" returnKeyType="go" placeholder="Enter URL..." placeholderTextColor={COLORS.dark.textMuted} />
+          <TouchableOpacity onPress={handleSubmitUrl} style={styles.urlGoButton}><Ionicons name="arrow-forward" size={20} color={COLORS.dark.text} /></TouchableOpacity>
         </View>
       )}
 
       {/* Status Bar */}
-      <Animated.View style={[styles.statusBar, { opacity: statusOpacity }]}>
-        <Text style={styles.statusText}>{agentStatus}</Text>
-      </Animated.View>
+      <Animated.View style={[styles.statusBar, { opacity: statusOpacity }]}><Text style={styles.statusText}>{agentStatus}</Text></Animated.View>
+
+      {/* Task Progress */}
+      <TaskProgress task={currentTask} visible={showTaskProgress && !!currentTask} onCancel={() => { cancelActiveTask(); setShowTaskProgress(false); setCurrentTask(null); setActiveTaskName(null); setTaskProgress(null); }} onPause={() => pauseActiveTask()} onResume={() => resumeActiveTask()} onDismiss={() => { setShowTaskProgress(false); setCurrentTask(null); setActiveTaskName(null); setTaskProgress(null); }} />
 
       {/* Browser */}
       <View style={styles.browserContainer}>
-        <BrowserView
-          ref={browserRef}
-          url={currentUrl}
-          onSnapshot={handleSnapshot}
-          onAction={handleAction}
-          onLoadStart={handleLoadStart}
-          onLoadEnd={handleLoadEnd}
-          onError={handleError}
-          onNavigationStateChange={handleNavigationStateChange}
-        />
+        <BrowserView ref={browserRef} url={currentUrl} onSnapshot={handleSnapshot} onAction={handleAction} onLoadStart={handleLoadStart} onLoadEnd={handleLoadEnd} onError={handleError} onNavigationStateChange={handleNavigationStateChange} />
       </View>
 
       {/* Suggestions Bar */}
@@ -425,7 +370,7 @@ export default function BrowserScreen() {
         <View style={styles.suggestionsBar}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.suggestionsContent}>
             {suggestions.map((s, i) => (
-              <TouchableOpacity key={i} style={styles.suggestionChip} onPress={() => handleSuggestionPress(s)} accessibilityLabel={`Suggestion: ${s}`}>
+              <TouchableOpacity key={i} style={styles.suggestionChip} onPress={() => handleSuggestionPress(s)}>
                 <Text style={styles.suggestionText}>{s}</Text>
               </TouchableOpacity>
             ))}
@@ -435,135 +380,65 @@ export default function BrowserScreen() {
 
       {/* Bottom Panel */}
       <View style={styles.bottomPanel}>
-        {/* Quick actions */}
         <View style={styles.quickActions}>
-          <TouchableOpacity style={styles.quickAction} onPress={() => browserRef.current?.goBack()} accessibilityLabel="Go back">
-            <Ionicons name="arrow-back" size={20} color={COLORS.dark.text} />
+          <TouchableOpacity style={styles.quickAction} onPress={() => browserRef.current?.goBack()}><Ionicons name="arrow-back" size={20} color={COLORS.dark.text} /></TouchableOpacity>
+          <TouchableOpacity style={styles.quickAction} onPress={() => browserRef.current?.goForward()}><Ionicons name="arrow-forward" size={20} color={COLORS.dark.text} /></TouchableOpacity>
+          <TouchableOpacity style={styles.quickAction} onPress={() => { if (pageSnapshot) speak(analyzePage(pageSnapshot), { rate: speechRate }); }}><Ionicons name="eye" size={20} color={COLORS.dark.accent} /></TouchableOpacity>
+          <TouchableOpacity style={styles.quickAction} onPress={() => stopSpeaking()}><Ionicons name="volume-mute" size={20} color={COLORS.dark.warning} /></TouchableOpacity>
+          <TouchableOpacity style={[styles.quickAction, continuousMode !== 'off' && styles.quickActionActive]} onPress={() => setContinuousMode(continuousMode === 'off' ? 'always_on' : 'off')}>
+            <Ionicons name={continuousMode !== 'off' ? 'radio-button-on' : 'radio-button-off'} size={20} color={continuousMode !== 'off' ? COLORS.dark.success : COLORS.dark.text} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.quickAction} onPress={() => browserRef.current?.goForward()} accessibilityLabel="Go forward">
-            <Ionicons name="arrow-forward" size={20} color={COLORS.dark.text} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.quickAction} onPress={() => { if (pageSnapshot) speak(analyzePage(pageSnapshot), { rate: speechRate }); }} accessibilityLabel="Describe page">
-            <Ionicons name="eye" size={20} color={COLORS.dark.accent} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.quickAction} onPress={() => stopSpeaking()} accessibilityLabel="Stop speaking">
-            <Ionicons name="volume-mute" size={20} color={COLORS.dark.warning} />
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.quickAction, showAgentPanel && styles.quickActionActive]} onPress={() => setShowAgentPanel(!showAgentPanel)} accessibilityLabel="Toggle agent log">
-            <Ionicons name="terminal" size={20} color={showAgentPanel ? COLORS.dark.primary : COLORS.dark.text} />
-          </TouchableOpacity>
+          <TouchableOpacity style={[styles.quickAction, showAgentPanel && styles.quickActionActive]} onPress={() => setShowAgentPanel(!showAgentPanel)}><Ionicons name="terminal" size={20} color={showAgentPanel ? COLORS.dark.primary : COLORS.dark.text} /></TouchableOpacity>
         </View>
 
-        {/* Command Input + Voice */}
         <View style={styles.commandBar}>
           <VoiceButton isListening={isListening} interimText={interimTranscript} onPress={handleVoiceToggle} size={38} />
-          <TextInput style={styles.commandInput} value={commandInput} onChangeText={setCommandInput} onSubmitEditing={handleSubmitCommand} placeholder="Say or type a command..." placeholderTextColor={COLORS.dark.textMuted} returnKeyType="send" accessibilityLabel="Command input" />
+          <TextInput style={styles.commandInput} value={commandInput} onChangeText={setCommandInput} onSubmitEditing={handleSubmitCommand} placeholder="Say or type a command..." placeholderTextColor={COLORS.dark.textMuted} returnKeyType="send" />
           {commandInput.length > 0 && (
-            <TouchableOpacity onPress={handleSubmitCommand} style={styles.sendButton}>
-              <Ionicons name="send" size={18} color={COLORS.dark.text} />
-            </TouchableOpacity>
+            <TouchableOpacity onPress={handleSubmitCommand} style={styles.sendButton}><Ionicons name="send" size={18} color={COLORS.dark.text} /></TouchableOpacity>
           )}
         </View>
 
-        {/* Agent Log Panel */}
         {showAgentPanel && (
           <View style={styles.agentPanel}>
             <Text style={styles.agentPanelTitle}>Agent Log</Text>
-            {agentLog.length === 0 ? (
-              <Text style={styles.agentPanelEmpty}>No actions yet</Text>
-            ) : (
-              agentLog.map((log, i) => (
-                <Text key={i} style={styles.agentPanelLog}>{log}</Text>
-              ))
-            )}
+            {agentLog.length === 0 ? <Text style={styles.agentPanelEmpty}>No actions yet</Text> : agentLog.map((log, i) => <Text key={i} style={styles.agentPanelLog}>{log}</Text>)}
           </View>
         )}
       </View>
+
+      {/* Command Palette */}
+      <CommandPalette visible={showCommandPalette} onClose={() => setShowCommandPalette(false)} onExecute={processCommand} commands={commandEntries} recentCommands={commandHistory.slice(0, 10)} contextSuggestions={suggestions} />
     </KeyboardAvoidingView>
   );
 }
 
-// Need ScrollView import for suggestions
-import { ScrollView } from 'react-native';
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.dark.background },
-  topBar: {
-    flexDirection: 'row', alignItems: 'center', paddingHorizontal: SPACING.sm,
-    paddingTop: Platform.OS === 'ios' ? 56 : 36, paddingBottom: SPACING.sm,
-    backgroundColor: COLORS.dark.surface, borderBottomWidth: 1, borderBottomColor: COLORS.dark.border, gap: SPACING.xs,
-  },
-  navButton: {
-    width: 38, height: 38, borderRadius: 19, backgroundColor: COLORS.dark.surfaceLight,
-    justifyContent: 'center', alignItems: 'center',
-  },
+  topBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: SPACING.sm, paddingTop: Platform.OS === 'ios' ? 56 : 36, paddingBottom: SPACING.sm, backgroundColor: COLORS.dark.surface, borderBottomWidth: 1, borderBottomColor: COLORS.dark.border, gap: SPACING.xs },
+  navButton: { width: 38, height: 38, borderRadius: 19, backgroundColor: COLORS.dark.surfaceLight, justifyContent: 'center', alignItems: 'center' },
   navButtonActive: { backgroundColor: COLORS.dark.primary + '20' },
-  urlBar: {
-    flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.dark.surfaceLight,
-    borderRadius: RADIUS.sm, paddingHorizontal: SPACING.sm, paddingVertical: SPACING.sm, height: 38,
-  },
+  urlBar: { flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.dark.surfaceLight, borderRadius: RADIUS.sm, paddingHorizontal: SPACING.sm, paddingVertical: SPACING.sm, height: 38 },
   urlText: { flex: 1, fontSize: FONT_SIZE.sm, color: COLORS.dark.text },
-  urlEditBar: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.dark.surface,
-    paddingHorizontal: SPACING.md, paddingVertical: SPACING.sm, borderBottomWidth: 1, borderBottomColor: COLORS.dark.border,
-  },
-  urlInput: {
-    flex: 1, height: 40, backgroundColor: COLORS.dark.surfaceLight, borderRadius: RADIUS.sm,
-    paddingHorizontal: SPACING.sm, color: COLORS.dark.text, fontSize: FONT_SIZE.sm, marginRight: SPACING.sm,
-  },
-  urlGoButton: {
-    width: 36, height: 36, borderRadius: 18, backgroundColor: COLORS.dark.primary,
-    justifyContent: 'center', alignItems: 'center',
-  },
-  statusBar: {
-    backgroundColor: COLORS.dark.primary, paddingVertical: 4, paddingHorizontal: SPACING.md,
-    position: 'absolute', top: Platform.OS === 'ios' ? 96 : 76, left: 0, right: 0, zIndex: 10,
-  },
+  urlEditBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.dark.surface, paddingHorizontal: SPACING.md, paddingVertical: SPACING.sm, borderBottomWidth: 1, borderBottomColor: COLORS.dark.border },
+  urlInput: { flex: 1, height: 40, backgroundColor: COLORS.dark.surfaceLight, borderRadius: RADIUS.sm, paddingHorizontal: SPACING.sm, color: COLORS.dark.text, fontSize: FONT_SIZE.sm, marginRight: SPACING.sm },
+  urlGoButton: { width: 36, height: 36, borderRadius: 18, backgroundColor: COLORS.dark.primary, justifyContent: 'center', alignItems: 'center' },
+  statusBar: { backgroundColor: COLORS.dark.primary, paddingVertical: 4, paddingHorizontal: SPACING.md, position: 'absolute', top: Platform.OS === 'ios' ? 96 : 76, left: 0, right: 0, zIndex: 10 },
   statusText: { color: COLORS.dark.text, fontSize: FONT_SIZE.xs, fontWeight: '600', textAlign: 'center' },
   browserContainer: { flex: 1 },
-  suggestionsBar: {
-    backgroundColor: COLORS.dark.surface, borderTopWidth: 1, borderTopColor: COLORS.dark.border,
-    paddingVertical: SPACING.xs,
-  },
+  suggestionsBar: { backgroundColor: COLORS.dark.surface, borderTopWidth: 1, borderTopColor: COLORS.dark.border, paddingVertical: SPACING.xs },
   suggestionsContent: { paddingHorizontal: SPACING.md, gap: SPACING.xs },
-  suggestionChip: {
-    paddingHorizontal: SPACING.md, paddingVertical: SPACING.xs + 2,
-    backgroundColor: COLORS.dark.accent + '15', borderRadius: RADIUS.full,
-    borderWidth: 1, borderColor: COLORS.dark.accent + '30',
-  },
+  suggestionChip: { paddingHorizontal: SPACING.md, paddingVertical: SPACING.xs + 2, backgroundColor: COLORS.dark.accent + '15', borderRadius: RADIUS.full, borderWidth: 1, borderColor: COLORS.dark.accent + '30' },
   suggestionText: { fontSize: FONT_SIZE.sm, color: COLORS.dark.accent, fontWeight: '500' },
-  bottomPanel: {
-    backgroundColor: COLORS.dark.surface, borderTopWidth: 1, borderTopColor: COLORS.dark.border,
-  },
-  quickActions: {
-    flexDirection: 'row', justifyContent: 'space-around', paddingVertical: SPACING.sm,
-    paddingHorizontal: SPACING.md, borderBottomWidth: 1, borderBottomColor: COLORS.dark.border,
-  },
-  quickAction: {
-    width: 38, height: 38, borderRadius: 19, backgroundColor: COLORS.dark.surfaceLight,
-    justifyContent: 'center', alignItems: 'center',
-  },
+  bottomPanel: { backgroundColor: COLORS.dark.surface, borderTopWidth: 1, borderTopColor: COLORS.dark.border },
+  quickActions: { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: SPACING.sm, paddingHorizontal: SPACING.md, borderBottomWidth: 1, borderBottomColor: COLORS.dark.border },
+  quickAction: { width: 38, height: 38, borderRadius: 19, backgroundColor: COLORS.dark.surfaceLight, justifyContent: 'center', alignItems: 'center' },
   quickActionActive: { backgroundColor: COLORS.dark.primary + '30', borderWidth: 1, borderColor: COLORS.dark.primary },
-  commandBar: {
-    flexDirection: 'row', alignItems: 'center', paddingHorizontal: SPACING.md,
-    paddingVertical: SPACING.sm, gap: SPACING.sm,
-  },
-  commandInput: {
-    flex: 1, height: 42, backgroundColor: COLORS.dark.surfaceLight, borderRadius: RADIUS.sm,
-    paddingHorizontal: SPACING.sm, color: COLORS.dark.text, fontSize: FONT_SIZE.md,
-  },
-  sendButton: {
-    width: 36, height: 36, borderRadius: 18, backgroundColor: COLORS.dark.primary,
-    justifyContent: 'center', alignItems: 'center',
-  },
+  commandBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: SPACING.md, paddingVertical: SPACING.sm, gap: SPACING.sm },
+  commandInput: { flex: 1, height: 42, backgroundColor: COLORS.dark.surfaceLight, borderRadius: RADIUS.sm, paddingHorizontal: SPACING.sm, color: COLORS.dark.text, fontSize: FONT_SIZE.md },
+  sendButton: { width: 36, height: 36, borderRadius: 18, backgroundColor: COLORS.dark.primary, justifyContent: 'center', alignItems: 'center' },
   agentPanel: { maxHeight: 150, paddingHorizontal: SPACING.md, paddingBottom: SPACING.sm },
-  agentPanelTitle: {
-    fontSize: FONT_SIZE.xs, fontWeight: '700', color: COLORS.dark.accent,
-    marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1,
-  },
+  agentPanelTitle: { fontSize: FONT_SIZE.xs, fontWeight: '700', color: COLORS.dark.accent, marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 },
   agentPanelEmpty: { fontSize: FONT_SIZE.xs, color: COLORS.dark.textMuted, fontStyle: 'italic' },
-  agentPanelLog: {
-    fontSize: FONT_SIZE.xs, color: COLORS.dark.textSecondary,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace', marginBottom: 2,
-  },
+  agentPanelLog: { fontSize: FONT_SIZE.xs, color: COLORS.dark.textSecondary, fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace', marginBottom: 2 },
 });
