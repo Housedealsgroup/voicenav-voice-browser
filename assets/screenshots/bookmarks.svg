@@ -1,67 +1,67 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" fill="none">
-  <rect width="390" height="844" rx="40" fill="#0a0a0a"/>
-  <rect x="0" y="0" width="390" height="44" fill="#0a0a0a"/>
+  <rect width="390" height="844" rx="40" fill="#0B0B1E"/>
+  <rect x="0" y="0" width="390" height="44" fill="#0B0B1E"/>
   <text x="195" y="28" text-anchor="middle" fill="white" font-family="system-ui" font-size="14" font-weight="600">9:41</text>
 
   <!-- Header -->
   <text x="195" y="80" text-anchor="middle" fill="white" font-family="system-ui" font-size="22" font-weight="700">Bookmarks</text>
 
-  <!-- Search bar -->
-  <rect x="30" y="100" width="330" height="45" rx="12" fill="#1a1a2e"/>
-  <text x="55" y="128" fill="#666" font-family="system-ui" font-size="14">Search bookmarks...</text>
+  <!-- Search -->
+  <rect x="30" y="100" width="330" height="45" rx="12" fill="#13132D"/>
+  <text x="55" y="128" fill="#6A6A8A" font-family="system-ui" font-size="14">Search bookmarks...</text>
 
   <!-- Categories -->
-  <rect x="30" y="160" width="100" height="35" rx="17" fill="#00d4ff"/>
+  <rect x="30" y="160" width="100" height="35" rx="17" fill="#7C5CFC"/>
   <text x="80" y="183" text-anchor="middle" fill="white" font-family="system-ui" font-size="12" font-weight="600">All</text>
-  <rect x="140" y="160" width="100" height="35" rx="17" fill="#1a1a2e"/>
-  <text x="190" y="183" text-anchor="middle" fill="#888" font-family="system-ui" font-size="12">Shopping</text>
-  <rect x="250" y="160" width="100" height="35" rx="17" fill="#1a1a2e"/>
-  <text x="300" y="183" text-anchor="middle" fill="#888" font-family="system-ui" font-size="12">News</text>
+  <rect x="140" y="160" width="100" height="35" rx="17" fill="#13132D"/>
+  <text x="190" y="183" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="12">Shopping</text>
+  <rect x="250" y="160" width="100" height="35" rx="17" fill="#13132D"/>
+  <text x="300" y="183" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="12">News</text>
 
-  <!-- Bookmark items -->
-  <rect x="30" y="215" width="330" height="80" rx="15" fill="#1a1a2e"/>
-  <circle cx="65" cy="255" r="20" fill="#ff9900"/>
+  <!-- Items -->
+  <rect x="30" y="215" width="330" height="80" rx="15" fill="#13132D"/>
+  <circle cx="65" cy="255" r="20" fill="#FF9900"/>
   <text x="65" y="260" text-anchor="middle" fill="white" font-family="system-ui" font-size="16" font-weight="700">A</text>
   <text x="100" y="245" fill="white" font-family="system-ui" font-size="15" font-weight="600">Amazon</text>
-  <text x="100" y="265" fill="#888" font-family="system-ui" font-size="12">amazon.com</text>
-  <text x="330" y="255" text-anchor="end" fill="#666" font-family="system-ui" font-size="11">Shopping</text>
+  <text x="100" y="265" fill="#6A6A8A" font-family="system-ui" font-size="12">amazon.com</text>
+  <text x="330" y="255" text-anchor="end" fill="#4A4A6A" font-family="system-ui" font-size="11">Shopping</text>
 
-  <rect x="30" y="305" width="330" height="80" rx="15" fill="#1a1a2e"/>
-  <circle cx="65" cy="345" r="20" fill="#4285f4"/>
+  <rect x="30" y="305" width="330" height="80" rx="15" fill="#13132D"/>
+  <circle cx="65" cy="345" r="20" fill="#4285F4"/>
   <text x="65" y="350" text-anchor="middle" fill="white" font-family="system-ui" font-size="16" font-weight="700">G</text>
   <text x="100" y="335" fill="white" font-family="system-ui" font-size="15" font-weight="600">Google</text>
-  <text x="100" y="355" fill="#888" font-family="system-ui" font-size="12">google.com</text>
-  <text x="330" y="345" text-anchor="end" fill="#666" font-family="system-ui" font-size="11">Search</text>
+  <text x="100" y="355" fill="#6A6A8A" font-family="system-ui" font-size="12">google.com</text>
+  <text x="330" y="345" text-anchor="end" fill="#4A4A6A" font-family="system-ui" font-size="11">Search</text>
 
-  <rect x="30" y="395" width="330" height="80" rx="15" fill="#1a1a2e"/>
-  <circle cx="65" cy="435" r="20" fill="#ff0000"/>
+  <rect x="30" y="395" width="330" height="80" rx="15" fill="#13132D"/>
+  <circle cx="65" cy="435" r="20" fill="#FF0000"/>
   <text x="65" y="440" text-anchor="middle" fill="white" font-family="system-ui" font-size="16" font-weight="700">Y</text>
   <text x="100" y="425" fill="white" font-family="system-ui" font-size="15" font-weight="600">YouTube</text>
-  <text x="100" y="445" fill="#888" font-family="system-ui" font-size="12">youtube.com</text>
-  <text x="330" y="435" text-anchor="end" fill="#666" font-family="system-ui" font-size="11">Media</text>
+  <text x="100" y="445" fill="#6A6A8A" font-family="system-ui" font-size="12">youtube.com</text>
+  <text x="330" y="435" text-anchor="end" fill="#4A4A6A" font-family="system-ui" font-size="11">Media</text>
 
-  <rect x="30" y="485" width="330" height="80" rx="15" fill="#1a1a2e"/>
-  <circle cx="65" cy="525" r="20" fill="#1db954"/>
+  <rect x="30" y="485" width="330" height="80" rx="15" fill="#13132D"/>
+  <circle cx="65" cy="525" r="20" fill="#1DB954"/>
   <text x="65" y="530" text-anchor="middle" fill="white" font-family="system-ui" font-size="16" font-weight="700">S</text>
   <text x="100" y="515" fill="white" font-family="system-ui" font-size="15" font-weight="600">Spotify</text>
-  <text x="100" y="535" fill="#888" font-family="system-ui" font-size="12">spotify.com</text>
-  <text x="330" y="525" text-anchor="end" fill="#666" font-family="system-ui" font-size="11">Music</text>
+  <text x="100" y="535" fill="#6A6A8A" font-family="system-ui" font-size="12">spotify.com</text>
+  <text x="330" y="525" text-anchor="end" fill="#4A4A6A" font-family="system-ui" font-size="11">Music</text>
 
-  <rect x="30" y="575" width="330" height="80" rx="15" fill="#1a1a2e"/>
-  <circle cx="65" cy="615" r="20" fill="#ff6600"/>
+  <rect x="30" y="575" width="330" height="80" rx="15" fill="#13132D"/>
+  <circle cx="65" cy="615" r="20" fill="#FF6600"/>
   <text x="65" y="620" text-anchor="middle" fill="white" font-family="system-ui" font-size="16" font-weight="700">G</text>
   <text x="100" y="605" fill="white" font-family="system-ui" font-size="15" font-weight="600">GitHub</text>
-  <text x="100" y="625" fill="#888" font-family="system-ui" font-size="12">github.com</text>
-  <text x="330" y="615" text-anchor="end" fill="#666" font-family="system-ui" font-size="11">Dev</text>
+  <text x="100" y="625" fill="#6A6A8A" font-family="system-ui" font-size="12">github.com</text>
+  <text x="330" y="615" text-anchor="end" fill="#4A4A6A" font-family="system-ui" font-size="11">Dev</text>
 
-  <!-- Add bookmark FAB -->
-  <circle cx="330" cy="700" r="28" fill="#00d4ff"/>
+  <!-- FAB -->
+  <circle cx="330" cy="700" r="28" fill="#00E5FF"/>
   <text x="330" y="707" text-anchor="middle" fill="white" font-family="system-ui" font-size="24" font-weight="300">+</text>
 
   <!-- Bottom nav -->
-  <rect x="0" y="750" width="390" height="94" fill="#0a0a0a"/>
-  <rect x="30" y="760" width="330" height="70" rx="20" fill="#1a1a2e"/>
-  <text x="85" y="800" text-anchor="middle" fill="#666" font-family="system-ui" font-size="10">Home</text>
-  <text x="195" y="800" text-anchor="middle" fill="#666" font-family="system-ui" font-size="10">Browser</text>
-  <text x="305" y="800" text-anchor="middle" fill="#00d4ff" font-family="system-ui" font-size="10">Settings</text>
+  <rect x="0" y="750" width="390" height="94" fill="#0B0B1E"/>
+  <rect x="30" y="760" width="330" height="70" rx="20" fill="#13132D"/>
+  <text x="85" y="800" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="10">Home</text>
+  <text x="195" y="800" text-anchor="middle" fill="#6A6A8A" font-family="system-ui" font-size="10">Browser</text>
+  <text x="305" y="800" text-anchor="middle" fill="#00E5FF" font-family="system-ui" font-size="10">Settings</text>
 </svg>

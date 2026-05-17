@@ -26,23 +26,6 @@ A fully accessible mobile browser that understands your voice and completes comp
 
 ---
 
-## **Watch the Demo**
-
-<div align="center">
-
-<!-- Replace the URL below with your actual video file in the repo -->
-<!-- GitHub supports .mp4 files directly in README — just upload to assets/ and link here -->
-
-https://github.com/Housedealsgroup/voicenav/assets/demo.mp4
-
-**One tap. One voice command. The entire web at your command.**
-
-[![VoiceNav Demo on YouTube](https://img.shields.io/badge/%E2%96%B6_Watch_Full_Demo_on_YouTube-FF006E?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/watch?v=YOUR_VIDEO_ID)
-
-</div>
-
----
-
 ## **Screenshots**
 
 <div align="center">
@@ -715,23 +698,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 ---
-
-## **Acknowledgments**
-
-<div align="center">
-
-| Role | Contributor |
-|------|-------------|
-| **Creator & Project Owner** | [HDG (HouseDealsGroup)](https://github.com/Housedealsgroup) |
-| **Lead Developer** | [GITLAWB](https://github.com/Housedealsgroup) |
-| **AI Development** | MIMO |
-| **Technical Architecture** | APOLLO BTC |
-| **Framework** | [Expo Team](https://expo.dev) |
-| **Ecosystem** | [React Native Community](https://reactnative.dev) |
-
-**VoiceNav was created by HDG** — conceived, directed, and built to make the web accessible for everyone.
-
-</div>
 
 ---
 
