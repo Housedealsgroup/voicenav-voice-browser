@@ -21,11 +21,11 @@ A fully accessible mobile browser powered by on-device AI that understands 116 l
 
 ---
 
-<img src="assets/demo.svg" alt="VoiceNav Demo" width="100%">
+<img src="assets/demo.svg" alt="VoiceNav Demo — Voice-controlled browser for blind users" width="100%">
+
+*VoiceNav in action: Speak naturally to browse the web. The AI understands your commands, navigates pages, extracts information, and provides real-time feedback — all on-device.*
 
 ---
-
-**Built by [HouseDealsGroup](https://github.com/Housedealsgroup)**
 
 **100% On-Device AI. No Cloud. No APIs. No Compromises.**
 
@@ -37,7 +37,15 @@ A fully accessible mobile browser powered by on-device AI that understands 116 l
 
 <div align="center">
 
-**Tap the mic. Speak naturally. VoiceNav does the rest.**
+### **Tap the mic. Speak naturally. VoiceNav does the rest.**
+
+VoiceNav is a fully accessible mobile browser that lets you browse the web entirely by voice. No typing, no tapping, no scrolling — just speak.
+
+**Perfect for:**
+- Blind and visually impaired users
+- Hands-free browsing
+- Accessibility-first web navigation
+- Voice-controlled shopping, reading, and searching
 
 </div>
 
@@ -48,6 +56,8 @@ A fully accessible mobile browser powered by on-device AI that understands 116 l
 <div align="center">
 
 ### **AI-Powered Voice Browsing for Everyone**
+
+VoiceNav understands 116 languages and executes complex multi-step commands — all on your device.
 
 </div>
 
@@ -73,13 +83,59 @@ A fully accessible mobile browser powered by on-device AI that understands 116 l
 
 <div align="center">
 
-<img src="assets/screenshots/home.svg" alt="Home Screen" width="45%">&nbsp;&nbsp;<img src="assets/screenshots/voice.svg" alt="Voice Command" width="45%">
+### **Home Screen**
 
-<img src="assets/screenshots/browser.svg" alt="Browser View" width="45%">&nbsp;&nbsp;<img src="assets/screenshots/bookmarks.svg" alt="Bookmarks" width="45%">
+<img src="assets/screenshots/home.svg" alt="VoiceNav Home Screen" width="100%">
 
-<img src="assets/screenshots/palette.svg" alt="Command Palette" width="45%">&nbsp;&nbsp;<img src="assets/screenshots/task.svg" alt="Task Automation" width="45%">
+*The main screen with quick tasks, voice button, and quick links. Tap the microphone or say a command to start browsing.*
 
-<img src="assets/screenshots/settings.svg" alt="Settings" width="45%">
+---
+
+### **Voice Command**
+
+<img src="assets/screenshots/voice.svg" alt="VoiceNav Voice Command" width="100%">
+
+*Speak naturally and VoiceNav understands. Real-time waveform visualization shows your voice input, with intent recognition and confidence scores.*
+
+---
+
+### **Browser View**
+
+<img src="assets/screenshots/browser.svg" alt="VoiceNav Browser View" width="100%">
+
+*Full browser with AI assistant. Browse products, read articles, fill forms — all by voice. The floating assistant provides real-time suggestions.*
+
+---
+
+### **Bookmarks**
+
+<img src="assets/screenshots/bookmarks.svg" alt="VoiceNav Bookmarks" width="100%">
+
+*Save and organize your favorite pages. Say "bookmark this" to save any page instantly. Search, sort, and manage bookmarks by voice.*
+
+---
+
+### **Command Palette**
+
+<img src="assets/screenshots/palette.svg" alt="VoiceNav Command Palette" width="100%">
+
+*Quick command palette for fast navigation. Type or speak to find bookmarks, shortcuts, and commands. Keyboard shortcuts for power users.*
+
+---
+
+### **Task Automation**
+
+<img src="assets/screenshots/task.svg" alt="VoiceNav Task Automation" width="100%">
+
+*Multi-step task automation. Say "shop for headphones then sort by price then click the first result" and VoiceNav executes each step with progress tracking.*
+
+---
+
+### **Settings**
+
+<img src="assets/screenshots/settings.svg" alt="VoiceNav Settings" width="100%">
+
+*Customize your experience. Configure speech rate, language, voice feedback, haptics, accessibility options, and voice shortcuts.*
 
 </div>
 
@@ -95,12 +151,16 @@ A fully accessible mobile browser powered by on-device AI that understands 116 l
 
 ### **Step 1: Install Expo Go**
 
+Download the free Expo Go app on your phone:
+
 | Platform | Link |
 |----------|------|
 | **iPhone** | [App Store](https://apps.apple.com/app/expo-go/id982107779) |
 | **Android** | [Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent) |
 
 ### **Step 2: Clone and Run**
+
+Open your terminal and run these commands:
 
 ```bash
 git clone https://github.com/Housedealsgroup/voicenav.git
@@ -109,12 +169,19 @@ npm install
 npm start
 ```
 
+This will start the development server and show a QR code in your terminal.
+
 ### **Step 3: Scan and Speak**
 
 1. Open **Expo Go** on your phone
-2. Scan the QR code
-3. Tap the **microphone button**
-4. Say **"Go to Amazon"**
+2. Point your camera at the **QR code** in the terminal
+3. Wait for VoiceNav to load
+4. Tap the **microphone button** at the bottom of the screen
+5. Say **"Go to Amazon"** — VoiceNav will navigate to Amazon
+
+That's it! You're browsing the web by voice.
+
+**First time?** VoiceNav will walk you through a quick tutorial on first launch.
 
 ---
 
@@ -122,9 +189,11 @@ npm start
 
 <div align="center">
 
-### **Navigation**
+### **Just Say It — VoiceNav Understands**
 
 </div>
+
+### **Navigation**
 
 | Say This | What Happens |
 |----------|--------------|
@@ -134,11 +203,7 @@ npm start
 | "Refresh" | Reload page |
 | "Go home" | Return to VoiceNav |
 
-<div align="center">
-
 ### **Search & Click**
-
-</div>
 
 | Say This | What Happens |
 |----------|--------------|
@@ -147,11 +212,7 @@ npm start
 | "Click sign in" | Clicks button by text |
 | "Tap it" | Clicks last referenced |
 
-<div align="center">
-
 ### **Shopping**
-
-</div>
 
 | Say This | What Happens |
 |----------|--------------|
@@ -160,11 +221,7 @@ npm start
 | "Compare prices" | Multi-store search |
 | "Checkout" | Proceed to checkout |
 
-<div align="center">
-
 ### **Reading & Forms**
-
-</div>
 
 | Say This | What Happens |
 |----------|--------------|
@@ -174,11 +231,7 @@ npm start
 | "Type hello" | Enter text |
 | "Submit" | Submit form |
 
-<div align="center">
-
 ### **Conversation & Tabs**
-
-</div>
 
 | Say This | What Happens |
 |----------|--------------|
@@ -189,11 +242,7 @@ npm start
 | "Close this tab" | Closes active tab |
 | "What's my accessibility score?" | Runs WCAG compliance check |
 
-<div align="center">
-
 ### **Multi-Step Commands**
-
-</div>
 
 ```
 "Search for headphones then click the first result"
@@ -208,6 +257,8 @@ npm start
 <div align="center">
 
 ### **Your Voice. Your Commands.**
+
+Create custom voice shortcuts that work instantly.
 
 </div>
 
@@ -238,6 +289,8 @@ Create custom voice shortcuts that work instantly:
 
 ### **VoiceNav Learns How You Browse**
 
+The AI predicts what you want to do next based on your browsing patterns.
+
 </div>
 
 The AI predicts what you want to do next based on:
@@ -255,6 +308,8 @@ The AI predicts what you want to do next based on:
 <div align="center">
 
 ### **VoiceNav Understands Every Page**
+
+Automatically extracts structured data from any web page.
 
 </div>
 
@@ -286,6 +341,8 @@ VoiceNav: "Product page. Sony headphones. $79.99,
 
 ### **Understand Any Page in Seconds**
 
+VoiceNav's on-device NLP summarizes pages without any cloud API.
+
 </div>
 
 VoiceNav's on-device NLP summarizes pages without any cloud API:
@@ -309,6 +366,8 @@ VoiceNav: "This is a product page for headphones.
 <div align="center">
 
 ### **Talk to VoiceNav Like a Human**
+
+Multi-turn conversation with pronoun resolution.
 
 </div>
 
@@ -340,6 +399,8 @@ VoiceNav: "Proceeding to checkout."
 
 ### **Browse Multiple Sites at Once**
 
+Full multi-tab support through voice.
+
 </div>
 
 Full multi-tab support through voice:
@@ -362,6 +423,8 @@ Full multi-tab support through voice:
 <div align="center">
 
 ### **Make Every Page Accessible**
+
+WCAG compliance checking with actionable recommendations.
 
 </div>
 
@@ -389,6 +452,8 @@ VoiceNav: "Accessibility score: 72 out of 100. Good accessibility
 
 ### **Personalized for You**
 
+VoiceNav adapts to your unique speaking patterns.
+
 </div>
 
 VoiceNav adapts to your unique speaking patterns:
@@ -404,6 +469,10 @@ VoiceNav adapts to your unique speaking patterns:
 ## **How It Works**
 
 <div align="center">
+
+### **Your Voice → AI Understanding → Action**
+
+</div>
 
 ```
   ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
@@ -426,7 +495,10 @@ VoiceNav adapts to your unique speaking patterns:
   └──────────────┘     └──────────────┘     └──────────────┘
 ```
 
-</div>
+**Step 1:** You speak a command in any of 116 languages
+**Step 2:** VoiceNav detects your language and understands your intent
+**Step 3:** The AI brain decides the best action to take
+**Step 4:** VoiceNav executes the action and gives you feedback
 
 **No cloud APIs. No subscriptions. No data leaves your device.**
 
