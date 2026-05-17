@@ -2,6 +2,7 @@
 // Teaches core commands through spoken prompts and listens for responses
 
 import { logger } from '../utils/logger';
+import { isOnboardingDone, markOnboardingComplete } from '../store/persistentState';
 
 export type OnboardingStep = {
   id: string;
@@ -114,10 +115,9 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
 
 let onboardingState: OnboardingState | null = null;
 
-export function isOnboardingComplete(): boolean {
+export async function isOnboardingComplete(): Promise<boolean> {
   try {
-    // Check AsyncStorage would be called here in RN context
-    return false;
+    return await isOnboardingDone();
   } catch {
     return false;
   }
@@ -218,6 +218,7 @@ function advanceOnboarding(feedback: string): {
 
   if (onboardingState.currentStepIndex >= ONBOARDING_STEPS.length) {
     onboardingState.isComplete = true;
+    markOnboardingComplete();
     logger.agent('onboardingComplete', {
       completed: onboardingState.completedSteps.length,
       skipped: onboardingState.skippedSteps.length,
