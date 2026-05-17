@@ -23,8 +23,11 @@ import VoiceButton from '../src/components/VoiceButton';
 import TaskProgress from '../src/components/TaskProgress';
 import CommandPalette from '../src/components/CommandPalette';
 import FloatingAssistant from '../src/components/FloatingAssistant';
+import OfflineBanner from '../src/components/OfflineBanner';
 import type { CommandEntry } from '../src/components/CommandPalette';
 import { logger } from '../src/utils/logger';
+import { captureError } from '../src/utils/crashReporting';
+import { useNetworkState } from '../src/hooks/useNetworkState';
 
 export default function BrowserScreen() {
   const router = useRouter();
@@ -50,6 +53,8 @@ export default function BrowserScreen() {
   const [showTaskProgress, setShowTaskProgress] = useState(false);
   const [showFloatingAssistant, setShowFloatingAssistant] = useState(true);
   const [currentTask, setCurrentTask] = useState<any>(null);
+  const [offlineQueue, setOfflineQueue] = useState<string[]>([]);
+  const { isOffline } = useNetworkState();
   const statusOpacity = useRef(new Animated.Value(0)).current;
   const timeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
   const agentContextRef = useRef<AgentContext>({ stepHistory: [], retryCount: 0 });
@@ -58,6 +63,17 @@ export default function BrowserScreen() {
 
   // Load macros on mount
   useEffect(() => { loadMacros(); }, []);
+
+  // Flush offline queue when back online
+  useEffect(() => {
+    if (!isOffline && offlineQueue.length > 0) {
+      speak(`Back online. Processing ${offlineQueue.length} queued commands.`);
+      offlineQueue.forEach((cmd, i) => {
+        trackedSetTimeout(() => processCommand(cmd), i * 3000);
+      });
+      setOfflineQueue([]);
+    }
+  }, [isOffline]);
 
   // Wire continuous listener
   useEffect(() => {
@@ -281,6 +297,12 @@ export default function BrowserScreen() {
 
   const processCommand = useCallback((command: string) => {
     if (!command.trim()) return;
+    if (isOffline) {
+      setOfflineQueue(prev => [...prev, command]);
+      speak('You are offline. Command queued.');
+      return;
+    }
+    try {
     if (hasMultipleSteps(command)) {
       const steps = parseMultiStepCommand(command);
       addLog(`Multi-step: ${steps.length} commands`);
@@ -290,7 +312,14 @@ export default function BrowserScreen() {
     } else {
       processSingleCommand(command, 0, 1);
     }
-  }, [processSingleCommand, addLog, trackedSetTimeout]);
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      captureError(error, { command, phase: 'processCommand' });
+      logger.error('processCommand failed', error);
+      speak('Something went wrong. Please try again.');
+      setIsAgentActive(false);
+    }
+  }, [processSingleCommand, addLog, trackedSetTimeout, isOffline]);
 
   const handleVoiceToggle = useCallback(() => {
     if (isListening) {
@@ -357,6 +386,9 @@ export default function BrowserScreen() {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      {/* Offline Banner */}
+      <OfflineBanner visible={isOffline} />
+
       {/* Top Bar */}
       <View style={styles.topBar}>
         <TouchableOpacity onPress={() => router.back()} style={styles.navButton} accessibilityLabel="Go home">

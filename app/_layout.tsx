@@ -3,6 +3,9 @@ import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useThemeStore } from '../src/store/theme';
 import { ErrorBoundary } from '../src/components/ErrorBoundary';
+import { setupGlobalErrorHandlers } from '../src/utils/crashReporting';
+
+setupGlobalErrorHandlers();
 
 export default function RootLayout() {
   const { colors } = useThemeStore();
