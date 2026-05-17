@@ -24,9 +24,9 @@ describe('App Store', () => {
 
   it('adds browsing history with deduplication', () => {
     const { addBrowsingHistory } = useAppStore.getState();
-    addBrowsingHistory({ url: 'https://a.com', title: 'A', timestamp: Date.now() });
-    addBrowsingHistory({ url: 'https://a.com', title: 'A', timestamp: Date.now() });
-    addBrowsingHistory({ url: 'https://b.com', title: 'B', timestamp: Date.now() });
+    addBrowsingHistory('https://a.com');
+    addBrowsingHistory('https://a.com');
+    addBrowsingHistory('https://b.com');
     expect(useAppStore.getState().browsingHistory.length).toBe(2);
   });
 
@@ -54,12 +54,12 @@ describe('Theme Store', () => {
   it('sets dark theme', () => {
     useThemeStore.getState().setDark(true);
     expect(useThemeStore.getState().isDark).toBe(true);
-    expect(useThemeStore.getState().colors.background).toBe('#0A0A1A');
+    expect(useThemeStore.getState().colors.background).toBe('#0B0B1E');
   });
 
   it('sets light theme', () => {
     useThemeStore.getState().setDark(false);
     expect(useThemeStore.getState().isDark).toBe(false);
-    expect(useThemeStore.getState().colors.background).toBe('#F5F5FF');
+    expect(useThemeStore.getState().colors.background).toBe('#F8F8FF');
   });
 });

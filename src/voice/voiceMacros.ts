@@ -26,6 +26,7 @@ export type VoiceMacro = {
 const STORAGE_KEY = 'voicenav-macros';
 
 // --- Built-in Macros ---
+export { BUILT_IN_MACROS };
 const BUILT_IN_MACROS: VoiceMacro[] = [
   {
     id: 'builtin-morning',

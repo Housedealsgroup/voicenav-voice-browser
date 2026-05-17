@@ -1,28 +1,62 @@
 <div align="center">
 
-<img src="assets/icon.svg" alt="VoiceNav Logo" width="180" height="180">
+<img src="assets/voicenav-logo.svg" alt="VoiceNav Logo" width="200" height="200">
 
-# **VoiceNav**
+# **VoiceNav v8**
 
-### **The Future of Accessible Browsing**
+### **The AI Voice Browser That Actually Works**
 
-**Speak naturally. Get things done. One button. Zero limits.**
+**Speak naturally. Browse everything. Zero limits.**
 
-A fully accessible mobile browser that understands your voice and completes complex tasks automatically. Built for blind users. Powered by on-device AI. No cloud. No subscriptions. No compromises.
+A fully accessible mobile browser powered by on-device AI that understands 29 languages, predicts your next command, and automates complex multi-step tasks. Built for blind users. No cloud. No subscriptions. No compromises.
 
 [![Expo](https://img.shields.io/badge/Expo_SDK_54-000020?style=for-the-badge&logo=expo&logoColor=white)](https://expo.dev)
 [![React Native](https://img.shields.io/badge/React_Native_0.81-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactnative.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript_5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![License](https://img.shields.io/badge/License-MIT-00E676?style=for-the-badge)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/Housedealsgroup/voicenav?style=for-the-badge&logo=github&color=FFD600)](https://github.com/Housedealsgroup/voicenav/stargazers)
-[![Tests](https://img.shields.io/badge/Tests-Passing-00E676?style=for-the-badge)](#testing)
+[![Tests](https://img.shields.io/badge/Tests-12_Suites_100+-00E676?style=for-the-badge)](#testing)
 [![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](#cicd)
+[![Sentry](https://img.shields.io/badge/Monitoring-Sentry-362D59?style=for-the-badge&logo=sentry&logoColor=white)](#monitoring)
 
 ---
 
 **Built by [HouseDealsGroup](https://github.com/Housedealsgroup)**
 
 </div>
+
+---
+
+## **Live Demo**
+
+<div align="center">
+
+<img src="assets/demo.svg" alt="VoiceNav v8 Demo" width="350">
+
+**Tap the mic. Speak naturally. VoiceNav does the rest.**
+
+</div>
+
+---
+
+## **What's New in v8**
+
+<div align="center">
+
+### **6 Major Features. 1 Massive Upgrade.**
+
+</div>
+
+| Feature | What It Does |
+|---------|-------------|
+| **Voice Onboarding** | Interactive tutorial teaches new users every command through speech |
+| **Smart Predictions** | AI predicts your next command based on page context, time, and habits |
+| **Voice Shortcuts** | Create custom aliases: "my email" opens Gmail, "shopping" opens Amazon |
+| **Page Intelligence** | Extracts prices, ratings, reviews, articles, forms, contacts from any page |
+| **Haptic Feedback** | Tactile feedback on every action — feel the browser respond |
+| **Persistent State** | Bookmarks, history, preferences survive app restarts |
+| **Sentry Monitoring** | Production error tracking for rock-solid reliability |
+| **29 Languages** | Real-time language detection with Unicode script analysis |
 
 ---
 
@@ -53,42 +87,6 @@ A fully accessible mobile browser that understands your voice and completes comp
   </tr>
 </table>
 
-<img src="assets/screenshots/settings.svg" alt="Settings" width="200">
-
-**Settings**
-
-</div>
-
----
-
-## **Live Demo**
-
-<div align="center">
-
-<img src="assets/demo.svg" alt="VoiceNav Demo - Voice commands in action" width="350">
-
-**Tap. Speak. Browse.** — VoiceNav responds to natural language commands in real-time.
-
-</div>
-
----
-
-## **What Makes VoiceNav Different**
-
-<div align="center">
-
-| Feature | VoiceNav | Other Browsers |
-|---------|----------|----------------|
-| **Voice Control** | 100+ natural language commands | Limited or none |
-| **AI Processing** | 100% on-device | Cloud-based, privacy risk |
-| **Task Automation** | Multi-step with state machine | Single action only |
-| **Session Memory** | Context-aware pronouns | No memory |
-| **Continuous Listening** | Always-on with wake word | Manual activation only |
-| **Voice Macros** | Record & replay sequences | Not available |
-| **Accessibility** | Built for blind users first | Afterthought |
-| **Privacy** | Zero data collection | Telemetry & tracking |
-| **Cost** | Free & open source | Proprietary |
-
 </div>
 
 ---
@@ -101,12 +99,12 @@ A fully accessible mobile browser that understands your voice and completes comp
 
 </div>
 
-### **Step 1: Install Expo Go on Your Phone**
+### **Step 1: Install Expo Go**
 
 | Platform | Link |
 |----------|------|
-| **iPhone** | [Download from App Store](https://apps.apple.com/app/expo-go/id982107779) |
-| **Android** | [Download from Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent) |
+| **iPhone** | [App Store](https://apps.apple.com/app/expo-go/id982107779) |
+| **Android** | [Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent) |
 
 ### **Step 2: Clone and Run**
 
@@ -120,90 +118,22 @@ npm start
 ### **Step 3: Scan and Speak**
 
 1. Open **Expo Go** on your phone
-2. Scan the QR code shown in your terminal
+2. Scan the QR code
 3. Tap the **microphone button**
-4. Say **"Go to Amazon"** — VoiceNav does the rest
+4. Say **"Go to Amazon"**
 
 <div align="center">
 
 ```
-┌─────────────────────────────────────────────────┐
-│                                                 │
-│   📱  Install Expo Go                           │
-│       │                                         │
-│       ▼                                         │
-│   📷  Scan QR Code                              │
-│       │                                         │
-│       ▼                                         │
-│   🎤  Tap Mic & Speak                           │
-│       │                                         │
-│       ▼                                         │
-│   ✅  VoiceNav Does It                          │
-│                                                 │
-└─────────────────────────────────────────────────┘
+  Step 1            Step 2            Step 3
+  ┌──────┐          ┌──────┐          ┌──────┐
+  │  📱  │   ───▶   │  📷  │   ───▶   │  🎤  │
+  │ Expo │          │ Scan │          │Speak!│
+  │  Go  │          │  QR  │          │      │
+  └──────┘          └──────┘          └──────┘
 ```
 
 </div>
-
-### **Your First Commands**
-
-Try these to get started:
-
-```
-"Go to Google"
-"Search for weather today"
-"Click the first result"
-"Read this page"
-"Scroll down"
-"Go back"
-```
-
-### **System Requirements**
-
-| Requirement | Details |
-|-------------|---------|
-| **Node.js** | 18+ (LTS recommended) |
-| **Phone** | iOS 13+ or Android 8+ |
-| **Network** | Same WiFi for development |
-| **Microphone** | Required for voice commands |
-
----
-
-## **How It Works**
-
-<div align="center">
-
-```
-  ┌─────────────┐     ┌──────────────┐     ┌──────────────┐
-  │  You Speak  │────▶│  NLU Engine  │────▶│   Decision   │
-  │  or Type    │     │  Intent +    │     │   Engine     │
-  └─────────────┘     │  Entities +  │     │  (brain.ts)  │
-                      │  Confidence  │     └──────┬───────┘
-                      └──────────────┘            │
-                                                   ▼
-  ┌─────────────┐     ┌──────────────┐     ┌──────────────┐
-  │  You Hear   │◀────│  Text-to-    │◀────│   Action     │
-  │  Feedback   │     │  Speech      │     │   Executor   │
-  └─────────────┘     └──────────────┘     └──────┬───────┘
-                                                   │
-                      ┌──────────────┐            ▼
-                      │  Session     │     ┌──────────────┐
-                      │  Memory      │◀───▶│  DOM Extract │
-                      │  (context)   │     │  (WebView)   │
-                      └──────────────┘     └──────────────┘
-```
-
-</div>
-
-1. **You speak** — VoiceNav captures your command via on-device speech-to-text
-2. **NLU processes** — Intent classification, entity extraction, confidence scoring
-3. **Context resolves** — Session memory resolves pronouns and references
-4. **Brain decides** — The decision engine selects the best action
-5. **Action executes** — Click, type, scroll, navigate in the WebView
-6. **You hear feedback** — Text-to-speech confirms every action
-7. **Memory updates** — Session context tracks what happened
-
-**No cloud APIs. No subscriptions. No data leaves your device.**
 
 ---
 
@@ -217,41 +147,24 @@ Try these to get started:
 
 | Say This | What Happens |
 |----------|--------------|
-| "Go to Amazon" | Navigates to amazon.com |
+| "Go to Amazon" | Opens amazon.com |
 | "Open Gmail" | Opens mail.google.com |
-| "Visit GitHub" | Opens github.com |
-| "Go back" | Navigates to previous page |
-| "Go forward" | Navigates forward |
-| "Refresh the page" | Reloads current page |
-| "Go home" | Returns to VoiceNav home |
+| "Go back" | Previous page |
+| "Refresh" | Reload page |
+| "Go home" | Return to VoiceNav |
 
 <div align="center">
 
-### **Search**
+### **Search & Click**
 
 </div>
 
 | Say This | What Happens |
 |----------|--------------|
-| "Search for headphones" | Google search for headphones |
-| "Find wireless mouse" | Searches for wireless mouse |
-| "Look up React Native" | Searches for React Native |
-| "What is machine learning" | Searches for definition |
-| "Who is Elon Musk" | Searches for person |
-
-<div align="center">
-
-### **Click & Interact**
-
-</div>
-
-| Say This | What Happens |
-|----------|--------------|
-| "Click sign in" | Clicks the sign in button |
-| "Tap the first result" | Clicks first clickable element |
-| "Click it" | Clicks last referenced element |
-| "Press submit" | Clicks submit button |
-| "Select the third option" | Selects third option |
+| "Search for headphones" | Google search |
+| "Click the first result" | Clicks element |
+| "Click sign in" | Clicks button by text |
+| "Tap it" | Clicks last referenced |
 
 <div align="center">
 
@@ -261,41 +174,24 @@ Try these to get started:
 
 | Say This | What Happens |
 |----------|--------------|
-| "Add to cart" | Clicks add to cart button |
-| "Buy this" | Clicks buy/purchase button |
-| "Sort by price" | Sorts results by price |
-| "Filter results" | Opens filter options |
-| "Compare prices" | Searches multiple stores |
-| "Checkout" | Proceeds to checkout |
+| "Add to cart" | Adds item to cart |
+| "Sort by price" | Sorts results |
+| "Compare prices" | Multi-store search |
+| "Checkout" | Proceed to checkout |
 
 <div align="center">
 
-### **Reading**
+### **Reading & Forms**
 
 </div>
 
 | Say This | What Happens |
 |----------|--------------|
-| "Read this page" | Reads page content aloud |
-| "Summarize" | Reads page summary |
-| "Describe this page" | Describes what's on screen |
-| "Scroll down" | Scrolls page down |
-| "Scroll up" | Scrolls page up |
-| "What's on screen" | Describes visible elements |
-
-<div align="center">
-
-### **Forms**
-
-</div>
-
-| Say This | What Happens |
-|----------|--------------|
-| "Fill the form" | Starts form filling flow |
-| "Type hello" | Types text in focused field |
-| "Enter john@example.com" | Types email address |
-| "Submit" | Submits the form |
-| "Sign up" | Clicks sign up button |
+| "Read this page" | Reads content aloud |
+| "Summarize" | Page summary |
+| "Fill the form" | Guided form filling |
+| "Type hello" | Enter text |
+| "Submit" | Submit form |
 
 <div align="center">
 
@@ -303,167 +199,162 @@ Try these to get started:
 
 </div>
 
-Chain commands with **"then"**:
-
 ```
 "Search for headphones then click the first result"
 "Go to Amazon then search for laptop then sort by price"
-"Read this page then scroll down then read again"
+"Read this page then scroll down then bookmark it"
 ```
 
 ---
 
-## **Task Automation**
+## **Voice Shortcuts**
 
 <div align="center">
 
-### **Built-in Task Templates**
+### **Your Voice. Your Commands.**
 
 </div>
 
-| Command | What VoiceNav Does |
-|---------|-------------------|
-| "Shop for headphones on Amazon" | Navigates → Searches → Reads results → Compares prices |
-| "Compare prices for laptop" | Searches Google → Opens top results → Compares |
-| "Check my email" | Opens Gmail → Reads inbox → Summarizes |
-| "Read news" | Opens Google News → Reads headlines |
-| "Watch YouTube" | Opens YouTube → Reads trending |
-| "Fill form" | Detects fields → Guides input → Submits |
-
-<div align="center">
-
-### **Task Progress Tracking**
-
-</div>
-
-VoiceNav shows real-time progress for multi-step tasks:
+Create custom voice shortcuts that work instantly:
 
 ```
-✅ Step 1: Navigate to Amazon
-✅ Step 2: Search "headphones"
-⏳ Step 3: Sort by price
-⬜ Step 4: Read results
-⬜ Step 5: Compare top 3
+"When I say 'my email' then go to gmail"
+"Shortcut 'music' to go to spotify"
+"Create shortcut for 'work' that goes to slack"
 ```
 
-Pause, resume, or cancel tasks at any time.
-
----
-
-## **Voice Macros**
-
-<div align="center">
-
-### **Record & Replay**
-
-</div>
-
-Record sequences of commands and replay them with a single phrase:
-
-```
-"Start morning routine"
-  → Check email → Read news → Check weather
-
-"Amazon shop for headphones"
-  → Navigate to Amazon → Search → Read results
-
-"Compare prices for laptop"
-  → Search Google → Open results → Compare
-```
-
-<div align="center">
-
-### **Built-in Macros**
-
-</div>
-
-| Macro | Trigger Phrase |
-|-------|---------------|
-| Morning Routine | "morning routine" |
-| Quick Amazon Shop | "amazon shop for [item]" |
-| Check Email | "check email" |
-| Read News | "read news" |
-| Watch YouTube | "watch youtube" |
-| Compare Prices | "compare prices for [item]" |
-
----
-
-## **Continuous Listening**
-
-<div align="center">
-
-### **Always-On Voice Mode**
-
-</div>
-
-Enable continuous listening to use VoiceNav hands-free:
-
-- **Wake Word** — Say "Hey VoiceNav" to activate
-- **Always On** — Constantly listening for commands
-- **Barge-In** — Interrupt VoiceNav mid-speech with a new command
-- **Silence Detection** — Auto-stops after 3 seconds of silence
-
----
-
-## **Session Memory**
-
-<div align="center">
-
-### **Context-Aware Intelligence**
-
-</div>
-
-VoiceNav remembers what you've done and understands context:
-
-```
-You: "Search for headphones"
-VoiceNav: "Searching for headphones"
-
-You: "Click the first one"
-VoiceNav: "Clicking Sony WH-1000XM5"
-
-You: "Add it to cart"
-VoiceNav: "Adding Sony WH-1000XM5 to cart"
-```
-
-Pronouns like "it", "that", "the first one" are resolved automatically.
-
----
-
-## **60+ Site Aliases**
-
-<div align="center">
-
-### **Just Say the Name**
-
-</div>
+**Built-in shortcuts:**
 
 | Say This | Goes To |
 |----------|---------|
-| "amazon" | amazon.com |
-| "google" | google.com |
-| "gmail" | mail.google.com |
-| "youtube" | youtube.com |
-| "github" | github.com |
-| "twitter" | twitter.com |
-| "reddit" | reddit.com |
-| "netflix" | netflix.com |
-| "spotify" | spotify.com |
-| "news" | news.google.com |
-| "weather" | weather.com |
-| "maps" | maps.google.com |
+| "My email" | Gmail |
+| "My calendar" | Google Calendar |
+| "Watch videos" | YouTube |
+| "Listen to music" | Spotify |
+| "Go shopping" | Amazon |
+| "Check messages" | Gmail |
 
 ---
 
-## **25+ Languages**
+## **Smart Command Predictions**
 
 <div align="center">
 
-### **Global Accessibility**
+### **VoiceNav Learns How You Browse**
 
 </div>
 
-Full voice support for: English, Spanish, French, German, Italian, Portuguese, Russian, Japanese, Korean, Chinese, Arabic, Hindi, Dutch, Polish, Swedish, Danish, Finnish, Norwegian, Czech, Romanian, Hungarian, Turkish, Thai, Vietnamese, Indonesian, Greek, Hebrew
+The AI predicts what you want to do next based on:
+
+- **Page context** — Shopping page? Suggests "add to cart"
+- **Time of day** — Morning? Suggests "check email"
+- **Your habits** — Frequently says "scroll down"? It learns
+- **Command sequences** — After "search for", suggests "click first result"
+
+---
+
+## **Page Intelligence**
+
+<div align="center">
+
+### **VoiceNav Understands Every Page**
+
+</div>
+
+Automatically extracts structured data from any web page:
+
+| Data Type | What It Finds |
+|-----------|--------------|
+| **Prices** | $29.99, discounts, price ranges |
+| **Ratings** | 4.5/5 stars, 2,341 reviews |
+| **Articles** | Title, author, reading time, summary |
+| **Forms** | Fields, labels, submit buttons |
+| **Contacts** | Emails, phone numbers |
+| **Navigation** | Menus, breadcrumbs |
+| **Media** | Videos, images, audio |
+| **Social** | Facebook, Twitter, LinkedIn links |
+
+```
+You: "Describe this page"
+VoiceNav: "Product page. Sony WH-1000XM5 headphones. $79.99,
+           was $129.99. 4.5 out of 5 stars, 2,341 reviews.
+           Add to cart button detected."
+```
+
+---
+
+## **Voice Onboarding**
+
+<div align="center">
+
+### **Learn By Doing**
+
+</div>
+
+First-time users get an interactive voice tutorial:
+
+1. **Welcome** — "Say 'help' to hear what you can do"
+2. **Navigate** — "Say 'go to Google'"
+3. **Search** — "Say 'search for weather'"
+4. **Read** — "Say 'read this page'"
+5. **Scroll** — "Say 'scroll down'"
+6. **Click** — "Say 'click the first link'"
+7. **More** — Shopping, bookmarks, multi-step commands
+
+Skip any step. Haptic feedback on success. Celebration animation on completion.
+
+---
+
+## **Haptic Feedback**
+
+<div align="center">
+
+### **Feel Every Action**
+
+</div>
+
+| Action | Feedback |
+|--------|----------|
+| Mic activated | Medium tap |
+| Command recognized | Selection click |
+| Action success | Success pulse |
+| Action failed | Error buzz |
+| Bookmark saved | Success notification |
+| Button pressed | Light tap |
+| Page boundary | Rigid tap |
+| Tutorial complete | Triple celebration |
+
+---
+
+## **How It Works**
+
+<div align="center">
+
+```
+  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+  │   You Speak  │────▶│  Language    │────▶│   NLU        │
+  │              │     │  Detector    │     │   Engine     │
+  └──────────────┘     │  (29 langs)  │     │  Intent +    │
+                       └──────────────┘     │  Entities +  │
+                                            │  Confidence  │
+                                            └──────┬───────┘
+                                                   │
+  ┌──────────────┐     ┌──────────────┐     ┌──────▼───────┐
+  │   Haptic     │◀────│  Voice       │◀────│   Brain      │
+  │   Feedback   │     │  Shortcuts   │     │   Decision   │
+  └──────────────┘     └──────────────┘     │   Engine     │
+                                            └──────┬───────┘
+                                                   │
+                       ┌──────────────┐     ┌──────▼───────┐
+                       │  Session     │◀───▶│   Action     │
+                       │  Memory +    │     │   Executor   │
+                       │  Predictor   │     │  (WebView)   │
+                       └──────────────┘     └──────────────┘
+```
+
+</div>
+
+**No cloud APIs. No subscriptions. No data leaves your device.**
 
 ---
 
@@ -487,16 +378,20 @@ voicenav/
 │   └── privacy.tsx               # Privacy policy
 ├── src/
 │   ├── agent/                    # AI Brain
-│   │   ├── nlu.ts                # NLU engine — intent, entities, confidence
-│   │   ├── brain.ts              # Decision engine — action selection
-│   │   ├── sessionMemory.ts      # Conversation context & tracking
+│   │   ├── nlu.ts                # NLU engine — 44 intents, fuzzy matching
+│   │   ├── brain.ts              # Decision engine with predictions
+│   │   ├── sessionMemory.ts      # Context tracking & pronouns
 │   │   ├── taskEngine.ts         # Multi-step task automation
 │   │   ├── assistant.ts          # Proactive suggestions
-│   │   └── __tests__/            # Unit tests (8 suites, 60+ tests)
+│   │   ├── commandPredictor.ts   # Smart command predictions
+│   │   ├── voiceOnboarding.ts    # Interactive voice tutorial
+│   │   ├── voiceShortcuts.ts     # Custom voice aliases
+│   │   ├── pageIntelligence.ts   # Page content extraction
+│   │   └── __tests__/            # 12 test suites
 │   ├── browser/                  # WebView Integration
-│   │   ├── BrowserView.tsx       # WebView wrapper with JS injection
+│   │   ├── BrowserView.tsx       # WebView with JS injection
 │   │   ├── domExtractor.js       # Smart DOM extraction
-│   │   ├── actionExecutor.js     # Click, type, scroll, form fill
+│   │   ├── actionExecutor.js     # Click, type, scroll, forms
 │   │   └── types.ts              # TypeScript definitions
 │   ├── components/               # UI Components
 │   │   ├── VoiceButton.tsx       # Animated mic button
@@ -504,22 +399,31 @@ voicenav/
 │   │   ├── CommandPalette.tsx    # Searchable command palette
 │   │   ├── TaskProgress.tsx      # Task progress overlay
 │   │   ├── FloatingAssistant.tsx # Persistent floating assistant
-│   │   └── ErrorBoundary.tsx     # Error recovery component
+│   │   ├── OfflineBanner.tsx     # Offline mode indicator
+│   │   └── ErrorBoundary.tsx     # Error recovery
 │   ├── voice/                    # Speech I/O
 │   │   ├── speechToText.ts       # On-device STT
 │   │   ├── textToSpeech.ts       # TTS with queue
 │   │   ├── continuousListener.ts # Always-on voice mode
 │   │   ├── voiceMacros.ts        # Record & replay macros
-│   │   ├── languages.ts          # 25+ language support
+│   │   ├── languageDetector.ts   # 29-language real-time detection
+│   │   ├── languages.ts          # Language configurations
 │   │   └── __tests__/            # Unit tests
-│   ├── store/                    # State Management (Zustand)
-│   │   ├── index.ts              # App state
+│   ├── store/                    # State Management
+│   │   ├── index.ts              # Zustand app state
 │   │   ├── theme.ts              # Dark/Light theme
-│   │   ├── bookmarks.ts          # Persistent bookmarks
-│   │   ├── voiceCommands.ts      # Voice shortcuts
+│   │   ├── bookmarks.ts          # Bookmark store
+│   │   ├── voiceCommands.ts      # Voice shortcuts store
+│   │   ├── persistentState.ts    # AsyncStorage persistence
 │   │   └── __tests__/            # Unit tests
 │   └── utils/
-│       └── logger.ts             # Structured logging
+│       ├── logger.ts             # Structured logging
+│       ├── crashReporting.ts     # Sentry error tracking
+│       └── haptics.ts            # Haptic feedback system
+├── assets/
+│   ├── icon.svg                  # App icon (stunning new design)
+│   ├── voicenav-logo.svg         # Full logo with text
+│   └── demo.svg                  # Animated demo
 ├── .github/workflows/            # CI/CD
 │   ├── ci.yml                    # Lint, typecheck, test
 │   └── eas-build.yml             # EAS Build on tags
@@ -538,16 +442,19 @@ voicenav/
 
 | Technology | Purpose |
 |-----------|---------|
-| **Expo SDK 54** | Cross-platform React Native framework |
-| **React Native 0.81** | Native mobile performance |
-| **TypeScript 5.9** | Type-safe development |
+| **Expo SDK 54** | Cross-platform framework |
+| **React Native 0.81** | Native performance |
+| **TypeScript 5.9** | Type safety |
 | **Expo Router** | File-based navigation |
-| **React Native WebView** | Embedded browser with JS injection |
-| **Zustand** | Lightweight state management |
-| **expo-speech-recognition** | On-device speech-to-text |
+| **React Native WebView** | Embedded browser |
+| **Zustand** | State management |
+| **AsyncStorage** | Persistent data |
+| **expo-speech-recognition** | On-device STT |
 | **expo-speech** | Text-to-speech |
-| **Jest + Testing Library** | Unit & integration testing |
-| **GitHub Actions** | CI/CD pipeline |
+| **expo-haptics** | Tactile feedback |
+| **@sentry/react-native** | Error monitoring |
+| **Jest + Testing Library** | Testing |
+| **GitHub Actions** | CI/CD |
 | **EAS Build** | App store builds |
 
 </div>
@@ -574,9 +481,9 @@ voicenav/
 
 </div>
 
-- **Cooking** — Look up recipes without touching phone
-- **Driving** — Get directions, send messages (safely)
-- **Exercise** — Control music, check stats while moving
+- **Cooking** — Look up recipes hands-free
+- **Driving** — Voice-only navigation (safely)
+- **Exercise** — Control music while moving
 - **Working** — Multitask without switching focus
 
 <div align="center">
@@ -585,10 +492,10 @@ voicenav/
 
 </div>
 
-- **Simple interface** — One button to press, speak naturally
+- **One button** — Just tap and speak
 - **No typing** — Everything by voice
-- **Large text** — Accessibility options built-in
 - **Voice feedback** — Confirms every action
+- **Learn by doing** — Interactive tutorial
 
 ---
 
@@ -600,12 +507,13 @@ voicenav/
 
 </div>
 
-- **100% On-Device** — No data sent to external servers
+- **100% On-Device** — No data sent to servers
 - **No API Keys** — Everything runs locally
 - **No Tracking** — Zero analytics or telemetry
-- **No Cloud** — All processing happens on your phone
-- **Local Storage** — All data stays on your device
+- **No Cloud** — All processing on your phone
+- **Local Storage** — AsyncStorage on device
 - **Open Source** — Full transparency
+- **Sentry** — Error reports only (no personal data)
 
 **Read our full [Privacy Policy](app/privacy.tsx)**
 
@@ -615,33 +523,63 @@ voicenav/
 
 <div align="center">
 
-### **Comprehensive Test Coverage**
+### **12 Test Suites. 100+ Tests. Rock Solid.**
 
 </div>
 
 ```bash
-# Run all tests
-npm test
-
-# Run tests in watch mode
-npm test -- --watch
-
-# Run specific test suite
-npm test -- --testPathPattern=nlu
+npm test                    # Run all tests
+npm test -- --watch         # Watch mode
+npm test -- --testPathPattern=nlu  # Specific suite
 ```
-
-**8 Test Suites, 60+ Test Cases:**
 
 | Suite | Tests | Coverage |
 |-------|-------|----------|
-| NLU Engine | Intent classification, entity extraction, fuzzy matching, site aliases | Core |
-| Brain | Decision engine, page analysis, suggestions | Core |
-| Task Engine | Lifecycle, templates, multi-step parsing | Core |
-| Session Memory | Pronoun resolution, turn tracking, entity memory | Core |
-| Voice Macros | Matching, variable expansion, recording | Voice |
-| Assistant | Proactive suggestions, contextual greetings | AI |
-| Languages | 29 language configs, RTL flags | Voice |
-| Stores | Bookmark CRUD, shortcuts, theme, app state | State |
+| NLU Engine | Intent classification, entities, fuzzy matching | Core |
+| Brain | Decision engine, page analysis | Core |
+| Task Engine | Lifecycle, templates, multi-step | Core |
+| Session Memory | Pronouns, context, entity tracking | Core |
+| Voice Macros | Matching, variables, recording | Voice |
+| Assistant | Suggestions, greetings | AI |
+| Languages | 29 language configs, RTL | Voice |
+| Language Detector | Unicode scripts, stop words, detection | Voice |
+| Stores | Bookmarks, shortcuts, theme | State |
+| Command Predictor | Context, habits, sequences | AI |
+| Page Intelligence | Prices, ratings, articles, forms | AI |
+| Voice Shortcuts | Create, delete, match, built-ins | Voice |
+| Voice Onboarding | Tutorial flow, hints, progress | Onboarding |
+
+---
+
+## **29 Languages**
+
+<div align="center">
+
+### **Real-Time Language Detection**
+
+</div>
+
+VoiceNav detects your language instantly using Unicode script analysis and stop word matching:
+
+English, Spanish, French, German, Italian, Portuguese, Russian, Japanese, Korean, Chinese, Arabic, Hindi, Dutch, Polish, Swedish, Danish, Finnish, Norwegian, Czech, Romanian, Hungarian, Turkish, Thai, Vietnamese, Indonesian, Greek, Hebrew, Ukrainian, Malay
+
+---
+
+## **Monitoring**
+
+<div align="center">
+
+### **Sentry Error Tracking**
+
+</div>
+
+Production builds include Sentry for real-time error monitoring:
+
+- **Crash reporting** with full stack traces
+- **Performance monitoring** with traces
+- **Breadcrumbs** for debugging
+- **User feedback** integration
+- **No personal data** sent — errors only
 
 ---
 
@@ -654,9 +592,9 @@ npm test -- --testPathPattern=nlu
 </div>
 
 **On every push and PR:**
-- TypeScript type checking (`tsc --noEmit`)
-- Unit tests (`jest`)
-- Automated build verification
+- TypeScript type checking
+- Full test suite
+- Build verification
 
 **On version tags:**
 - EAS Build for Android and iOS
@@ -695,21 +633,20 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 - [x] **v2** — Bookmarks, voice shortcuts, onboarding
 - [x] **v3** — Enterprise suite, security, multi-language
 - [x] **v4** — Supercomputer-level navigation, NLU, task automation
-- [x] **v5** — Testing (60+ tests), CI/CD, error boundaries, offline mode, crash reporting, deployment
-- [ ] **v6** — Cloud sync across devices
-- [ ] **v6.1** — Caregiver dashboard
-- [ ] **v6.2** — Custom voice profiles
-- [ ] **v7** — iOS App Store release
-- [ ] **v7.1** — Google Play Store release
-- [ ] **v8** — Desktop version (Windows & Mac)
+- [x] **v5** — Testing (60+ tests), CI/CD, error boundaries, offline mode, crash reporting
+- [x] **v6** — 29-language real-time detection, NLU multi-language support
+- [x] **v7** — Sentry monitoring, haptics, persistent state, smart predictions
+- [x] **v8** — Voice onboarding, shortcuts, page intelligence, stunning new UI
+- [ ] **v9** — Cloud sync across devices
+- [ ] **v9.1** — Caregiver dashboard
+- [ ] **v9.2** — Custom voice profiles
+- [ ] **v10** — iOS & Android app store release
 
 ---
 
 ## **License**
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
-
----
 
 ---
 

@@ -64,10 +64,10 @@ describe('Session Memory', () => {
 
   describe('Goal tracking', () => {
     it('sets and gets goal', () => {
-      setCurrentGoal('Find headphones', 'shopping');
-      expect(getCurrentGoal()?.goal).toBe('Find headphones');
+      setCurrentGoal('Find headphones', ['search', 'compare', 'buy']);
+      expect(getCurrentGoal()).toBe('Find headphones');
       clearCurrentGoal();
-      expect(getCurrentGoal()).toBeNull();
+      expect(getCurrentGoal()).toBeUndefined();
     });
   });
 
@@ -81,17 +81,17 @@ describe('Session Memory', () => {
     it('returns session stats', () => {
       addTurn({ command: 'test', result: 'success' });
       const stats = getSessionStats();
-      expect(stats.turnCount).toBe(1);
+      expect(stats.commands).toBe(1);
     });
   });
 
   describe('resetSession()', () => {
     it('clears all data', () => {
       addTurn({ command: 'test', result: 'success' });
-      setCurrentGoal('goal', 'shopping');
+      setCurrentGoal('goal', ['shopping']);
       resetSession();
-      expect(getLastTurn()).toBeNull();
-      expect(getCurrentGoal()).toBeNull();
+      expect(getLastTurn()).toBeUndefined();
+      expect(getCurrentGoal()).toBeUndefined();
     });
   });
 });

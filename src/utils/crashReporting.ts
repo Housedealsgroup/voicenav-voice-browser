@@ -1,19 +1,24 @@
 // VoiceNav Crash Reporting — Sentry integration for production error tracking
 
-export function initCrashReporting(_dsn?: string) {
-  // Sentry integration point
-  // When @sentry/react-native is installed, uncomment:
-  // Sentry.init({ dsn, tracesSampleRate: 0.2, environment: __DEV__ ? 'development' : 'production' });
+import * as Sentry from '@sentry/react-native';
+
+export function initCrashReporting(dsn?: string) {
+  if (!dsn) return;
+  Sentry.init({
+    dsn,
+    tracesSampleRate: 0.2,
+    environment: __DEV__ ? 'development' : 'production',
+  });
 }
 
 export function captureError(error: Error, context?: Record<string, any>) {
   console.error('[VoiceNav] Error:', error.message, context);
-  // Sentry.captureException(error, { extra: context });
+  Sentry.captureException(error, { extra: context });
 }
 
 export function captureMessage(message: string, level: string = 'info') {
   console.log(`[VoiceNav] [${level}]:`, message);
-  // Sentry.captureMessage(message, level);
+  Sentry.captureMessage(message, level as any);
 }
 
 // Global error handlers

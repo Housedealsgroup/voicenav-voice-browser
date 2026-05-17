@@ -1,5 +1,5 @@
-// VoiceNav Agent Brain v4 — NLU-powered intent parsing with context-aware decision making
-// Integrates NLU engine, session memory, and task engine for supercomputer-level navigation
+// VoiceNav Agent Brain v5 — NLU-powered intent parsing with context-aware decision making
+// Integrates NLU engine, session memory, task engine, predictions, shortcuts, and page intelligence
 
 import {
   PageSnapshot, AgentAction, PageElement, VoiceCommand,
@@ -8,10 +8,17 @@ import {
 import { understand, resolveSiteAlias, NLUResult, Intent } from './nlu';
 import { getSession, getContextForNLU, updateEntityMemory, resolveReference } from './sessionMemory';
 import { logger } from '../utils/logger';
+import { matchShortcut } from './voiceShortcuts';
+import { predictCommands, recordCommand, type PredictionContext } from './commandPredictor';
+import { analyzePageIntelligence, speakPageIntelligence, detectContentType } from './pageIntelligence';
+import { hapticCommandRecognized, hapticSuccess, hapticError } from '../utils/haptics';
 
 // Re-export NLU for direct access
 export { understand, resolveSiteAlias } from './nlu';
 export { hasMultipleSteps, parseMultiStepCommand } from './taskEngine';
+export { predictCommands, recordCommand } from './commandPredictor';
+export { analyzePageIntelligence, speakPageIntelligence, detectContentType } from './pageIntelligence';
+export { matchShortcut } from './voiceShortcuts';
 
 // --- Element Matching (enhanced with relevance scoring) ---
 
@@ -152,6 +159,12 @@ export function getPageSuggestions(snapshot: PageSnapshot): string[] {
     suggestions.push('Read description');
   }
 
+  // Default suggestions for any page
+  if (suggestions.length === 0) {
+    suggestions.push('Read this page');
+    suggestions.push('Scroll down');
+  }
+
   const headings = snapshot.headings?.slice(0, 3).map(h => h.text) || [];
   if (headings.length > 0) {
     suggestions.push(`Click "${headings[0]}"`);
@@ -162,9 +175,20 @@ export function getPageSuggestions(snapshot: PageSnapshot): string[] {
 
 // --- NLU-Powered Intent Parsing ---
 
-export function parseVoiceCommand(transcript: string, context?: AgentContext): VoiceCommand {
+export async function parseVoiceCommand(transcript: string, context?: AgentContext): Promise<VoiceCommand> {
+  // Check voice shortcuts first
+  const shortcut = await matchShortcut(transcript);
+  if (shortcut) {
+    logger.agent('shortcutResolved', { input: transcript, command: shortcut.resolvedCommand });
+    // Recursively parse the resolved command
+    return parseVoiceCommand(shortcut.resolvedCommand, context);
+  }
+
   const nluContext = getContextForNLU();
   const result = understand(transcript, nluContext);
+
+  // Haptic feedback on command recognition
+  hapticCommandRecognized();
 
   // Handle ambiguous results
   if (result.isAmbiguous && result.confidence < 0.7) {
@@ -215,6 +239,9 @@ export function decideAction(
   context: AgentContext
 ): { action: AgentAction; needsRetry: boolean } {
   logger.agent('decideAction', { intent: intent.intent, target: intent.target, confidence: intent.confidence });
+
+  // Record command for prediction learning
+  recordCommand(`${intent.intent} ${intent.target || ''}`.trim());
   const { elements } = snapshot;
 
   switch (intent.intent) {

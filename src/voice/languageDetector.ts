@@ -12,8 +12,8 @@ export type DetectionResult = {
 
 // Unicode range matchers for script-based detection
 const SCRIPT_RANGES: Array<{ lang: string; regex: RegExp }> = [
+  { lang: 'ja', regex: /[\u3040-\u309f\u30a0-\u30ff]/ }, // Hiragana/Katakana — must be before zh since Japanese uses Kanji too
   { lang: 'zh', regex: /[\u4e00-\u9fff\u3400-\u4dbf]/ },
-  { lang: 'ja', regex: /[\u3040-\u309f\u30a0-\u30ff]/ },
   { lang: 'ko', regex: /[\uac00-\ud7af\u1100-\u11ff]/ },
   { lang: 'ar', regex: /[\u0600-\u06ff\u0750-\u077f]/ },
   { lang: 'he', regex: /[\u0590-\u05ff]/ },
@@ -25,24 +25,24 @@ const SCRIPT_RANGES: Array<{ lang: string; regex: RegExp }> = [
 // Common stop words per language for fast matching
 const STOP_WORDS: Record<string, string[]> = {
   en: ['the', 'is', 'at', 'which', 'on', 'a', 'an', 'and', 'or', 'but', 'in', 'to', 'for', 'of', 'with', 'it', 'this', 'that', 'do', 'can', 'will', 'go', 'open', 'search', 'click'],
-  es: ['el', 'la', 'los', 'las', 'de', 'en', 'y', 'que', 'es', 'un', 'una', 'por', 'con', 'para', 'del', 'al', 'se', 'no', 'abrir', 'buscar', 'ir'],
-  fr: ['le', 'la', 'les', 'de', 'du', 'des', 'un', 'une', 'et', 'est', 'en', 'que', 'pour', 'dans', 'avec', 'sur', 'pas', 'ouvrir', 'chercher', 'aller'],
-  de: ['der', 'die', 'das', 'ein', 'eine', 'und', 'ist', 'in', 'von', 'zu', 'mit', 'auf', 'für', 'nicht', 'sich', 'dem', 'den', 'öffnen', 'suchen', 'gehen'],
-  it: ['il', 'lo', 'la', 'i', 'gli', 'le', 'di', 'del', 'dello', 'della', 'dei', 'degli', 'delle', 'in', 'da', 'a', 'per', 'con', 'su', 'per', 'aprire', 'cercare', 'andare'],
-  pt: ['o', 'a', 'os', 'as', 'de', 'do', 'da', 'dos', 'das', 'em', 'no', 'na', 'nos', 'nas', 'por', 'com', 'para', 'um', 'uma', 'abrir', 'procurar', 'ir'],
-  ru: ['и', 'в', 'не', 'на', 'я', 'что', 'он', 'как', 'это', 'по', 'но', 'к', 'за', 'из', 'они', 'мы', 'вы', 'открыть', 'искать', 'идти'],
-  ja: ['の', 'に', 'は', 'を', 'た', 'が', 'で', 'て', 'と', 'し', 'れ', 'さ', 'ある', 'する', 'から', 'こと', 'これ', 'それ', 'あける', 'さがす'],
+  es: ['el', 'la', 'los', 'las', 'de', 'en', 'y', 'que', 'es', 'un', 'una', 'por', 'con', 'para', 'del', 'al', 'se', 'no', 'abrir', 'buscar', 'ir', 'atrás', 'ayuda', 'adelante', 'clic', 'leer', 'desplazar', 'comprar', 'carrito'],
+  fr: ['le', 'la', 'les', 'de', 'du', 'des', 'un', 'une', 'et', 'est', 'en', 'que', 'pour', 'dans', 'avec', 'sur', 'pas', 'ouvrir', 'chercher', 'aller', 'aide', 'retour', 'retourner', 'avant', 'cliquer', 'lire', 'défiler', 'acheter', 'panier', 'aller', 'revenir'],
+  de: ['der', 'die', 'das', 'ein', 'eine', 'und', 'ist', 'in', 'von', 'zu', 'mit', 'auf', 'für', 'nicht', 'sich', 'dem', 'den', 'öffnen', 'suchen', 'suche', 'nach', 'gehen', 'hilfe', 'zurück', 'weiter', 'klicken', 'lesen', 'scrollen', 'kaufen', 'warenkorb'],
+  it: ['il', 'lo', 'la', 'i', 'gli', 'le', 'di', 'del', 'dello', 'della', 'dei', 'degli', 'delle', 'in', 'da', 'a', 'per', 'con', 'su', 'per', 'aprire', 'cercare', 'andare', 'cerca', 'aiuto', 'avanti', 'indietro', 'scorri', 'clicca'],
+  pt: ['o', 'a', 'os', 'as', 'de', 'do', 'da', 'dos', 'das', 'em', 'no', 'na', 'nos', 'nas', 'por', 'com', 'para', 'um', 'uma', 'abrir', 'procurar', 'ir', 'buscar', 'ajuda', 'voltar', 'clique', 'fones', 'ouvido', 'fone', 'buscar', 'pesquisar'],
+  ru: ['и', 'в', 'не', 'на', 'я', 'что', 'он', 'как', 'это', 'по', 'но', 'к', 'за', 'из', 'они', 'мы', 'вы', 'открыть', 'открой', 'гугл', 'искать', 'идти', 'найти', 'помощь', 'назад', 'нажми', 'прокрутка'],
+  ja: ['の', 'に', 'は', 'を', 'た', 'が', 'で', 'て', 'と', 'し', 'れ', 'さ', 'ある', 'する', 'から', 'こと', 'これ', 'それ', 'あける', 'さがす', '検索', '探して', '戻る', '助けて', 'クリック'],
   ko: ['의', '에', '는', '을', '가', '이', '의', '로', '으로', '와', '과', '도', '를', '으로', '만', '까지', '부터', '열다', '검색', '가다'],
   zh: ['的', '了', '在', '是', '我', '有', '和', '就', '不', '人', '都', '一', '一个', '上', '也', '很', '到', '说', '打开', '搜索', '去'],
   ar: ['في', 'من', 'على', 'إلى', 'عن', 'مع', 'هذا', 'هذه', 'التي', 'الذي', 'كان', 'هو', 'هي', 'فتح', 'بحث', 'اذهب'],
   hi: ['में', 'के', 'की', 'को', 'है', 'से', 'पर', 'एक', 'और', 'यह', 'वह', 'क्या', 'हो', 'गया', 'खोलो', 'खोजो', 'जाओ'],
-  nl: ['de', 'het', 'een', 'van', 'en', 'in', 'is', 'dat', 'op', 'te', 'zijn', 'er', 'niet', 'ook', 'aan', 'openen', 'zoeken', 'gaan'],
+  nl: ['de', 'het', 'een', 'van', 'en', 'in', 'is', 'dat', 'op', 'te', 'zijn', 'er', 'niet', 'ook', 'aan', 'openen', 'zoeken', 'zoek', 'naar', 'gaan'],
   pl: ['w', 'na', 'nie', 'się', 'z', 'do', 'jest', 'że', 'o', 'jak', 'ale', 'co', 'tak', 'za', 'od', 'otworzyć', 'szukać', 'iść'],
-  sv: ['och', 'att', 'det', 'i', 'en', 'som', 'av', 'för', 'med', 'den', 'till', 'på', 'är', 'inte', 'har', 'öppna', 'söka', 'gå'],
+  sv: ['och', 'att', 'det', 'i', 'en', 'som', 'av', 'för', 'med', 'den', 'till', 'på', 'är', 'inte', 'har', 'efter', 'öppna', 'söka', 'gå'],
   da: ['og', 'at', 'det', 'i', 'en', 'som', 'af', 'for', 'med', 'den', 'til', 'på', 'er', 'ikke', 'har', 'åbne', 'søge', 'gå'],
   fi: ['ja', 'on', 'ei', 'se', 'että', 'oli', 'niin', 'hän', 'kun', 'jos', 'ovat', 'ole', 'tai', 'nyt', 'avata', 'hakea', 'mennä'],
   nb: ['og', 'at', 'det', 'i', 'en', 'som', 'av', 'for', 'med', 'den', 'til', 'på', 'er', 'ikke', 'har', 'åpne', 'søke', 'gå'],
-  tr: ['bir', 've', 'bu', 'da', 'de', 'için', 'ile', 'mi', 'ne', 'o', 'çok', 'var', 'ama', 'gibi', 'açmak', 'aramak', 'gitmek'],
+  tr: ['bir', 've', 'bu', 'da', 'de', 'için', 'ile', 'mi', 'ne', 'o', 'çok', 'var', 'ama', 'gibi', 'ara', 'açmak', 'aramak', 'gitmek'],
   th: ['และ', 'ใน', 'ที่', 'เป็น', 'การ', 'มี', 'จะ', 'ไม่', 'ได้', 'ไป', 'มา', 'ทำ', 'ให้', 'เปิด', 'ค้นหา', 'ไป'],
   vi: ['và', 'của', 'là', 'cho', 'với', 'các', 'một', 'được', 'không', 'này', 'đó', 'từ', 'nhưng', 'mở', 'tìm', 'đi'],
   id: ['dan', 'di', 'yang', 'untuk', 'dengan', 'ini', 'itu', 'dari', 'tidak', 'akan', 'pada', 'juga', 'buka', 'cari', 'pergi'],
@@ -70,7 +70,7 @@ const CHAR_PATTERNS: Record<string, RegExp[]> = {
   da: [/[æøå]/],
   fi: [/[äö]/],
   nb: [/[æøå]/],
-  el: /[\u0370-\u03ff]/,
+  el: [/[\u0370-\u03ff]/],
 };
 
 // Fast Unicode script detection
@@ -139,7 +139,7 @@ export function detectLanguage(text: string): DetectionResult {
   for (const lang of latinLangs) {
     let score = 0;
     const wordScore = scoreStopWords(normalized, lang.code);
-    score += wordScore * 0.6; // Stop words are 60% of score
+    score += wordScore > 0 ? 0.4 + wordScore * 0.4 : 0; // Base 0.4 for any match + proportional
     const charScore = scoreCharPatterns(normalized, lang.code);
     score += charScore * 0.4; // Char patterns are 40% of score
     scores.push({ lang, score });

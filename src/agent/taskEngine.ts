@@ -108,7 +108,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
       { name: 'Open email', commandTemplate: 'go to gmail' },
       { name: 'Read inbox', commandTemplate: 'read this page' },
     ],
-    triggerPhrases: ['check email', 'read email', 'open inbox', 'check inbox'],
+    triggerPhrases: ['check email', 'check my email', 'read email', 'open inbox', 'check inbox', 'check my inbox'],
   },
   {
     name: 'Browse news',

@@ -12,7 +12,7 @@ describe('Proactive Assistant', () => {
     it('returns shopping suggestions for shopping pages', () => {
       const suggestions = getProactiveSuggestions(makeSnapshot('shopping'));
       expect(suggestions.length).toBeGreaterThan(0);
-      expect(suggestions.some(s => s.toLowerCase().includes('cart') || s.toLowerCase().includes('price'))).toBe(true);
+      expect(suggestions.some(s => s.text.toLowerCase().includes('cart') || s.text.toLowerCase().includes('price'))).toBe(true);
     });
 
     it('returns search suggestions for search pages', () => {

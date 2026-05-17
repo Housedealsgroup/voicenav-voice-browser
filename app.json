@@ -2,7 +2,7 @@
   "expo": {
     "name": "VoiceNav",
     "slug": "voicenav",
-    "version": "1.0.0",
+    "version": "8.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -43,7 +43,8 @@
     },
     "plugins": [
       "expo-router",
-      "expo-speech-recognition"
+      "expo-speech-recognition",
+      "@sentry/react-native"
     ],
     "experiments": {
       "typedRoutes": true

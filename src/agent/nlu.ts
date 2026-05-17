@@ -415,7 +415,7 @@ function extractEntities(text: string): Entity[] {
   while ((match = urlRegex.exec(text)) !== null) {
     entities.push({ type: 'url', value: match[0], raw: match[0], confidence: 0.99 });
   }
-  const numRegex = /\b(\d+(?:\.\d+)?)\b/g;
+  const numRegex = /\b(\d+(?:\.\d+)?)(?:st|nd|rd|th)?\b/g;
   while ((match = numRegex.exec(text)) !== null) {
     entities.push({ type: 'number', value: match[1], raw: match[0], confidence: 0.95 });
   }

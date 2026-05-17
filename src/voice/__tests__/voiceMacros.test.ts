@@ -34,7 +34,7 @@ describe('Voice Macros', () => {
     it('substitutes variables', () => {
       const macro = BUILT_IN_MACROS.find(m => m.name.includes('Amazon'))!;
       const steps = expandMacro(macro, { item: 'laptop' });
-      expect(steps.some(s => s.includes('laptop'))).toBe(true);
+      expect(steps.some(s => s.command.includes('laptop'))).toBe(true);
     });
   });
 
@@ -50,7 +50,7 @@ describe('Voice Macros', () => {
         expect(macro.id).toBeDefined();
         expect(macro.name).toBeDefined();
         expect(macro.steps.length).toBeGreaterThan(0);
-        expect(macro.triggerPhrases.length).toBeGreaterThan(0);
+        expect(macro.triggerPhrase.length).toBeGreaterThan(0);
       });
     });
   });
