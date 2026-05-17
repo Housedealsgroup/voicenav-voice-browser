@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" width="390" height="844">
+  <defs>
+    <linearGradient id="hbg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A0A1A"/>
+      <stop offset="100%" style="stop-color:#12122A"/>
+    </linearGradient>
+    <linearGradient id="hmic" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6C63FF"/>
+      <stop offset="100%" style="stop-color:#00D9FF"/>
+    </linearGradient>
+  </defs>
+  <rect width="390" height="844" fill="url(#hbg)"/>
+  <!-- Status bar -->
+  <rect x="0" y="0" width="390" height="44" fill="rgba(18,18,42,0.9)"/>
+  <text x="195" y="28" text-anchor="middle" fill="white" font-family="system-ui" font-size="14" font-weight="600">9:41</text>
+  <!-- Top buttons -->
+  <circle cx="330" cy="62" r="18" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <text x="330" y="67" text-anchor="middle" fill="#A0A0C0" font-family="system-ui" font-size="14">B</text>
+  <circle cx="362" cy="62" r="18" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <text x="362" y="67" text-anchor="middle" fill="#A0A0C0" font-family="system-ui" font-size="14">S</text>
+  <!-- Logo -->
+  <circle cx="195" cy="130" r="40" fill="url(#hmic)"/>
+  <rect x="180" y="112" width="30" height="40" rx="15" fill="white"/>
+  <path d="M172 155 Q172 175 195 175 Q218 175 218 155" fill="none" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <line x1="195" y1="175" x2="195" y2="188" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <line x1="182" y1="188" x2="208" y2="188" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <text x="195" y="210" text-anchor="middle" fill="white" font-family="system-ui" font-size="28" font-weight="800">VoiceNav</text>
+  <text x="195" y="232" text-anchor="middle" fill="#A0A0C0" font-family="system-ui" font-size="13">Supercomputer-level voice navigation</text>
+  <!-- Mic button -->
+  <circle cx="195" cy="290" r="36" fill="url(#hmic)"/>
+  <circle cx="195" cy="290" r="44" fill="none" stroke="rgba(108,99,255,0.3)" stroke-width="2"/>
+  <circle cx="195" cy="290" r="52" fill="none" stroke="rgba(108,99,255,0.15)" stroke-width="2"/>
+  <rect x="183" y="275" width="24" height="30" rx="12" fill="white"/>
+  <path d="M177 305 Q177 318 195 318 Q213 318 213 305" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- URL input -->
+  <rect x="20" y="350" width="350" height="48" rx="12" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <text x="40" y="379" fill="#606080" font-family="system-ui" font-size="14">Enter website or search...</text>
+  <!-- Quick Tasks section -->
+  <text x="20" y="425" fill="white" font-family="system-ui" font-size="16" font-weight="700">Quick Tasks</text>
+  <rect x="20" y="435" width="108" height="80" rx="12" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <circle cx="74" cy="465" r="16" fill="rgba(255,153,0,0.2)"/>
+  <text x="74" y="470" text-anchor="middle" fill="#FF9900" font-family="system-ui" font-size="16">C</text>
+  <text x="74" y="502" text-anchor="middle" fill="white" font-family="system-ui" font-size="11" font-weight="600">Shop</text>
+  <rect x="138" y="435" width="108" height="80" rx="12" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <circle cx="192" cy="465" r="16" fill="rgba(0,230,118,0.2)"/>
+  <text x="192" y="470" text-anchor="middle" fill="#00E676" font-family="system-ui" font-size="16">P</text>
+  <text x="192" y="502" text-anchor="middle" fill="white" font-family="system-ui" font-size="11" font-weight="600">Compare</text>
+  <rect x="256" y="435" width="108" height="80" rx="12" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <circle cx="310" cy="465" r="16" fill="rgba(66,133,244,0.2)"/>
+  <text x="310" y="470" text-anchor="middle" fill="#4285F4" font-family="system-ui" font-size="16">N</text>
+  <text x="310" y="502" text-anchor="middle" fill="white" font-family="system-ui" font-size="11" font-weight="600">Read News</text>
+  <!-- Quick Links section -->
+  <text x="20" y="545" fill="white" font-family="system-ui" font-size="16" font-weight="700">Quick Links</text>
+  <rect x="20" y="555" width="108" height="70" rx="12" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <circle cx="74" cy="580" r="14" fill="rgba(66,133,244,0.2)"/>
+  <text x="74" y="585" text-anchor="middle" fill="#4285F4" font-family="system-ui" font-size="14">G</text>
+  <text x="74" y="612" text-anchor="middle" fill="white" font-family="system-ui" font-size="10" font-weight="600">Google</text>
+  <rect x="138" y="555" width="108" height="70" rx="12" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <circle cx="192" cy="580" r="14" fill="rgba(255,153,0,0.2)"/>
+  <text x="192" y="585" text-anchor="middle" fill="#FF9900" font-family="system-ui" font-size="14">A</text>
+  <text x="192" y="612" text-anchor="middle" fill="white" font-family="system-ui" font-size="10" font-weight="600">Amazon</text>
+  <rect x="256" y="555" width="108" height="70" rx="12" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <circle cx="310" cy="580" r="14" fill="rgba(255,0,0,0.2)"/>
+  <text x="310" y="585" text-anchor="middle" fill="#FF0000" font-family="system-ui" font-size="14">Y</text>
+  <text x="310" y="612" text-anchor="middle" fill="white" font-family="system-ui" font-size="10" font-weight="600">YouTube</text>
+  <!-- Voice Commands section -->
+  <text x="20" y="660" fill="white" font-family="system-ui" font-size="16" font-weight="700">Voice Commands</text>
+  <rect x="20" y="670" width="350" height="36" rx="8" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <circle cx="42" cy="688" r="10" fill="rgba(0,217,255,0.2)"/>
+  <text x="42" y="692" text-anchor="middle" fill="#00D9FF" font-family="system-ui" font-size="12">›</text>
+  <text x="60" y="693" fill="white" font-family="system-ui" font-size="13">Go to amazon.com</text>
+  <rect x="20" y="712" width="350" height="36" rx="8" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <circle cx="42" cy="730" r="10" fill="rgba(0,217,255,0.2)"/>
+  <text x="42" y="734" text-anchor="middle" fill="#00D9FF" font-family="system-ui" font-size="12">›</text>
+  <text x="60" y="735" fill="white" font-family="system-ui" font-size="13">Search for headphones</text>
+  <rect x="20" y="754" width="350" height="36" rx="8" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <circle cx="42" cy="772" r="10" fill="rgba(0,217,255,0.2)"/>
+  <text x="42" y="776" text-anchor="middle" fill="#00D9FF" font-family="system-ui" font-size="12">›</text>
+  <text x="60" y="777" fill="white" font-family="system-ui" font-size="13">Click add to cart</text>
+  <rect x="20" y="796" width="350" height="36" rx="8" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <circle cx="42" cy="814" r="10" fill="rgba(0,217,255,0.2)"/>
+  <text x="42" y="818" text-anchor="middle" fill="#00D9FF" font-family="system-ui" font-size="12">›</text>
+  <text x="60" y="819" fill="white" font-family="system-ui" font-size="13">Read this page</text>
+</svg>

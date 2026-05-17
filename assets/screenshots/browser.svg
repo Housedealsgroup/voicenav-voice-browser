@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" width="390" height="844">
+  <rect width="390" height="844" fill="#0A0A1A"/>
+  <!-- Top bar -->
+  <rect x="0" y="0" width="390" height="88" fill="#12122A"/>
+  <rect x="0" y="87" width="390" height="1" fill="#2A2A4A"/>
+  <circle cx="35" cy="62" r="16" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <text x="35" y="67" text-anchor="middle" fill="white" font-family="system-ui" font-size="14">H</text>
+  <rect x="60" y="46" width="230" height="32" rx="8" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <text x="72" y="67" fill="#606080" font-family="system-ui" font-size="11">🔒 amazon.com - Sony WH-1000XM5...</text>
+  <circle cx="305" cy="62" r="16" fill="rgba(108,99,255,0.2)" stroke="#6C63FF" stroke-width="1"/>
+  <text x="305" y="67" text-anchor="middle" fill="#6C63FF" font-family="system-ui" font-size="14">B</text>
+  <circle cx="337" cy="62" r="16" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <text x="337" y="67" text-anchor="middle" fill="#00D9FF" font-family="system-ui" font-size="14">T</text>
+  <circle cx="369" cy="62" r="16" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <text x="369" y="67" text-anchor="middle" fill="#A0A0C0" font-family="system-ui" font-size="14">K</text>
+  <!-- Task Progress overlay -->
+  <rect x="16" y="96" width="358" height="120" rx="12" fill="#12122A" stroke="#6C63FF" stroke-width="1"/>
+  <rect x="16" y="96" width="358" height="120" rx="12" fill="rgba(108,99,255,0.05)"/>
+  <circle cx="36" cy="116" r="10" fill="rgba(108,99,255,0.2)"/>
+  <text x="36" y="120" text-anchor="middle" fill="#6C63FF" font-family="system-ui" font-size="12">↻</text>
+  <text x="52" y="121" fill="white" font-family="system-ui" font-size="13" font-weight="700">Shop for headphones</text>
+  <text x="352" y="121" fill="#606080" font-family="system-ui" font-size="11">✕</text>
+  <!-- Progress bar -->
+  <rect x="32" y="132" width="326" height="4" rx="2" fill="#1A1A3A"/>
+  <rect x="32" y="132" width="163" height="4" rx="2" fill="#6C63FF"/>
+  <text x="32" y="150" fill="#A0A0C0" font-family="system-ui" font-size="10">Step 3 of 6 — Review results</text>
+  <!-- Steps -->
+  <text x="48" y="170" fill="#00E676" font-family="system-ui" font-size="11">✓ Navigate to store</text>
+  <text x="48" y="186" fill="#00E676" font-family="system-ui" font-size="11">✓ Search for item</text>
+  <text x="48" y="202" fill="#6C63FF" font-family="system-ui" font-size="11" font-weight="600">▸ Review results</text>
+  <!-- Browser content area (mock Amazon) -->
+  <rect x="0" y="224" width="390" height="460" fill="#FFFFFF"/>
+  <!-- Product card -->
+  <rect x="16" y="234" width="170" height="200" rx="8" fill="#F5F5F5"/>
+  <rect x="36" y="254" width="130" height="100" rx="4" fill="#E0E0E0"/>
+  <text x="101" y="310" text-anchor="middle" fill="#999" font-family="system-ui" font-size="10">Product Image</text>
+  <text x="36" y="372" fill="#333" font-family="system-ui" font-size="10" font-weight="600">Sony WH-1000XM5</text>
+  <text x="36" y="386" fill="#B12704" font-family="system-ui" font-size="12" font-weight="700">$348.00</text>
+  <text x="36" y="398" fill="#007600" font-family="system-ui" font-size="9">In Stock</text>
+  <text x="36" y="412" fill="#FF9900" font-family="system-ui" font-size="10">★★★★★ 4.7</text>
+  <rect x="204" y="234" width="170" height="200" rx="8" fill="#F5F5F5"/>
+  <rect x="224" y="254" width="130" height="100" rx="4" fill="#E0E0E0"/>
+  <text x="289" y="310" text-anchor="middle" fill="#999" font-family="system-ui" font-size="10">Product Image</text>
+  <text x="224" y="372" fill="#333" font-family="system-ui" font-size="10" font-weight="600">Bose QC Ultra</text>
+  <text x="224" y="386" fill="#B12704" font-family="system-ui" font-size="12" font-weight="700">$429.00</text>
+  <text x="224" y="398" fill="#007600" font-family="system-ui" font-size="9">In Stock</text>
+  <text x="224" y="412" fill="#FF9900" font-family="system-ui" font-size="10">★★★★★ 4.6</text>
+  <!-- Add to Cart button highlighted -->
+  <rect x="16" y="444" width="170" height="36" rx="8" fill="#FFD814"/>
+  <text x="101" y="467" text-anchor="middle" fill="#333" font-family="system-ui" font-size="12" font-weight="700">Add to Cart</text>
+  <rect x="204" y="444" width="170" height="36" rx="8" fill="#FFD814"/>
+  <text x="289" y="467" text-anchor="middle" fill="#333" font-family="system-ui" font-size="12" font-weight="700">Add to Cart</text>
+  <!-- Suggestions bar -->
+  <rect x="0" y="684" width="390" height="40" fill="#12122A"/>
+  <rect x="0" y="683" width="390" height="1" fill="#2A2A4A"/>
+  <rect x="12" y="692" width="90" height="24" rx="12" fill="rgba(0,217,255,0.15)" stroke="rgba(0,217,255,0.3)" stroke-width="1"/>
+  <text x="57" y="708" text-anchor="middle" fill="#00D9FF" font-family="system-ui" font-size="10">Add to cart</text>
+  <rect x="112" y="692" width="80" height="24" rx="12" fill="rgba(0,217,255,0.15)" stroke="rgba(0,217,255,0.3)" stroke-width="1"/>
+  <text x="152" y="708" text-anchor="middle" fill="#00D9FF" font-family="system-ui" font-size="10">Sort by price</text>
+  <rect x="202" y="692" width="80" height="24" rx="12" fill="rgba(0,217,255,0.15)" stroke="rgba(0,217,255,0.3)" stroke-width="1"/>
+  <text x="242" y="708" text-anchor="middle" fill="#00D9FF" font-family="system-ui" font-size="10">Filter</text>
+  <!-- Bottom panel -->
+  <rect x="0" y="724" width="390" height="120" fill="#12122A"/>
+  <rect x="0" y="724" width="390" height="1" fill="#2A2A4A"/>
+  <!-- Quick actions -->
+  <circle cx="35" cy="752" r="16" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <text x="35" y="757" text-anchor="middle" fill="white" font-family="system-ui" font-size="12">←</text>
+  <circle cx="80" cy="752" r="16" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <text x="80" y="757" text-anchor="middle" fill="white" font-family="system-ui" font-size="12">→</text>
+  <circle cx="125" cy="752" r="16" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <text x="125" y="757" text-anchor="middle" fill="#00D9FF" font-family="system-ui" font-size="12">E</text>
+  <circle cx="170" cy="752" r="16" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <text x="170" y="757" text-anchor="middle" fill="#FFD600" font-family="system-ui" font-size="12">M</text>
+  <circle cx="215" cy="752" r="16" fill="rgba(0,230,118,0.2)" stroke="#00E676" stroke-width="1"/>
+  <text x="215" y="757" text-anchor="middle" fill="#00E676" font-family="system-ui" font-size="12">●</text>
+  <circle cx="260" cy="752" r="16" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <text x="260" y="757" text-anchor="middle" fill="#6C63FF" font-family="system-ui" font-size="12">T</text>
+  <!-- Command bar -->
+  <circle cx="35" cy="804" r="19" fill="#6C63FF"/>
+  <rect x="27" y="793" width="16" height="20" rx="8" fill="white"/>
+  <path d="M27 814 Q27 822 35 822 Q43 822 43 814" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  <rect x="64" y="786" width="270" height="36" rx="8" fill="#1A1A3A" stroke="#2A2A4A" stroke-width="1"/>
+  <text x="78" y="809" fill="#606080" font-family="system-ui" font-size="13">Say or type a command...</text>
+  <circle cx="355" cy="804" r="16" fill="#6C63FF"/>
+  <text x="355" y="809" text-anchor="middle" fill="white" font-family="system-ui" font-size="14">➤</text>
+</svg>

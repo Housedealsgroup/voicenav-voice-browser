@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" fill="none">
+  <rect width="390" height="844" rx="40" fill="#0a0a0a"/>
+  <rect x="0" y="0" width="390" height="44" fill="#0a0a0a"/>
+  <text x="195" y="28" text-anchor="middle" fill="white" font-family="system-ui" font-size="14" font-weight="600">9:41</text>
+
+  <!-- Overlay background -->
+  <rect x="0" y="0" width="390" height="844" fill="black" opacity="0.7"/>
+
+  <!-- Command palette modal -->
+  <rect x="30" y="200" width="330" height="440" rx="20" fill="#1a1a2e"/>
+
+  <!-- Search bar -->
+  <rect x="45" y="220" width="300" height="45" rx="12" fill="#0a0a0a"/>
+  <text x="65" y="248" fill="#666" font-family="system-ui" font-size="14">Search commands...</text>
+
+  <!-- Categories -->
+  <text x="45" y="295" fill="#00d4ff" font-family="system-ui" font-size="11" font-weight="600">NAVIGATION</text>
+  <rect x="45" y="305" width="300" height="40" rx="8" fill="#0a0a0a"/>
+  <text x="65" y="330" fill="white" font-family="system-ui" font-size="13">Go to...</text>
+  <text x="290" y="330" fill="#666" font-family="system-ui" font-size="11">⌘G</text>
+
+  <rect x="45" y="350" width="300" height="40" rx="8" fill="#0a0a0a"/>
+  <text x="65" y="375" fill="white" font-family="system-ui" font-size="13">Open...</text>
+  <text x="290" y="375" fill="#666" font-family="system-ui" font-size="11">⌘O</text>
+
+  <text x="45" y="420" fill="#00d4ff" font-family="system-ui" font-size="11" font-weight="600">SEARCH</text>
+  <rect x="45" y="430" width="300" height="40" rx="8" fill="#0a0a0a"/>
+  <text x="65" y="455" fill="white" font-family="system-ui" font-size="13">Search for...</text>
+  <text x="290" y="455" fill="#666" font-family="system-ui" font-size="11">⌘S</text>
+
+  <rect x="45" y="475" width="300" height="40" rx="8" fill="#0a0a0a"/>
+  <text x="65" y="500" fill="white" font-family="system-ui" font-size="13">Find on page...</text>
+  <text x="290" y="500" fill="#666" font-family="system-ui" font-size="11">⌘F</text>
+
+  <text x="45" y="545" fill="#00d4ff" font-family="system-ui" font-size="11" font-weight="600">RECENT</text>
+  <rect x="45" y="555" width="300" height="40" rx="8" fill="#0a0a0a"/>
+  <text x="65" y="580" fill="#888" font-family="system-ui" font-size="13">Go to amazon</text>
+
+  <rect x="45" y="600" width="300" height="40" rx="8" fill="#0a0a0a"/>
+  <text x="65" y="625" fill="#888" font-family="system-ui" font-size="13">Search for headphones</text>
+
+  <!-- Bottom hint -->
+  <text x="195" y="670" text-anchor="middle" fill="#666" font-family="system-ui" font-size="11">ESC to close · ↑↓ to navigate · Enter to select</text>
+</svg>

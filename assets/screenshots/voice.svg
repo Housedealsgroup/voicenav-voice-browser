@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" fill="none">
+  <rect width="390" height="844" rx="40" fill="#0a0a0a"/>
+  <rect x="0" y="0" width="390" height="44" fill="#0a0a0a"/>
+  <text x="195" y="28" text-anchor="middle" fill="white" font-family="system-ui" font-size="14" font-weight="600">9:41</text>
+
+  <!-- Status bar area -->
+  <rect x="30" y="60" width="330" height="50" rx="25" fill="#1a1a2e"/>
+  <text x="195" y="90" text-anchor="middle" fill="#888" font-family="system-ui" font-size="14">voice.nav</text>
+
+  <!-- Voice command display -->
+  <rect x="30" y="140" width="330" height="120" rx="20" fill="#1a1a2e"/>
+  <text x="195" y="175" text-anchor="middle" fill="#00d4ff" font-family="system-ui" font-size="16" font-weight="600">Listening...</text>
+  <text x="195" y="210" text-anchor="middle" fill="white" font-family="system-ui" font-size="20" font-weight="700">"Go to Amazon"</text>
+  <text x="195" y="240" text-anchor="middle" fill="#666" font-family="system-ui" font-size="12">95% confidence</text>
+
+  <!-- Waveform visualization -->
+  <rect x="60" y="290" width="8" height="30" rx="4" fill="#00d4ff"/>
+  <rect x="78" y="280" width="8" height="50" rx="4" fill="#00d4ff"/>
+  <rect x="96" y="295" width="8" height="20" rx="4" fill="#00d4ff"/>
+  <rect x="114" y="275" width="8" height="60" rx="4" fill="#00d4ff"/>
+  <rect x="132" y="285" width="8" height="40" rx="4" fill="#00d4ff"/>
+  <rect x="150" y="270" width="8" height="70" rx="4" fill="#00d4ff"/>
+  <rect x="168" y="280" width="8" height="50" rx="4" fill="#00d4ff"/>
+  <rect x="186" y="265" width="8" height="80" rx="4" fill="#00d4ff"/>
+  <rect x="204" y="275" width="8" height="60" rx="4" fill="#00d4ff"/>
+  <rect x="222" y="290" width="8" height="30" rx="4" fill="#00d4ff"/>
+  <rect x="240" y="280" width="8" height="50" rx="4" fill="#00d4ff"/>
+  <rect x="258" y="270" width="8" height="70" rx="4" fill="#00d4ff"/>
+  <rect x="276" y="285" width="8" height="40" rx="4" fill="#00d4ff"/>
+  <rect x="294" y="275" width="8" height="60" rx="4" fill="#00d4ff"/>
+  <rect x="312" y="290" width="8" height="30" rx="4" fill="#00d4ff"/>
+
+  <!-- NLU processing indicator -->
+  <rect x="30" y="360" width="330" height="80" rx="15" fill="#1a1a2e"/>
+  <text x="50" y="385" fill="#00d4ff" font-family="system-ui" font-size="12" font-weight="600">NLU ENGINE</text>
+  <text x="50" y="410" fill="white" font-family="system-ui" font-size="14">Intent: navigate</text>
+  <text x="50" y="430" fill="#888" font-family="system-ui" font-size="12">Entity: amazon.com</text>
+
+  <!-- Action being executed -->
+  <rect x="30" y="460" width="330" height="60" rx="15" fill="#00d4ff" opacity="0.15"/>
+  <text x="195" y="495" text-anchor="middle" fill="#00d4ff" font-family="system-ui" font-size="14" font-weight="600">Navigating to amazon.com...</text>
+
+  <!-- Mic button -->
+  <circle cx="195" cy="600" r="50" fill="#ff006e"/>
+  <circle cx="195" cy="600" r="55" stroke="#ff006e" stroke-width="2" fill="none" opacity="0.5"/>
+  <circle cx="195" cy="600" r="62" stroke="#ff006e" stroke-width="1" fill="none" opacity="0.3"/>
+  <path d="M185 585 L185 605 Q185 615 195 615 Q205 615 205 605 L205 585" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <line x1="195" y1="615" x2="195" y2="622" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="188" y1="622" x2="202" y2="622" stroke="white" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Bottom nav -->
+  <rect x="0" y="750" width="390" height="94" fill="#0a0a0a"/>
+  <rect x="30" y="760" width="330" height="70" rx="20" fill="#1a1a2e"/>
+  <text x="85" y="800" text-anchor="middle" fill="#00d4ff" font-family="system-ui" font-size="10">Home</text>
+  <text x="195" y="800" text-anchor="middle" fill="#666" font-family="system-ui" font-size="10">Browser</text>
+  <text x="305" y="800" text-anchor="middle" fill="#666" font-family="system-ui" font-size="10">Settings</text>
+</svg>
