@@ -15,7 +15,7 @@ A fully accessible mobile browser powered by on-device AI that understands 116 l
 [![TypeScript](https://img.shields.io/badge/TypeScript_5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![License](https://img.shields.io/badge/License-MIT-00E676?style=for-the-badge)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/Housedealsgroup/voicenav?style=for-the-badge&logo=github&color=FFD600)](https://github.com/Housedealsgroup/voicenav/stargazers)
-[![Tests](https://img.shields.io/badge/Tests-25_Suites_857+-00E676?style=for-the-badge)](#testing)
+[![Tests](https://img.shields.io/badge/Tests-25_Suites_938+-00E676?style=for-the-badge)](#testing)
 [![Languages](https://img.shields.io/badge/Languages-116-FF6B6B?style=for-the-badge)](#116-languages)
 [![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](#cicd)
 
@@ -546,7 +546,7 @@ voicenav/
 │   └── privacy.tsx               # Privacy policy
 ├── src/
 │   ├── agent/                    # AI Brain
-│   │   ├── nlu.ts                # NLU engine — 44 intents, fuzzy matching
+│   │   ├── nlu.ts                # NLU engine — 51 intents, fuzzy matching
 │   │   ├── brain.ts              # Decision engine with predictions
 │   │   ├── sessionMemory.ts      # Context tracking & pronouns
 │   │   ├── taskEngine.ts         # Multi-step task automation
@@ -638,7 +638,7 @@ voicenav/
 
 <div align="center">
 
-### **25 Test Suites. 857+ Tests. Rock Solid.**
+### **25 Test Suites. 938+ Tests. Rock Solid.**
 
 </div>
 
