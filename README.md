@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/voicenav-logo.svg" alt="VoiceNav Logo" width="200" height="200">
+<img src="assets/voicenav-logo.svg" alt="VoiceNav Logo" width="320" height="320">
 
 # **VoiceNav**
 

@@ -13,6 +13,7 @@ import { speak } from '../src/voice/textToSpeech';
 import { useSpeechRecognition } from '../src/voice/speechToText';
 import { understand, resolveSiteAlias } from '../src/agent/nlu';
 import VoiceButton from '../src/components/VoiceButton';
+import VoiceNavLogo from '../src/components/VoiceNavLogo';
 import { isOnboardingDone } from '../src/store/persistentState';
 
 const { width } = Dimensions.get('window');
@@ -218,11 +219,7 @@ export default function HomeScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Logo */}
         <View style={styles.logoContainer}>
-          <View style={styles.logoCircle}>
-            <Ionicons name="mic" size={40} color={COLORS.dark.text} />
-          </View>
-          <Text style={styles.appName}>VoiceNav</Text>
-          <Text style={styles.tagline}>Supercomputer-level voice navigation</Text>
+          <VoiceNavLogo size={width > 400 ? 160 : 120} />
         </View>
 
         {/* Voice Button */}
@@ -426,9 +423,6 @@ const styles = StyleSheet.create({
   topButtons: { position: 'absolute', top: Platform.OS === 'ios' ? 60 : 40, right: SPACING.lg, flexDirection: 'row', gap: SPACING.sm },
   topButton: { width: 40, height: 40, borderRadius: 20, backgroundColor: COLORS.dark.surface, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: COLORS.dark.border },
   logoContainer: { alignItems: 'center', marginBottom: SPACING.lg },
-  logoCircle: { width: 80, height: 80, borderRadius: 40, backgroundColor: COLORS.dark.primary, justifyContent: 'center', alignItems: 'center', marginBottom: SPACING.md, shadowColor: COLORS.dark.primary, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
-  appName: { fontSize: FONT_SIZE.hero, fontWeight: '800', color: COLORS.dark.text, letterSpacing: -1 },
-  tagline: { fontSize: FONT_SIZE.md, color: COLORS.dark.textSecondary, marginTop: SPACING.xs },
   inputContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.dark.surface, borderRadius: RADIUS.lg, paddingHorizontal: SPACING.md, marginBottom: SPACING.lg, borderWidth: 1, borderColor: COLORS.dark.border },
   inputIcon: { marginRight: SPACING.sm },
   urlInput: { flex: 1, height: 52, fontSize: FONT_SIZE.md, color: COLORS.dark.text },
