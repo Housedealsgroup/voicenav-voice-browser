@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav/master/assets/voicenav-logo.svg" alt="VoiceNav Logo" width="320" height="320">
+<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav-voice-browser/master/assets/voicenav-logo.svg" alt="VoiceNav Logo" width="320" height="320">
 
 # **VoiceNav**
 
@@ -14,14 +14,15 @@ A fully accessible mobile browser powered by on-device AI that understands 116 l
 [![React Native](https://img.shields.io/badge/React_Native_0.81-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactnative.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript_5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![License](https://img.shields.io/badge/License-MIT-00E676?style=for-the-badge)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/Housedealsgroup/voicenav?style=for-the-badge&logo=github&color=FFD600)](https://github.com/Housedealsgroup/voicenav/stargazers)
+[![GitHub Stars](https://img.shields.io/github/stars/Housedealsgroup/voicenav-voice-browser?style=for-the-badge&logo=github&color=FFD600)](https://github.com/Housedealsgroup/voicenav-voice-browser/stargazers)
 [![Tests](https://img.shields.io/badge/Tests-25_Suites_938+-00E676?style=for-the-badge)](#testing)
 [![Languages](https://img.shields.io/badge/Languages-116-FF6B6B?style=for-the-badge)](#116-languages)
 [![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](#cicd)
+[![X Follow](https://img.shields.io/badge/Follow_@voicenav-000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/voicenav)
 
 ---
 
-<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav/master/assets/demo.svg" alt="VoiceNav Demo — Voice-controlled browser for blind users" width="100%">
+<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav-voice-browser/master/assets/demo.svg" alt="VoiceNav Demo — Voice-controlled browser for blind users" width="100%">
 
 *VoiceNav in action: Speak naturally to browse the web. The AI understands your commands, navigates pages, extracts information, and provides real-time feedback — all on-device.*
 
@@ -85,7 +86,7 @@ VoiceNav understands 116 languages and executes complex multi-step commands — 
 
 ### **Home Screen**
 
-<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav/master/assets/screenshots/home.svg" alt="VoiceNav Home Screen" width="100%">
+<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav-voice-browser/master/assets/screenshots/home.svg" alt="VoiceNav Home Screen" width="100%">
 
 *The main screen with quick tasks, voice button, and quick links. Tap the microphone or say a command to start browsing.*
 
@@ -93,7 +94,7 @@ VoiceNav understands 116 languages and executes complex multi-step commands — 
 
 ### **Voice Command**
 
-<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav/master/assets/screenshots/voice.svg" alt="VoiceNav Voice Command" width="100%">
+<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav-voice-browser/master/assets/screenshots/voice.svg" alt="VoiceNav Voice Command" width="100%">
 
 *Speak naturally and VoiceNav understands. Real-time waveform visualization shows your voice input, with intent recognition and confidence scores.*
 
@@ -101,7 +102,7 @@ VoiceNav understands 116 languages and executes complex multi-step commands — 
 
 ### **Browser View**
 
-<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav/master/assets/screenshots/browser.svg" alt="VoiceNav Browser View" width="100%">
+<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav-voice-browser/master/assets/screenshots/browser.svg" alt="VoiceNav Browser View" width="100%">
 
 *Full browser with AI assistant. Browse products, read articles, fill forms — all by voice. The floating assistant provides real-time suggestions.*
 
@@ -109,7 +110,7 @@ VoiceNav understands 116 languages and executes complex multi-step commands — 
 
 ### **Bookmarks**
 
-<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav/master/assets/screenshots/bookmarks.svg" alt="VoiceNav Bookmarks" width="100%">
+<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav-voice-browser/master/assets/screenshots/bookmarks.svg" alt="VoiceNav Bookmarks" width="100%">
 
 *Save and organize your favorite pages. Say "bookmark this" to save any page instantly. Search, sort, and manage bookmarks by voice.*
 
@@ -117,7 +118,7 @@ VoiceNav understands 116 languages and executes complex multi-step commands — 
 
 ### **Command Palette**
 
-<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav/master/assets/screenshots/palette.svg" alt="VoiceNav Command Palette" width="100%">
+<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav-voice-browser/master/assets/screenshots/palette.svg" alt="VoiceNav Command Palette" width="100%">
 
 *Quick command palette for fast navigation. Type or speak to find bookmarks, shortcuts, and commands. Keyboard shortcuts for power users.*
 
@@ -125,7 +126,7 @@ VoiceNav understands 116 languages and executes complex multi-step commands — 
 
 ### **Task Automation**
 
-<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav/master/assets/screenshots/task.svg" alt="VoiceNav Task Automation" width="100%">
+<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav-voice-browser/master/assets/screenshots/task.svg" alt="VoiceNav Task Automation" width="100%">
 
 *Multi-step task automation. Say "shop for headphones then sort by price then click the first result" and VoiceNav executes each step with progress tracking.*
 
@@ -133,7 +134,7 @@ VoiceNav understands 116 languages and executes complex multi-step commands — 
 
 ### **Settings**
 
-<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav/master/assets/screenshots/settings.svg" alt="VoiceNav Settings" width="100%">
+<img src="https://raw.githubusercontent.com/Housedealsgroup/voicenav-voice-browser/master/assets/screenshots/settings.svg" alt="VoiceNav Settings" width="100%">
 
 *Customize your experience. Configure speech rate, language, voice feedback, haptics, accessibility options, and voice shortcuts.*
 
@@ -163,7 +164,7 @@ Download the free Expo Go app on your phone:
 Open your terminal and run these commands:
 
 ```bash
-git clone https://github.com/Housedealsgroup/voicenav.git
+git clone https://github.com/Housedealsgroup/voicenav-voice-browser.git
 cd voicenav
 npm install
 npm start
@@ -858,6 +859,8 @@ npx jest --watch
 
 </div>
 
+We welcome contributions from both **humans** and **AI agents**. Clone the repo, make a change, and push.
+
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Write tests for new functionality
@@ -875,6 +878,14 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ---
 
+## **Social Media**
+
+| Platform | Handle |
+|----------|--------|
+| **X (Twitter)** | [@voicenav](https://x.com/voicenav) |
+
+---
+
 <div align="center">
 
 ## **Built with care for accessibility**
@@ -885,7 +896,7 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ---
 
-[![GitHub](https://img.shields.io/badge/GitHub-VoiceNav-181717?style=for-the-badge&logo=github)](https://github.com/Housedealsgroup/voicenav)
+[![GitHub](https://img.shields.io/badge/GitHub-VoiceNav-181717?style=for-the-badge&logo=github)](https://github.com/Housedealsgroup/voicenav-voice-browser)
 [![Expo](https://img.shields.io/badge/Expo_Go-000020?style=for-the-badge&logo=expo&logoColor=white)](https://expo.dev)
 [![License](https://img.shields.io/badge/MIT_License-00E676?style=for-the-badge)]
 

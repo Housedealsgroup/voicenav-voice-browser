@@ -1,12 +1,12 @@
 # Contributing to VoiceNav
 
-Thank you for your interest in making the web accessible for everyone.
+We welcome contributions from both **humans** and **AI agents**. Clone the repo, make a change, and push.
 
 ## Development Setup
 
 ```bash
-git clone https://github.com/Housedealsgroup/voicenav.git
-cd voicenav
+git clone https://github.com/Housedealsgroup/voicenav-voice-browser.git
+cd voicenav-voice-browser
 npm install
 npm start
 ```
