@@ -17,6 +17,31 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"],
+  "include": [
+    "src/main.tsx",
+    "src/App.tsx",
+    "src/App.css",
+    "src/index.css",
+    "src/vite-env.d.ts",
+    "src/context/AppContext.tsx",
+    "src/hooks/useVoice.ts",
+    "src/components/Header.tsx",
+    "src/components/Header.css",
+    "src/components/HomeScreen.tsx",
+    "src/components/HomeScreen.css",
+    "src/components/BrowserView.tsx",
+    "src/components/BrowserView.css",
+    "src/components/TabBar.tsx",
+    "src/components/TabBar.css",
+    "src/components/VoiceOverlay.tsx",
+    "src/components/VoiceOverlay.css",
+    "src/components/BookmarksView.tsx",
+    "src/components/BookmarksView.css",
+    "src/components/HistoryView.tsx",
+    "src/components/SettingsView.tsx",
+    "src/components/SettingsView.css",
+    "src/types/index.ts",
+    "src/test"
+  ],
   "exclude": ["src/test"]
 }
