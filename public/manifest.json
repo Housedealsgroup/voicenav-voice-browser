@@ -1,0 +1,17 @@
+{
+  "name": "VoiceNav Voice Browser",
+  "short_name": "VoiceNav",
+  "description": "AI-powered voice-controlled Progressive Web App browser",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#1a1a2e",
+  "background_color": "#0f0f23",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

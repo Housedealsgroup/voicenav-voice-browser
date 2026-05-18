@@ -6,24 +6,24 @@
 
 ### Speak naturally. Browse everything. Zero limits.
 
-An AI-powered mobile browser that lets you control the entire web with your voice. 116 languages. On-device AI. No cloud. No subscriptions. No compromises.
+A Progressive Web App voice-controlled browser. Speak commands to navigate, search, bookmark, and control the web — hands-free.
 
-[![Expo](https://img.shields.io/badge/Expo_SDK_54-000020?style=for-the-badge&logo=expo&logoColor=white)](https://expo.dev)
-[![React Native](https://img.shields.io/badge/React_Native_0.81-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactnative.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript_5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript_5.8-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![React](https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite_6-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev)
 [![License](https://img.shields.io/badge/License-MIT-00E676?style=for-the-badge)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-25_Suites_938+-00E676?style=for-the-badge)](#testing)
-[![Languages](https://img.shields.io/badge/Languages-116-FF6B6B?style=for-the-badge)](#116-languages)
+[![Tests](https://img.shields.io/badge/Tests-21_Passing-00E676?style=for-the-badge)](#testing)
+[![PWA](https://img.shields.io/badge/PWA-Ready-5F4BB6?style=for-the-badge&logo=pwa&logoColor=white)](#pwa)
 
 ---
 
 <img src="assets/demo.svg" alt="VoiceNav Voice Browser Demo" width="100%">
 
-*VoiceNav Voice Browser in action: speak naturally to navigate the web, extract information, and automate tasks — all processed on-device.*
+*VoiceNav in action: speak naturally to navigate the web, search, bookmark pages, and control browsing — all processed in-browser with the Web Speech API.*
 
 ---
 
-**100% On-Device AI. No Cloud. No APIs. Zero Data Collection.**
+**100% Client-Side. No Cloud. No APIs. Zero Data Collection.**
 
 </div>
 
@@ -31,9 +31,9 @@ An AI-powered mobile browser that lets you control the entire web with your voic
 
 ## What Is This
 
-VoiceNav Voice Browser is a fully accessible mobile browser built for voice-first interaction. Tap the microphone, say a command, and watch it happen. The AI understands natural language across 116 languages and executes complex multi-step tasks — navigating pages, clicking buttons, filling forms, comparing prices, reading content aloud — all without sending a single byte to the cloud.
+VoiceNav is a Progressive Web App (PWA) that lets you control a web browser using voice commands. Tap the microphone, say a command, and watch it happen. The browser understands natural language and executes commands — navigating pages, searching, bookmarking, scrolling, and more.
 
-Built for blind users, drivers, multitaskers, and anyone who'd rather speak than tap.
+Built with React + TypeScript + Vite, it works on any device with a modern browser. Install it as a PWA for a native app experience.
 
 ---
 
@@ -41,23 +41,18 @@ Built for blind users, drivers, multitaskers, and anyone who'd rather speak than
 
 | Feature | Description |
 |---------|-------------|
-| **Voice Control** | Navigate, click, scroll, search, and fill forms — all by voice |
-| **116 Languages** | Full on-device speech recognition for 116 languages |
-| **On-Device AI** | All processing happens locally. Zero data leaves your device |
-| **Smart Navigation** | AI predicts your next command and suggests actions |
-| **Conversation Mode** | Multi-turn voice conversations with context |
-| **Shopping Assistant** | Compare prices, add to cart, checkout — hands-free |
-| **Page Reader** | Any page read aloud in your language |
-| **Tab Manager** | Open, close, switch tabs by voice |
-| **Form Filling** | Sign in and fill forms with voice commands |
-| **Reading Mode** | Distraction-free reading with adjustable speed |
-| **Translation** | Real-time page translation across 116 languages |
-| **PDF Reader** | Read and navigate PDFs by voice |
-| **QR Scanner** | Scan codes and navigate to URLs |
-| **Dark Mode** | Full dark theme with customizable colors |
-| **Bookmarks** | Save and organize pages by voice |
-| **Privacy Report** | See what trackers were blocked |
-| **Offline Mode** | Browse cached pages without connection |
+| **Voice Control** | Navigate, search, scroll, bookmark — all by voice |
+| **Web Speech API** | Browser-native speech recognition and synthesis |
+| **Smart Navigation** | Auto-detect URLs vs search queries |
+| **Tab Manager** | Open, close, switch tabs by voice or click |
+| **Bookmarks** | Save and organize pages by voice or click |
+| **History** | Browsing history with timestamps |
+| **Multiple Search Engines** | Google, DuckDuckGo, or Bing |
+| **Font Size Control** | Zoom in/out by voice or settings |
+| **PWA** | Install as app, works offline |
+| **Dark Theme** | Easy on the eyes |
+| **Voice Feedback** | Spoken confirmations for commands |
+| **13 Languages** | Voice recognition in 13 languages |
 
 ---
 
@@ -66,7 +61,7 @@ Built for blind users, drivers, multitaskers, and anyone who'd rather speak than
 ### 1. Clone
 
 ```bash
-git clone https://github.com/housedealsgroup/voicenav-voice-browser
+git clone https://github.com/Housedealsgroup/voicenav-voice-browser
 cd voicenav-voice-browser
 ```
 
@@ -79,10 +74,17 @@ npm install
 ### 3. Run
 
 ```bash
-npx expo start
+npm run dev
 ```
 
-Scan the QR code with Expo Go (Android) or Camera app (iOS).
+Open `http://localhost:3000` in your browser. Click the microphone and start speaking.
+
+### 4. Build for Production
+
+```bash
+npm run build
+npm run preview
+```
 
 ---
 
@@ -92,60 +94,32 @@ Scan the QR code with Expo Go (Android) or Camera app (iOS).
 
 | Command | Action |
 |---------|--------|
-| `Go to [website]` | Open any website |
-| `Search for [query]` | Google search |
-| `Go back` / `Go forward` | Browser navigation |
-| `Scroll down` / `Scroll up` | Navigate the page |
-| `Tap [element]` | Click buttons and links |
+| `Go to youtube.com` | Navigate to a website |
+| `Open github.com` | Navigate to a website |
+| `Search for weather` | Search the web |
+| `Look up TypeScript` | Search the web |
+| `Go back` / `Back` | Go to previous page |
+| `Go forward` / `Forward` | Go to next page |
+| `Reload` / `Refresh` | Reload current page |
 
 ### Page Control
 
 | Command | Action |
 |---------|--------|
-| `Read this page` | Hear page content |
-| `Bookmark this` | Save current page |
-| `Fill in [field]` | Form input |
-| `Translate this page` | Real-time translation |
-| `What can you do?` | Show available commands |
+| `Scroll down` / `Page down` | Scroll the page down |
+| `Scroll up` / `Page up` | Scroll the page up |
+| `Bookmark` / `Save this` | Save current page |
+| `Zoom in` / `Bigger` | Increase text size |
+| `Zoom out` / `Smaller` | Decrease text size |
 
-### Shopping
-
-| Command | Action |
-|---------|--------|
-| `Shop for [item]` | Search and browse products |
-| `Add to cart` | Add items to cart |
-| `Compare prices` | Price comparison across sites |
-| `Sort by price` | Filter results |
-| `Checkout` | Complete purchase |
-
-### Productivity
+### Tab Management
 
 | Command | Action |
 |---------|--------|
-| `Open new tab` | Tab management |
-| `Switch to [tab]` | Switch tabs |
+| `New tab` / `Open tab` | Open a new tab |
 | `Close tab` | Close current tab |
-| `Set a reminder` | Create voice reminder |
-| `Check my email` | Open email |
-
----
-
-## 116 Languages
-
-Full on-device speech recognition across every major language family:
-
-| Region | Languages |
-|--------|-----------|
-| **Americas** | English, Espanol, Portugues, Francais |
-| **Western Europe** | Deutsch, Italiano, Nederlands, Svenska, Dansk, Norsk, Suomi |
-| **Eastern Europe** | Polski, Romana, Cesky, Magyar, Hrvatski, Slovensky, Slovenščina, Lietuvių, Latviešu, Eesti |
-| **Balkans & Caucasus** | Ελληνικά, Български, Srpski, Українська |
-| **Middle East** | العربية, Türkçe, Kurdî, فارسی, עברית, اردو |
-| **South Asia** | हिंदी, বাংলা, தமிழ், తెలుగు, मराठी, ગુજરાતી, ಕನ್ನಡ, മലയാളം, ਪੰਜਾਬੀ, नेपाली, සිංහල |
-| **East Asia** | 中文, 日本語, 한국어 |
-| **Southeast Asia** | ภาษาไทย, Tiếng Việt, Bahasa Indonesia, Bahasa Melayu, Tagalog, မြန်မာ, ខ្មែរ, ລາວ |
-| **Africa** | Afrikaans, Swahili, Yoruba, Igbo, Hausa, Zulu, Amharic, Somali |
-| **Celtic & Others** | Gaeilge, Cymraeg, Basque, Icelandic, Maltese |
+| `Home` / `Go home` | Go to home screen |
+| `Stop` / `Cancel` | Stop speaking |
 
 ---
 
@@ -153,12 +127,13 @@ Full on-device speech recognition across every major language family:
 
 | Technology | Purpose |
 |------------|---------|
-| **Expo SDK 54** | Cross-platform mobile framework |
-| **React Native 0.81** | Native mobile UI |
-| **TypeScript 5.9** | Type-safe development |
-| **On-Device AI** | Local speech recognition and NLU |
-| **Web Speech API** | Text-to-speech output |
-| **Expo Router** | File-based navigation |
+| **React 19** | UI framework |
+| **TypeScript 5.8** | Type-safe development |
+| **Vite 6** | Build tool and dev server |
+| **vite-plugin-pwa** | PWA generation with Workbox |
+| **Web Speech API** | Speech recognition and synthesis |
+| **Vitest** | Unit testing |
+| **Testing Library** | Component testing |
 
 ---
 
@@ -166,29 +141,41 @@ Full on-device speech recognition across every major language family:
 
 ```
 voicenav-voice-browser/
-├── app/                    # Expo Router pages
-│   ├── index.tsx           # Home screen
-│   ├── browser.tsx         # WebView browser
-│   ├── onboarding.tsx      # First-run experience
-│   └── settings.tsx        # User preferences
+├── index.html              # Entry point
+├── public/                 # Static assets
+│   ├── favicon.svg         # App icon
+│   └── manifest.json       # PWA manifest
 ├── src/
-│   ├── agent/              # AI command processing
-│   │   ├── nlu.ts          # Natural language understanding
-│   │   ├── brain.ts        # Command execution engine
-│   │   └── contextActions.ts
-│   ├── voice/              # Speech I/O
-│   │   ├── speechToText.ts # On-device STT
-│   │   └── textToSpeech.ts # TTS output
-│   ├── browser/            # WebView integration
-│   ├── components/         # Reusable UI components
-│   ├── store/              # State management
-│   ├── a11y/               # Accessibility utilities
-│   └── utils/              # Helpers and utilities
-├── assets/                 # Icons, logos, screenshots
-│   ├── voicenav-logo.svg   # Logo (vector)
-│   ├── voicenav-logo.png   # Logo (1024x1024 PNG)
-│   └── demo.svg            # App demo screenshot
-└── __tests__/              # 938+ tests across 25 suites
+│   ├── main.tsx            # React entry
+│   ├── App.tsx             # Root component
+│   ├── App.css             # App styles
+│   ├── index.css           # Global styles
+│   ├── vite-env.d.ts       # Type declarations
+│   ├── context/
+│   │   └── AppContext.tsx   # Global state management
+│   ├── hooks/
+│   │   └── useVoice.ts     # Voice recognition hook
+│   ├── components/
+│   │   ├── Header.tsx       # Top navigation bar
+│   │   ├── HomeScreen.tsx   # Home page with search
+│   │   ├── BrowserView.tsx  # iframe-based browser
+│   │   ├── TabBar.tsx       # Tab management
+│   │   ├── VoiceOverlay.tsx # Voice listening overlay
+│   │   ├── BookmarksView.tsx
+│   │   ├── HistoryView.tsx
+│   │   └── SettingsView.tsx
+│   ├── types/
+│   │   └── index.ts         # TypeScript types
+│   └── test/
+│       ├── setup.ts         # Test configuration
+│       ├── App.test.tsx     # App component tests
+│       ├── voice.test.ts    # Voice command tests
+│       └── context.test.tsx # State management tests
+├── assets/                  # Logos and images
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+└── LICENSE
 ```
 
 ---
@@ -199,27 +186,27 @@ voicenav-voice-browser/
 # Run all tests
 npm test
 
-# Run with coverage
-npm test -- --coverage
-
-# Run specific suite
-npm test -- --testPathPattern="nlu"
+# Run in watch mode
+npm run test:watch
 ```
 
-**938+ tests across 25 suites** covering natural language understanding, voice command processing, browser automation, accessibility compliance, state management, and error handling.
+**21 tests across 3 suites** covering voice command parsing, state management, and component rendering.
 
 ---
 
-## Accessibility
+## PWA
 
-Built from the ground up for users who need it most:
+VoiceNav is a Progressive Web App. To install:
 
-- **WCAG 2.1 AA compliant** — Meets international accessibility standards
-- **Screen reader optimized** — Full TalkBack and VoiceOver support
-- **High contrast mode** — Customizable colors for low vision
-- **Voice-first design** — Every action available by voice
-- **Haptic feedback** — Physical confirmation of actions
-- **Large touch targets** — Minimum 48dp for all interactive elements
+1. Open in Chrome/Edge/Safari
+2. Click the install icon in the address bar
+3. Or use the browser menu: "Install app" / "Add to Home Screen"
+
+Features:
+- Works offline (cached assets)
+- Installable on desktop and mobile
+- Standalone app window
+- Auto-updates via service worker
 
 ---
 
@@ -228,7 +215,7 @@ Built from the ground up for users who need it most:
 | What | Status |
 |------|--------|
 | Data Collection | **Zero.** Nothing leaves your device. |
-| Cloud Processing | **None.** All AI runs on-device. |
+| Cloud Processing | **None.** All processing is in-browser. |
 | Analytics | **None.** No tracking. No telemetry. |
 | Subscriptions | **None.** Free and open source. |
 | Ads | **None.** Forever. |
@@ -245,6 +232,6 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 **VoiceNav Voice Browser** by **HouseDealsGroup**
 
-*Production-grade. Worldwide scalable. Zero compromises.*
+*Production-grade. Installable. Zero compromises.*
 
 </div>
