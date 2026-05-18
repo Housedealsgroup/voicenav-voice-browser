@@ -1,22 +1,43 @@
 .voice-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   animation: fadeIn 0.2s ease-out;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .voice-overlay-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
   padding: 48px;
   text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.voice-mic-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-level-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+  transition: transform 0.1s ease, opacity 0.1s ease;
+  pointer-events: none;
 }
 
 .voice-mic {
@@ -28,50 +49,141 @@
   align-items: center;
   justify-content: center;
   color: white;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px var(--accent-glow);
 }
 
 .voice-mic.active {
   background: var(--success);
   animation: pulse 1.5s ease-in-out infinite;
-  box-shadow: 0 0 40px rgba(74, 222, 128, 0.4);
+  box-shadow: 0 0 40px rgba(74, 222, 128, 0.5);
+}
+
+.voice-mic.speaking {
+  background: var(--warning);
+  animation: pulse 1s ease-in-out infinite;
+  box-shadow: 0 0 40px rgba(251, 191, 36, 0.5);
 }
 
 .voice-status {
   font-size: 20px;
   font-weight: 600;
   color: var(--text-primary);
+  letter-spacing: 0.5px;
+}
+
+.voice-transcript-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .voice-transcript {
-  font-size: 16px;
-  color: var(--accent);
+  font-size: 18px;
+  color: var(--text-primary);
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-transcript .final {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.voice-transcript .interim {
+  color: var(--text-muted);
   font-style: italic;
-  max-width: 300px;
+}
+
+.voice-confidence {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px;
+}
+
+.confidence-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--bg-tertiary);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.confidence-text {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.voice-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--error);
+  font-size: 14px;
+}
+
+.voice-unsupported {
+  padding: 16px;
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: var(--radius);
+  color: var(--warning);
+}
+
+.voice-unsupported p {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.voice-unsupported p:last-child {
+  margin-bottom: 0;
+  font-size: 12px;
+  opacity: 0.8;
 }
 
 .voice-waves {
   display: flex;
   gap: 4px;
   align-items: center;
-  height: 32px;
+  height: 40px;
 }
 
 .wave {
   width: 4px;
-  height: 16px;
+  min-height: 4px;
   background: var(--accent);
   border-radius: 2px;
-  animation: wave 1s ease-in-out infinite;
+  animation: wave 0.8s ease-in-out infinite alternate;
 }
 
-.wave:nth-child(1) { animation-delay: 0s; }
-.wave:nth-child(2) { animation-delay: 0.1s; }
-.wave:nth-child(3) { animation-delay: 0.2s; }
-.wave:nth-child(4) { animation-delay: 0.3s; }
-.wave:nth-child(5) { animation-delay: 0.4s; }
-
 @keyframes wave {
-  0%, 100% { height: 8px; }
-  50% { height: 24px; }
+  0% { height: 4px; }
+  100% { height: 28px; }
+}
+
+.voice-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 280px;
+  line-height: 1.4;
 }
