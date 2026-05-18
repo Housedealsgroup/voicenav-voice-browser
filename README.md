@@ -698,6 +698,158 @@ npm test -- --testPathPattern=nlu  # Specific suite
 
 ---
 
+## **Technical Overview**
+
+<div align="center">
+
+### **For Developers — How VoiceNav Works Under the Hood**
+
+</div>
+
+### **Architecture**
+
+VoiceNav uses a 3-stage pipeline: **Voice → NLU → Brain → Action**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        VoiceNav Pipeline                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐  │
+│  │  Voice   │───▶│   NLU    │───▶│  Brain   │───▶│  Action  │  │
+│  │  Input   │    │  Engine  │    │  Engine  │    │ Executor │  │
+│  └──────────┘    └──────────┘    └──────────┘    └──────────┘  │
+│       │               │               │               │         │
+│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐  │
+│  │  Speech  │    │  Intent  │    │ Decision │    │  Page    │  │
+│  │  Recog.  │    │  Classif │    │  Making  │    │ Interact │  │
+│  └──────────┘    └──────────┘    └──────────┘    └──────────┘  │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### **NLU Engine (src/agent/nlu.ts)**
+
+The NLU engine classifies user commands into intents using pattern matching:
+
+- **40+ intents**: navigate, search, click, cart, buy, checkout, order_food, order_grocery, book_appointment, schedule, reorder, track_order, add_to_list, and more
+- **116 languages**: Multi-language pattern support with automatic language detection
+- **Entity extraction**: URLs, site names, numbers, dates, times, prices, selectors
+- **Confidence scoring**: Each intent gets a confidence score (0.0-1.0)
+- **Alternative intents**: Top 4 alternative intents returned for ambiguous commands
+
+```typescript
+// Example: Understanding a voice command
+const result = understand('order pizza from doordash');
+// result.intent = 'order_food'
+// result.confidence = 0.95
+// result.entities = [{ type: 'food_item', value: 'pizza' }]
+```
+
+### **Brain Engine (src/agent/brain.ts)**
+
+The brain makes decisions based on the NLU result and current page state:
+
+- **Page-aware**: Reads current page elements (buttons, links, forms, inputs)
+- **Smart element finding**: Finds buttons by text, role, and context
+- **Fallback strategies**: If primary action fails, tries alternatives
+- **Context tracking**: Remembers last element, last button, conversation state
+
+```typescript
+// Example: Brain decides what to do
+const decision = decideAction(nluResult, pageSnapshot, context);
+// decision.action = { action: 'navigate', url: 'https://doordash.com', speak: 'Opening DoorDash' }
+```
+
+### **Action Executor (src/browser/actionExecutor.js)**
+
+Executes actions on the page:
+
+- **Navigation**: Navigate to URLs, go back/forward, refresh
+- **Interaction**: Click buttons, fill forms, scroll, type text
+- **Media**: Play/pause, seek, volume control
+- **Tab management**: Open/close/switch tabs
+- **Smart waiting**: Waits for elements to load before interacting
+
+### **Task Engine (src/agent/taskEngine.ts)**
+
+Multi-step task automation:
+
+- **Template-based**: Pre-defined task templates for common workflows
+- **Dynamic**: Creates tasks from natural language commands
+- **Progress tracking**: Tracks which step is current, completed, pending
+- **Templates**: Shopping, food delivery, grocery, appointment booking, email, news
+
+```typescript
+// Example: Starting a task
+const task = startTask('Order food delivery');
+// task.steps = [
+//   { name: 'Open delivery app', commandTemplate: 'go to {store}' },
+//   { name: 'Search for food', commandTemplate: 'search for {item}' },
+//   ...
+// ]
+```
+
+### **Page Intelligence (src/agent/pageIntelligence.ts)**
+
+Extracts structured data from web pages:
+
+- **Product detection**: Names, prices, ratings, availability
+- **Form analysis**: Field types, labels, validation rules
+- **Content classification**: News articles, blog posts, products, services
+- **Accessibility audit**: ARIA labels, heading structure, keyboard navigation
+
+### **Session Memory (src/agent/sessionMemory.ts)**
+
+Tracks browsing context:
+
+- **Entity memory**: Remembers last element, button, link, product
+- **Conversation history**: Tracks multi-turn dialogue
+- **Reference resolution**: Resolves "it", "that", "this page", "the first one"
+- **Browsing history**: Tracks visited sites and actions taken
+
+### **Key Files**
+
+| File | Purpose |
+|------|---------|
+| `src/agent/nlu.ts` | NLU engine — intent classification, entity extraction |
+| `src/agent/brain.ts` | Brain — decision making, page-aware action selection |
+| `src/agent/taskEngine.ts` | Task automation — multi-step workflows |
+| `src/agent/pageIntelligence.ts` | Page analysis — content extraction |
+| `src/agent/sessionMemory.ts` | Session state — entity memory, conversation |
+| `src/agent/conversationMode.ts` | Multi-turn dialogue |
+| `src/agent/voiceShortcuts.ts` | Custom voice shortcuts |
+| `src/browser/actionExecutor.js` | Action execution — page interaction |
+| `src/browser/types.ts` | TypeScript type definitions |
+| `src/utils/logger.ts` | Logging utility |
+
+### **Running Tests**
+
+```bash
+# Run all tests
+npx jest
+
+# Run specific test file
+npx jest src/agent/__tests__/nlu.test.ts
+
+# Run with coverage
+npx jest --coverage
+
+# Run in watch mode
+npx jest --watch
+```
+
+### **Adding New Intents**
+
+1. Add intent to `Intent` type in `src/agent/nlu.ts`
+2. Add English patterns to `EN_PATTERNS`
+3. Add multi-language patterns to `MULTI_LANG_PATTERNS`
+4. Add brain handler in `src/agent/brain.ts`
+5. Add task template in `src/agent/taskEngine.ts` (optional)
+6. Write tests in `src/agent/__tests__/nlu.test.ts`
+
+---
+
 ## **Contributing**
 
 <div align="center">

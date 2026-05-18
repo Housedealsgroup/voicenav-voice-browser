@@ -120,6 +120,91 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     ],
     triggerPhrases: ['read news', 'check news', 'what is happening', 'latest news'],
   },
+  {
+    name: 'Order food delivery',
+    description: 'Order food from DoorDash, Uber Eats, Grubhub, or other delivery services',
+    category: 'shopping',
+    steps: [
+      { name: 'Open delivery app', commandTemplate: 'go to {store}' },
+      { name: 'Search for food', commandTemplate: 'search for {item}' },
+      { name: 'Select restaurant', commandTemplate: 'click the first result' },
+      { name: 'Add to cart', commandTemplate: 'add to cart' },
+      { name: 'Checkout', commandTemplate: 'checkout' },
+    ],
+    triggerPhrases: ['order food', 'get delivery', 'order from doordash', 'order from uber eats', 'order from grubhub', 'food delivery', 'order dinner', 'order lunch', 'order pizza'],
+  },
+  {
+    name: 'Order groceries',
+    description: 'Order groceries from Instacart, Walmart, Amazon Fresh, or other stores',
+    category: 'shopping',
+    steps: [
+      { name: 'Open grocery store', commandTemplate: 'go to {store}' },
+      { name: 'Search for items', commandTemplate: 'search for {item}' },
+      { name: 'Add to cart', commandTemplate: 'add to cart' },
+      { name: 'Schedule delivery', commandTemplate: 'select delivery time' },
+      { name: 'Checkout', commandTemplate: 'checkout' },
+    ],
+    triggerPhrases: ['order groceries', 'get groceries', 'grocery delivery', 'order from instacart', 'order from walmart', 'buy groceries', 'grocery shopping'],
+  },
+  {
+    name: 'Book appointment',
+    description: 'Book an appointment for doctor, dentist, salon, or other services',
+    category: 'custom',
+    steps: [
+      { name: 'Find service', commandTemplate: 'search for {service} near me' },
+      { name: 'Select provider', commandTemplate: 'click the first result' },
+      { name: 'Book appointment', commandTemplate: 'click book appointment' },
+      { name: 'Select date', commandTemplate: 'select {date}' },
+      { name: 'Select time', commandTemplate: 'select {time}' },
+      { name: 'Confirm booking', commandTemplate: 'click confirm' },
+    ],
+    triggerPhrases: ['book appointment', 'schedule appointment', 'make appointment', 'book doctor', 'book dentist', 'book haircut', 'book salon', 'book spa', 'make reservation'],
+  },
+  {
+    name: 'Amazon shopping',
+    description: 'Search, compare, and buy products on Amazon',
+    category: 'shopping',
+    steps: [
+      { name: 'Open Amazon', commandTemplate: 'go to amazon' },
+      { name: 'Search product', commandTemplate: 'search for {item}' },
+      { name: 'Select product', commandTemplate: 'click the first result' },
+      { name: 'Add to cart', commandTemplate: 'add to cart' },
+      { name: 'Checkout', commandTemplate: 'checkout' },
+    ],
+    triggerPhrases: ['buy on amazon', 'amazon shopping', 'order from amazon', 'amazon order', 'shop amazon'],
+  },
+  {
+    name: 'Reorder previous',
+    description: 'Reorder a previous purchase from your order history',
+    category: 'shopping',
+    steps: [
+      { name: 'Go to orders', commandTemplate: 'go to my orders' },
+      { name: 'Find last order', commandTemplate: 'click the first order' },
+      { name: 'Reorder', commandTemplate: 'click reorder' },
+    ],
+    triggerPhrases: ['reorder', 'reorder last', 'buy again', 'order again', 'reorder my last order', 'repeat order'],
+  },
+  {
+    name: 'Track order',
+    description: 'Track the status of your delivery or shipment',
+    category: 'navigation',
+    steps: [
+      { name: 'Go to orders', commandTemplate: 'go to my orders' },
+      { name: 'Find order', commandTemplate: 'click the first order' },
+      { name: 'Check status', commandTemplate: 'read this page' },
+    ],
+    triggerPhrases: ['track order', 'where is my order', 'order status', 'track delivery', 'track package', 'when will my order arrive'],
+  },
+  {
+    name: 'Add to shopping list',
+    description: 'Add items to your shopping list or wishlist',
+    category: 'shopping',
+    steps: [
+      { name: 'Find item', commandTemplate: 'search for {item}' },
+      { name: 'Add to list', commandTemplate: 'click add to list' },
+    ],
+    triggerPhrases: ['add to list', 'add to shopping list', 'add to wishlist', 'save for later', 'add to favorites'],
+  },
 ];
 
 // --- Task Manager ---

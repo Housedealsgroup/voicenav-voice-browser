@@ -13,6 +13,41 @@ import { predictCommands, recordCommand, type PredictionContext } from './comman
 import { analyzePageIntelligence, speakPageIntelligence, detectContentType } from './pageIntelligence';
 import { hapticCommandRecognized, hapticSuccess, hapticError } from '../utils/haptics';
 
+// --- Helper: Extract store name from intent or target ---
+function extractStoreFromIntent(intent: NLUResult, defaultStore: string): string {
+  const text = intent.originalText.toLowerCase();
+  const storePatterns = [
+    { pattern: /doordash/i, store: 'doordash' },
+    { pattern: /uber\s*eats/i, store: 'ubereats' },
+    { pattern: /grubhub/i, store: 'grubhub' },
+    { pattern: /postmates/i, store: 'postmates' },
+    { pattern: /instacart/i, store: 'instacart' },
+    { pattern: /walmart/i, store: 'walmart' },
+    { pattern: /amazon/i, store: 'amazon' },
+    { pattern: /kroger/i, store: 'kroger' },
+    { pattern: /safeway/i, store: 'safeway' },
+    { pattern: /costco/i, store: 'costco' },
+    { pattern: /whole\s*foods/i, store: 'wholefoods' },
+    { pattern: /aldi/i, store: 'aldi' },
+    { pattern: /trader\s*joe/i, store: 'traderjoes' },
+    { pattern: /chipotle/i, store: 'chipotle' },
+    { pattern: /domino/i, store: 'dominos' },
+    { pattern: /mcdonalds/i, store: 'mcdonalds' },
+    { pattern: /subway/i, store: 'subway' },
+    { pattern: /panera/i, store: 'panera' },
+    { pattern: /chick\s*fil/i, store: 'chickfila' },
+    { pattern: /starbucks/i, store: 'starbucks' },
+    { pattern: /dunkin/i, store: 'dunkin' },
+    { pattern: /opentable/i, store: 'opentable' },
+    { pattern: /zocdoc/i, store: 'zocdoc' },
+    { pattern: /calendly/i, store: 'calendly' },
+  ];
+  for (const { pattern, store } of storePatterns) {
+    if (pattern.test(text)) return store;
+  }
+  return defaultStore;
+}
+
 // Re-export NLU for direct access
 export { understand, resolveSiteAlias } from './nlu';
 export { hasMultipleSteps, parseMultiStepCommand } from './taskEngine';
@@ -652,6 +687,116 @@ export function decideAction(
         action: { action: 'speak', text: 'You can say: go to a website, search for something, click an element, read this page, scroll up or down, bookmark this page, add to cart, buy something, compare prices, sort by price, filter results, fill a form, sign in, play media, go back, and much more. You can chain commands with "then".' },
         needsRetry: false
       };
+    }
+
+    case 'order_food': {
+      const target = intent.target || '';
+      // Check if we're on a food delivery site already
+      const isOnDeliverySite = /doordash|ubereats|grubhub|postmates|instacart|chipotle|dominos|mcdonalds/i.test(snapshot.url || '');
+      if (isOnDeliverySite) {
+        // Search for the food item on the current site
+        const searchInput = findFormInput(elements, 'search') || findFormInput(elements, 'find');
+        if (searchInput) {
+          return { action: { action: 'type', elementId: searchInput.id, text: target, speak: `Searching for ${target}` }, needsRetry: false };
+        }
+        // Try clicking search
+        const searchBtn = findButton(elements, 'search');
+        if (searchBtn) {
+          return { action: { action: 'click', elementId: searchBtn.id, speak: 'Opening search' }, needsRetry: false };
+        }
+      }
+      // Navigate to DoorDash by default for food delivery
+      const store = extractStoreFromIntent(intent, 'doordash');
+      const url = resolveSiteAlias(store);
+      return { action: { action: 'navigate', url, speak: `Opening ${store} to order ${target || 'food'}` }, needsRetry: false };
+    }
+
+    case 'order_grocery': {
+      const target = intent.target || '';
+      // Check if we're on a grocery site
+      const isOnGrocerySite = /instacart|walmart|amazon|kroger|safeway|costco|wholefoods|aldi|traderjoes/i.test(snapshot.url || '');
+      if (isOnGrocerySite) {
+        const searchInput = findFormInput(elements, 'search') || findFormInput(elements, 'find');
+        if (searchInput) {
+          return { action: { action: 'type', elementId: searchInput.id, text: target, speak: `Searching for ${target}` }, needsRetry: false };
+        }
+      }
+      // Navigate to Instacart by default for grocery delivery
+      const store = extractStoreFromIntent(intent, 'instacart');
+      const url = resolveSiteAlias(store);
+      return { action: { action: 'navigate', url, speak: `Opening ${store} for grocery shopping` }, needsRetry: false };
+    }
+
+    case 'book_appointment': {
+      const target = intent.target || '';
+      // Check if we're on a booking site
+      const isOnBookingSite = /opentable|zocdoc|calendly|booking\.com|airbnb|expedia/i.test(snapshot.url || '');
+      if (isOnBookingSite) {
+        // Look for booking/appointment form
+        const bookBtn = findButton(elements, 'book') || findButton(elements, 'schedule') || findButton(elements, 'reserve') || findButton(elements, 'appointment');
+        if (bookBtn) {
+          return { action: { action: 'click', elementId: bookBtn.id, speak: `Booking ${target || 'appointment'}` }, needsRetry: false };
+        }
+      }
+      // Search for the service
+      if (target) {
+        return { action: { action: 'navigate', url: `https://www.google.com/search?q=${encodeURIComponent(target + ' appointment booking near me')}`, speak: `Finding ${target} appointments` }, needsRetry: false };
+      }
+      return { action: { action: 'navigate', url: 'https://www.google.com/search?q=appointment+booking+near+me', speak: 'Finding appointment booking near you' }, needsRetry: false };
+    }
+
+    case 'schedule': {
+      const target = intent.target || '';
+      // Look for scheduling elements on the page
+      const scheduleBtn = findButton(elements, 'schedule') || findButton(elements, 'book') || findButton(elements, 'reserve') || findButton(elements, 'set up');
+      if (scheduleBtn) {
+        return { action: { action: 'click', elementId: scheduleBtn.id, speak: `Scheduling ${target || 'event'}` }, needsRetry: false };
+      }
+      // Navigate to Google Calendar
+      return { action: { action: 'navigate', url: 'https://calendar.google.com', speak: 'Opening Google Calendar to schedule' }, needsRetry: false };
+    }
+
+    case 'reorder': {
+      // Look for reorder/rebuy button
+      const reorderBtn = findButton(elements, 'reorder') || findButton(elements, 'buy again') || findButton(elements, 're-buy') || findButton(elements, 'repeat order');
+      if (reorderBtn) {
+        return { action: { action: 'click', elementId: reorderBtn.id, speak: 'Reordering' }, needsRetry: false };
+      }
+      // Navigate to orders page
+      const ordersBtn = findButton(elements, 'orders') || findButton(elements, 'my orders') || findButton(elements, 'purchase history');
+      if (ordersBtn) {
+        return { action: { action: 'click', elementId: ordersBtn.id, speak: 'Opening your orders' }, needsRetry: false };
+      }
+      return { action: { action: 'speak', text: 'I could not find a reorder option. Let me open your orders page.' }, needsRetry: false };
+    }
+
+    case 'track_order': {
+      // Look for tracking/order status button
+      const trackBtn = findButton(elements, 'track') || findButton(elements, 'track order') || findButton(elements, 'order status') || findButton(elements, 'tracking');
+      if (trackBtn) {
+        return { action: { action: 'click', elementId: trackBtn.id, speak: 'Opening order tracking' }, needsRetry: false };
+      }
+      // Navigate to orders page
+      const ordersBtn = findButton(elements, 'orders') || findButton(elements, 'my orders');
+      if (ordersBtn) {
+        return { action: { action: 'click', elementId: ordersBtn.id, speak: 'Opening your orders to track' }, needsRetry: false };
+      }
+      return { action: { action: 'speak', text: 'I could not find tracking info. Let me open your orders.' }, needsRetry: false };
+    }
+
+    case 'add_to_list': {
+      const target = intent.target || '';
+      // Look for wishlist/list button
+      const listBtn = findButton(elements, 'add to list') || findButton(elements, 'wishlist') || findButton(elements, 'wish list') || findButton(elements, 'save for later') || findButton(elements, 'add to favorites');
+      if (listBtn) {
+        return { action: { action: 'click', elementId: listBtn.id, speak: `Adding ${target || 'item'} to list` }, needsRetry: false };
+      }
+      // Try heart icon
+      const heartBtn = elements.find(e => e.clickable && (/heart|favorite|wish/i.test(e.text + e.label) || /♡|♥|❤/i.test(e.text)));
+      if (heartBtn) {
+        return { action: { action: 'click', elementId: heartBtn.id, speak: `Adding ${target || 'item'} to favorites` }, needsRetry: false };
+      }
+      return { action: { action: 'speak', text: `I could not find a list or wishlist button on this page.` }, needsRetry: false };
     }
 
     default: {

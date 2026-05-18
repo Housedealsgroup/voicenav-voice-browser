@@ -12,7 +12,9 @@ export type Intent =
   | 'zoom' | 'share' | 'download' | 'copy' | 'find' | 'filter' | 'sort'
   | 'compare' | 'buy' | 'checkout' | 'login' | 'logout' | 'signup'
   | 'compose' | 'send' | 'delete' | 'open' | 'close' | 'maximize' | 'minimize'
-  | 'tab_new' | 'tab_close' | 'tab_next' | 'tab_prev' | 'unknown';
+  | 'tab_new' | 'tab_close' | 'tab_next' | 'tab_prev'
+  | 'order_food' | 'order_grocery' | 'book_appointment' | 'schedule'
+  | 'reorder' | 'track_order' | 'add_to_list' | 'unknown';
 
 export type Entity = {
   type: 'url' | 'search_query' | 'number' | 'element_text' | 'direction' | 'site_name' | 'form_field' | 'product' | 'date' | 'time' | 'email' | 'phone' | 'color' | 'size';
@@ -142,6 +144,47 @@ const EN_PATTERNS: IntentPattern[] = [
   { patterns: [/(?:pause|stop|halt)\s*(?:the\s+)?(?:video|music|audio|playback)?/i], intent: 'pause', baseConfidence: 0.92 },
   { patterns: [/(?:zoom)\s*(in|out|reset)/i], intent: 'zoom', baseConfidence: 0.92, extractTarget: m => m[1]?.trim() },
   { patterns: [/(?:delete|remove|erase)\s+(?:this|the|that)?\s*(.*)/i], intent: 'delete', baseConfidence: 0.85, extractTarget: m => m[1]?.trim() },
+
+  // --- Food Delivery ---
+  { patterns: [/(?:order|get)\s+(?:some\s+)?(.+?)\s+(?:from|on|via|through)\s+(?:doordash|uber\s*eats|grubhub|postmates|instacart)/i], intent: 'order_food', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+  { patterns: [/(?:order|get)\s+(?:some\s+)?(.+?)\s+(?:delivery|delivered)/i], intent: 'order_food', baseConfidence: 0.92, extractTarget: m => m[1]?.trim() },
+  { patterns: [/(?:order|get)\s+(?:food|dinner|lunch|breakfast|pizza|chinese|thai|mexican|sushi|burger|sandwich|coffee)\s*(?:from\s+(.+))?/i], intent: 'order_food', baseConfidence: 0.93, extractTarget: m => m[1]?.trim() },
+  { patterns: [/(?:order|get)\s+(?:from|on)\s+(?:doordash|uber\s*eats|grubhub|postmates)/i], intent: 'order_food', baseConfidence: 0.96 },
+  { patterns: [/(?:food\s+delivery|deliver\s+food|delivery\s+order)/i], intent: 'order_food', baseConfidence: 0.90 },
+
+  // --- Grocery Delivery ---
+  { patterns: [/(?:order|get|buy)\s+(?:some\s+)?(.+?)\s+(?:from|on|via|through)\s+(?:instacart|walmart|amazon\s*fresh|whole\s*foods|kroger|safeway|costco)/i], intent: 'order_grocery', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+  { patterns: [/(?:order|get|buy)\s+(?:some\s+)?(?:groceries|grocery)/i], intent: 'order_grocery', baseConfidence: 0.94 },
+  { patterns: [/(?:add|put)\s+(.+?)\s+(?:to|in|on)\s+(?:my\s+)?(?:grocery|shopping|walmart|instacart)\s*(?:list|cart)/i], intent: 'order_grocery', baseConfidence: 0.94, extractTarget: m => m[1]?.trim() },
+  { patterns: [/(?:get\s+groceries|grocery\s+shopping|grocery\s+delivery|grocery\s+order)/i], intent: 'order_grocery', baseConfidence: 0.92 },
+  { patterns: [/(?:order|get|buy)\s+(?:milk|bread|eggs|chicken|rice|pasta|cheese|butter|vegetables|fruit|meat|fish|oil|sugar|flour|cereal|juice|water|snacks|chips|cookies)\s*(?:from\s+(.+))?/i], intent: 'order_grocery', baseConfidence: 0.90, extractTarget: m => m[1]?.trim() },
+
+  // --- Appointment Booking ---
+  { patterns: [/(?:book|schedule|make)\s+(?:a|an|the)?\s*(.+?)\s+(?:appointment|reservation|booking)/i], intent: 'book_appointment', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+  { patterns: [/(?:book|schedule|make)\s+(?:a|an|the)?\s*(?:appointment|reservation|booking)\s+(?:for|with|at)\s+(.+)/i], intent: 'book_appointment', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+  { patterns: [/(?:book|schedule)\s+(?:a|an)?\s*(?:doctor|dentist|haircut|salon|spa|massage|therapy|checkup|vet|veternarian)/i], intent: 'book_appointment', baseConfidence: 0.94 },
+  { patterns: [/(?:make|set|get)\s+(?:a|an)?\s*(?:appointment|reservation)/i], intent: 'book_appointment', baseConfidence: 0.93 },
+  { patterns: [/(?:i\s+(?:need|want)\s+(?:to\s+)?(?:book|schedule|make))\s+(?:a|an)?\s*(.*)/i], intent: 'book_appointment', baseConfidence: 0.91, extractTarget: m => m[1]?.trim() },
+
+  // --- Scheduling ---
+  { patterns: [/(?:schedule|set\s+up|arrange|plan)\s+(?:a|an)?\s*(.+?)(?:\s+(?:for|at|on|tomorrow|today|next|this)\s+(.+))?$/i], intent: 'schedule', baseConfidence: 0.92, extractTarget: m => m[1]?.trim() },
+  { patterns: [/(?:book|reserve)\s+(?:a|an)?\s*(?:table|room|venue|space)\s*(?:for\s+(\d+))?\s*(?:at|for)\s+(.+)/i], intent: 'schedule', baseConfidence: 0.93, extractTarget: m => m[2]?.trim() },
+  { patterns: [/(?:set|create|add)\s+(?:a|an)?\s*(?:reminder|event|meeting|call)/i], intent: 'schedule', baseConfidence: 0.91 },
+
+  // --- Reorder ---
+  { patterns: [/(?:reorder|re-order|buy\s+again|order\s+again|order\s+(?:the\s+)?same)\s*(?:thing|item|order)?/i], intent: 'reorder', baseConfidence: 0.94 },
+  { patterns: [/(?:reorder|re-order)\s+(?:my\s+)?(?:last|previous|last\s+order)/i], intent: 'reorder', baseConfidence: 0.95 },
+  { patterns: [/(?:repeat|redo)\s+(?:my\s+)?(?:last\s+)?(?:order|purchase)/i], intent: 'reorder', baseConfidence: 0.92 },
+
+  // --- Track Order ---
+  { patterns: [/(?:track|where\s+is|status\s+of|check\s+status)\s+(?:my\s+)?(?:order|delivery|package|shipment)/i], intent: 'track_order', baseConfidence: 0.95 },
+  { patterns: [/(?:order\s+status|delivery\s+status|tracking\s+info|where\s+is\s+my)/i], intent: 'track_order', baseConfidence: 0.93 },
+  { patterns: [/(?:when\s+(?:will|is)\s+(?:my|the)?)\s*(?:order|delivery|package)\s+(?:arriving|coming|get\s+here)/i], intent: 'track_order', baseConfidence: 0.92 },
+
+  // --- Add to List ---
+  { patterns: [/(?:add|put)\s+(.+?)\s+(?:to|on|in)\s+(?:my\s+)?(?:list|shopping\s+list|wish\s*list|wishlist|favorites)/i], intent: 'add_to_list', baseConfidence: 0.94, extractTarget: m => m[1]?.trim() },
+  { patterns: [/(?:add\s+to\s+list|add\s+to\s+wishlist|add\s+to\s+favorites|save\s+for\s+later)/i], intent: 'add_to_list', baseConfidence: 0.95 },
+  { patterns: [/(?:remember\s+(?:this|that|it)|save\s+(?:this|that|it))\s*(?:for\s+later)?/i], intent: 'add_to_list', baseConfidence: 0.85 },
 ];
 
 // Multi-language intent patterns — covers all 29 supported languages
@@ -165,6 +208,15 @@ const MULTI_LANG_PATTERNS: Record<string, IntentPattern[]> = {
     { patterns: [/(?:pausar|detener)/i], intent: 'pause', baseConfidence: 0.92 },
     { patterns: [/(?:acercar|alejar|restablecer zoom)/i], intent: 'zoom', baseConfidence: 0.92 },
     { patterns: [/(?:eliminar|borrar|quitar)\s*(.*)/i], intent: 'delete', baseConfidence: 0.85, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:pedir|ordenar|encargar)\s+(.+?)\s+(?:de|en|por)\s+(?:doordash|uber\s*eats|grubhub|rappi)/i], intent: 'order_food', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:pedir|ordenar)\s+(?:comida|cena|almuerzo|desayuno|pizza|sushi|hamburguesa)/i], intent: 'order_food', baseConfidence: 0.93 },
+    { patterns: [/(?:pedir|ordenar|comprar)\s+(.+?)\s+(?:de|en)\s+(?:instacart|walmart|amazon)/i], intent: 'order_grocery', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:pedir|ordenar)\s+(?:comestibles|despensa|supermercado)/i], intent: 'order_grocery', baseConfidence: 0.94 },
+    { patterns: [/(?:reservar|agendar|pedir)\s+(?:una?\s+)?(?:cita|reserva|turno)\s+(?:con|para|en)\s+(.+)/i], intent: 'book_appointment', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:reservar|agendar)\s+(?:un\s+)?(?:médico|dentista|peluquería|spa|masaje)/i], intent: 'book_appointment', baseConfidence: 0.94 },
+    { patterns: [/(?:repetir|volver a pedir|pedir otra vez|ordenar lo mismo)/i], intent: 'reorder', baseConfidence: 0.94 },
+    { patterns: [/(?:rastrear|seguir|dónde está|estado de)\s+(?:mi\s+)?(?:pedido|entrega|paquete)/i], intent: 'track_order', baseConfidence: 0.95 },
+    { patterns: [/(?:agregar|añadir|poner)\s+(.+?)\s+(?:a|en)\s+(?:mi\s+)?(?:lista|lista de compras|favoritos)/i], intent: 'add_to_list', baseConfidence: 0.94, extractTarget: m => m[1]?.trim() },
   ],
   fr: [
     { patterns: [/(?:aller à|ouvrir|visiter|naviguer vers|amène-moi à|charger)\s+(.+)/i], intent: 'navigate', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
@@ -184,6 +236,15 @@ const MULTI_LANG_PATTERNS: Record<string, IntentPattern[]> = {
     { patterns: [/(?:jouer|lancer|reprendre)\s*(.*)/i], intent: 'play', baseConfidence: 0.90, extractTarget: m => m[1]?.trim() },
     { patterns: [/(?:pause|mettre en pause)/i], intent: 'pause', baseConfidence: 0.92 },
     { patterns: [/(?:supprimer|effacer|enlever)\s*(.*)/i], intent: 'delete', baseConfidence: 0.85, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:commander|se faire livrer)\s+(.+?)\s+(?:sur|via|avec)\s+(?:doordash|uber\s*eats|grubhub)/i], intent: 'order_food', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:commander|prendre)\s+(?:de la nourriture|à manger|pizza|sushi|burger)/i], intent: 'order_food', baseConfidence: 0.93 },
+    { patterns: [/(?:commander|acheter)\s+(.+?)\s+(?:sur|chez)\s+(?:instacart|walmart|amazon)/i], intent: 'order_grocery', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:commander|faire)\s+(?:les courses|l'épicerie|les achats)/i], intent: 'order_grocery', baseConfidence: 0.94 },
+    { patterns: [/(?:réserver|prendre)\s+(?:un|une)?\s*(rendez-vous|réservation)\s+(?:avec|chez|pour)\s+(.+)/i], intent: 'book_appointment', baseConfidence: 0.95, extractTarget: m => m[2]?.trim() },
+    { patterns: [/(?:réserver|prendre)\s+(?:un)?\s*(?:médecin|dentiste|coiffeur|spa)/i], intent: 'book_appointment', baseConfidence: 0.94 },
+    { patterns: [/(?:recommander|commander à nouveau|commander la même chose)/i], intent: 'reorder', baseConfidence: 0.94 },
+    { patterns: [/(?:suivre|où est|statut de)\s+(?:ma|mon)?\s*(?:commande|livraison|colis)/i], intent: 'track_order', baseConfidence: 0.95 },
+    { patterns: [/(?:ajouter|mettre)\s+(.+?)\s+(?:sur|dans)\s+(?:ma)?\s*(?:liste|liste de courses|favoris)/i], intent: 'add_to_list', baseConfidence: 0.94, extractTarget: m => m[1]?.trim() },
   ],
   de: [
     { patterns: [/(?:gehe zu|öffne|besuche|navigiere zu|bring mich zu|lade)\s+(.+)/i], intent: 'navigate', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
@@ -203,6 +264,14 @@ const MULTI_LANG_PATTERNS: Record<string, IntentPattern[]> = {
     { patterns: [/(?:abspielen|starten|spielen)\s*(.*)/i], intent: 'play', baseConfidence: 0.90, extractTarget: m => m[1]?.trim() },
     { patterns: [/(?:pausieren|anhalten)/i], intent: 'pause', baseConfidence: 0.92 },
     { patterns: [/(?:löschen|entfernen)\s*(.*)/i], intent: 'delete', baseConfidence: 0.85, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:bestellen|liefern lassen)\s+(.+?)\s+(?:bei|über|via)\s+(?:doordash|uber\s*eats|grubhub)/i], intent: 'order_food', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:bestellen|holen)\s+(?:Essen|Mittagessen|Abendessen|Pizza|Sushi|Burger)/i], intent: 'order_food', baseConfidence: 0.93 },
+    { patterns: [/(?:bestellen|kaufen)\s+(.+?)\s+(?:bei|über)\s+(?:instacart|walmart|amazon)/i], intent: 'order_grocery', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:bestellen|machen)\s+(?:Einkäufe|Lebensmittel|Wocheneinkauf)/i], intent: 'order_grocery', baseConfidence: 0.94 },
+    { patterns: [/(?:Termin|Reservierung)\s+(?:buchen|machen|vereinbaren)\s+(?:bei|mit|für)\s+(.+)/i], intent: 'book_appointment', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:nachbestellen|erneut bestellen|das gleiche nochmal)/i], intent: 'reorder', baseConfidence: 0.94 },
+    { patterns: [/(?:verfolgen|wo ist|Status von)\s+(?:meine|meiner)?\s*(?:Bestellung|Lieferung|Paket)/i], intent: 'track_order', baseConfidence: 0.95 },
+    { patterns: [/(?:hinzufügen)\s+(.+?)\s+(?:auf)\s+(?:meine)?\s*(?:Liste|Einkaufsliste|Wunschliste)/i], intent: 'add_to_list', baseConfidence: 0.94, extractTarget: m => m[1]?.trim() },
   ],
   it: [
     { patterns: [/(?:vai a|apri|visita|naviga a|portami a|carica)\s+(.+)/i], intent: 'navigate', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
@@ -235,6 +304,14 @@ const MULTI_LANG_PATTERNS: Record<string, IntentPattern[]> = {
     { patterns: [/(?:fechar|sair)/i], intent: 'close', baseConfidence: 0.90 },
     { patterns: [/(?:início|página inicial|ir para o início)/i], intent: 'home', baseConfidence: 0.95 },
     { patterns: [/(?:excluir|apagar|remover)\s*(.*)/i], intent: 'delete', baseConfidence: 0.85, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:pedir|encomendar|comprar)\s+(.+?)\s+(?:no|pelo|via)\s+(?:ifood|rappi|uber\s*eats)/i], intent: 'order_food', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:pedir|encomendar)\s+(?:comida|jantar|almoço|pizza|sushi|hambúrguer)/i], intent: 'order_food', baseConfidence: 0.93 },
+    { patterns: [/(?:pedir|comprar)\s+(.+?)\s+(?:no|pela)\s+(?:instacart|walmart|amazon)/i], intent: 'order_grocery', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:pedir|fazer)\s+(?:compras|feira|mercado)/i], intent: 'order_grocery', baseConfidence: 0.94 },
+    { patterns: [/(?:marcar|agendar|reservar)\s+(?:uma?\s+)?(?:consulta|reserva|horário)\s+(?:com|no|para)\s+(.+)/i], intent: 'book_appointment', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:pedir novamente|repedir|comprar de novo|encomendar o mesmo)/i], intent: 'reorder', baseConfidence: 0.94 },
+    { patterns: [/(?:rastrear|acompanhar|onde está|status do)\s+(?:meu|minha)?\s*(?:pedido|entrega|pacote)/i], intent: 'track_order', baseConfidence: 0.95 },
+    { patterns: [/(?:adicionar|colocar)\s+(.+?)\s+(?:na|à)\s+(?:minha)?\s*(?:lista|lista de compras|favoritos)/i], intent: 'add_to_list', baseConfidence: 0.94, extractTarget: m => m[1]?.trim() },
   ],
   ru: [
     { patterns: [/(?:перейти к|открыть|посетить|перейти на|загрузить)\s+(.+)/i], intent: 'navigate', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
@@ -267,6 +344,13 @@ const MULTI_LANG_PATTERNS: Record<string, IntentPattern[]> = {
     { patterns: [/(?:閉じる|終了)/i], intent: 'close', baseConfidence: 0.90 },
     { patterns: [/(?:ホーム|トップページ|最初のページ)/i], intent: 'home', baseConfidence: 0.95 },
     { patterns: [/(?:削除|消す)\s*(.*)/i], intent: 'delete', baseConfidence: 0.85, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:注文|頼む|配送)\s+(.+?)\s+(?:を|が)/i], intent: 'order_food', baseConfidence: 0.93, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:食事|料理|ピザ|寿司|弁当)\s*(?:を注文|を頼む|の配達)/i], intent: 'order_food', baseConfidence: 0.92 },
+    { patterns: [/(?:食料品| groceries)\s*(?:を注文|を買う|の配達)/i], intent: 'order_grocery', baseConfidence: 0.93 },
+    { patterns: [/(?:予約|取り置き)\s*(?:する|して)\s*(.*)/i], intent: 'book_appointment', baseConfidence: 0.94, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:再注文|もう一度注文|同じものを注文)/i], intent: 'reorder', baseConfidence: 0.94 },
+    { patterns: [/(?:追跡|配達状況|どこ|届く)/i], intent: 'track_order', baseConfidence: 0.93 },
+    { patterns: [/(.+?)\s*(?:をリスト|をお気に入り|ウィッシュリスト)\s*(?:に追加|に入れる)/i], intent: 'add_to_list', baseConfidence: 0.94, extractTarget: m => m[1]?.trim() },
   ],
   ko: [
     { patterns: [/(.+?)\s*(?:열어|이동|접속|가)/i], intent: 'navigate', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
@@ -283,6 +367,13 @@ const MULTI_LANG_PATTERNS: Record<string, IntentPattern[]> = {
     { patterns: [/(?:닫기|종료)/i], intent: 'close', baseConfidence: 0.90 },
     { patterns: [/(?:홈|첫 페이지|메인)/i], intent: 'home', baseConfidence: 0.95 },
     { patterns: [/(?:삭제|지워|제거)\s*(.*)/i], intent: 'delete', baseConfidence: 0.85, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:주문|시켜)\s+(.+?)\s+(?:에서|에|를)/i], intent: 'order_food', baseConfidence: 0.93, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:음식|식사|피자|스시|햄버거)\s*(?:주문|시켜|배달)/i], intent: 'order_food', baseConfidence: 0.92 },
+    { patterns: [/(?:식료품|장보기|마트)\s*(?:주문|시키기|배달)/i], intent: 'order_grocery', baseConfidence: 0.93 },
+    { patterns: [/(?:예약|약속)\s*(?:하기|잡기|해줘)\s*(.*)/i], intent: 'book_appointment', baseConfidence: 0.94, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:재주문|다시 주문|같은 것 주문)/i], intent: 'reorder', baseConfidence: 0.94 },
+    { patterns: [/(?:추적|배달 현황|어디|도착)/i], intent: 'track_order', baseConfidence: 0.93 },
+    { patterns: [/(.+?)\s*(?:을|를)\s*(?:목록|위시리스트|즐겨찾기)\s*(?:에 추가|에 넣어)/i], intent: 'add_to_list', baseConfidence: 0.94, extractTarget: m => m[1]?.trim() },
   ],
   zh: [
     { patterns: [/(?:打开|去|访问|导航到|前往)\s*(.+)/i], intent: 'navigate', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
@@ -299,6 +390,14 @@ const MULTI_LANG_PATTERNS: Record<string, IntentPattern[]> = {
     { patterns: [/(?:关闭|退出)/i], intent: 'close', baseConfidence: 0.90 },
     { patterns: [/(?:主页|首页|回到首页)/i], intent: 'home', baseConfidence: 0.95 },
     { patterns: [/(?:删除|移除|去掉)\s*(.*)/i], intent: 'delete', baseConfidence: 0.85, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:点|叫|订|下单)\s*(.+?)\s*(?:外卖|送到|配送)/i], intent: 'order_food', baseConfidence: 0.93, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:点外卖|叫外卖|订餐|叫餐|点餐)/i], intent: 'order_food', baseConfidence: 0.92 },
+    { patterns: [/(?:买|订购|下单)\s*(.+?)\s*(?:从|在)\s*(?:instacart|walmart|amazon)/i], intent: 'order_grocery', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:买菜|买 groceries|订购食品|日用品)/i], intent: 'order_grocery', baseConfidence: 0.93 },
+    { patterns: [/(?:预约|预订|挂号)\s*(.*)/i], intent: 'book_appointment', baseConfidence: 0.94, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:重新下单|再买一次|再次订购|复购)/i], intent: 'reorder', baseConfidence: 0.94 },
+    { patterns: [/(?:追踪|查询|跟踪|到哪了)\s*(?:我的|物流|快递|订单|配送)/i], intent: 'track_order', baseConfidence: 0.95 },
+    { patterns: [/(?:添加|加入)\s*(.+?)\s*(?:到|至)\s*(?:我的|购物清单|收藏夹|愿望清单)/i], intent: 'add_to_list', baseConfidence: 0.94, extractTarget: m => m[1]?.trim() },
   ],
   ar: [
     { patterns: [/(?:افتح|اذهب إلى|زر|توجه إلى|حمّل)\s+(.+)/i], intent: 'navigate', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
@@ -315,6 +414,14 @@ const MULTI_LANG_PATTERNS: Record<string, IntentPattern[]> = {
     { patterns: [/(?:أغلق|اخرج)/i], intent: 'close', baseConfidence: 0.90 },
     { patterns: [/(?:الرئيسية|الصفحة الرئيسية|اذهب للرئيسية)/i], intent: 'home', baseConfidence: 0.95 },
     { patterns: [/(?:احذف|أزل)\s*(.*)/i], intent: 'delete', baseConfidence: 0.85, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:اطلب|احصل على)\s+(.+?)\s+(?:من|عبر)\s+(?:doordash|uber\s*eats|grubhub)/i], intent: 'order_food', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:اطلب|احصل على)\s+(?:طعام|وجبة|غداء|عشاء|بيتزا|سوشي|برغر)/i], intent: 'order_food', baseConfidence: 0.93 },
+    { patterns: [/(?:اطلب|اشترِ)\s+(.+?)\s+(?:من|على)\s+(?:instacart|walmart|amazon)/i], intent: 'order_grocery', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:اطلب|تسوق)\s+(?:بقالة|مواد غذائية|مستلزمات)/i], intent: 'order_grocery', baseConfidence: 0.94 },
+    { patterns: [/(?:احجز|حدد)\s+(?:موعد|حجز)\s+(?:مع|عند|لـ)\s+(.+)/i], intent: 'book_appointment', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:أعد الطلب|اطلب مرة أخرى|اطلب نفس الشيء)/i], intent: 'reorder', baseConfidence: 0.94 },
+    { patterns: [/(?:تتبع|أين|حالة)\s+(?:طلبي|مشروعي|طردي|توصيلي)/i], intent: 'track_order', baseConfidence: 0.95 },
+    { patterns: [/(?:أضف|ضع)\s+(.+?)\s+(?:إلى|على)\s+(?:قائمتي|قائمة التسوق|المفضلة)/i], intent: 'add_to_list', baseConfidence: 0.94, extractTarget: m => m[1]?.trim() },
   ],
   hi: [
     { patterns: [/(?:खोलो|जाओ|जाओ|पर जाओ|लोड करो)\s+(.+)/i], intent: 'navigate', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
@@ -331,6 +438,14 @@ const MULTI_LANG_PATTERNS: Record<string, IntentPattern[]> = {
     { patterns: [/(?:बंद करो|बाहर जाओ)/i], intent: 'close', baseConfidence: 0.90 },
     { patterns: [/(?:होम|मुख्य पेज|होम जाओ)/i], intent: 'home', baseConfidence: 0.95 },
     { patterns: [/(?:हटाओ|मिटाओ|डिलीट करो)\s*(.*)/i], intent: 'delete', baseConfidence: 0.85, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:ऑर्डर करो|मंगाओ)\s+(.+?)\s+(?:से|पर|via)\s+(?:doordash|uber\s*eats|grubhub)/i], intent: 'order_food', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:ऑर्डर करो|मंगाओ)\s+(?:खाना|लंच|डिनर|ब्रेकफास्ट|पिज़्ज़ा|सुशी|बर्गर)/i], intent: 'order_food', baseConfidence: 0.93 },
+    { patterns: [/(?:ऑर्डर करो|खरीदो)\s+(.+?)\s+(?:से|पर)\s+(?:instacart|walmart|amazon)/i], intent: 'order_grocery', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:ऑर्डर करो|खरीदो)\s+(?:किराना|सब्ज़ी|फल|राशन)/i], intent: 'order_grocery', baseConfidence: 0.94 },
+    { patterns: [/(?:अपॉइंटमेंट|बुकिंग|रिज़र्वेशन)\s+(?:बुक करो|करो|लगाओ)\s+(.*)/i], intent: 'book_appointment', baseConfidence: 0.94, extractTarget: m => m[1]?.trim() },
+    { patterns: [/(?:फिर से ऑर्डर करो|दोबारा मंगाओ|वही फिर से)/i], intent: 'reorder', baseConfidence: 0.94 },
+    { patterns: [/(?:ट्रैक करो|कहाँ है|स्टेटस|कब आएगा)\s*(?:मेरा|ऑर्डर|डिलीवरी|पार्सल)/i], intent: 'track_order', baseConfidence: 0.95 },
+    { patterns: [/(?:जोड़ो|डालो)\s+(.+?)\s+(?:में|पर)\s+(?:मेरी|लिस्ट|शॉपिंग लिस्ट|विशलिस्ट)/i], intent: 'add_to_list', baseConfidence: 0.94, extractTarget: m => m[1]?.trim() },
   ],
   nl: [
     { patterns: [/(?:ga naar|open|bezoek|navigeer naar|laad)\s+(.+)/i], intent: 'navigate', baseConfidence: 0.95, extractTarget: m => m[1]?.trim() },
@@ -1967,6 +2082,21 @@ const SITE_MAP: Record<string, string> = {
   'npm': 'https://www.npmjs.com', 'crates': 'https://crates.io',
   'docker': 'https://hub.docker.com', 'aws': 'https://aws.amazon.com',
   'azure': 'https://portal.azure.com', 'gcp': 'https://console.cloud.google.com',
+  'grubhub': 'https://www.grubhub.com', 'postmates': 'https://postmates.com',
+  'ubereats': 'https://www.ubereats.com', 'uber eats': 'https://www.ubereats.com',
+  'chipotle': 'https://www.chipotle.com', 'dominos': 'https://www.dominos.com',
+  "domino's": 'https://www.dominos.com', 'pizzahut': 'https://www.pizzahut.com',
+  'mcdonalds': 'https://www.mcdonalds.com', 'subway': 'https://www.subway.com',
+  'panera': 'https://www.panerabread.com', 'chickfila': 'https://www.chick-fil-a.com',
+  'starbucks': 'https://www.starbucks.com', 'dunkin': 'https://www.dunkindonuts.com',
+  'kroger': 'https://www.kroger.com', 'safeway': 'https://www.safeway.com',
+  'costco': 'https://www.costco.com', 'wholefoods': 'https://www.wholefoodsmarket.com',
+  'whole foods': 'https://www.wholefoodsmarket.com', 'aldi': 'https://www.aldi.us',
+  'traderjoes': 'https://www.traderjoes.com', "trader joe's": 'https://www.traderjoes.com',
+  'peapod': 'https://www.peapod.com', 'freshdirect': 'https://www.freshdirect.com',
+  'opentable': 'https://www.opentable.com', 'zocdoc': 'https://www.zocdoc.com',
+  'calendly': 'https://calendly.com', 'googlecalendar': 'https://calendar.google.com',
+  'apple maps': 'https://maps.apple.com', 'yelp': 'https://www.yelp.com',
 };
 
 // --- Entity Extraction ---
@@ -2151,5 +2281,9 @@ export const INTENT_LABELS: Record<Intent, string> = {
   logout: 'Log Out', signup: 'Sign Up', compose: 'Compose', send: 'Send',
   delete: 'Delete', open: 'Open', close: 'Close', maximize: 'Maximize',
   minimize: 'Minimize', tab_new: 'New Tab', tab_close: 'Close Tab',
-  tab_next: 'Next Tab', tab_prev: 'Previous Tab', unknown: 'Unknown',
+  tab_next: 'Next Tab', tab_prev: 'Previous Tab',
+  order_food: 'Order Food', order_grocery: 'Order Groceries',
+  book_appointment: 'Book Appointment', schedule: 'Schedule',
+  reorder: 'Reorder', track_order: 'Track Order', add_to_list: 'Add to List',
+  unknown: 'Unknown',
 };
