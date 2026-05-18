@@ -78,7 +78,7 @@ export default defineConfig({
     setupFiles: './src/test/setup.ts',
   },
   server: {
-    port: 3000,
+    port: 5100,
     host: true
   },
   build: {
