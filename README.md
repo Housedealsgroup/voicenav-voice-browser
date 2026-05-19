@@ -203,10 +203,10 @@ See the complete list in [`src/voice/languages.ts`](src/voice/languages.ts).
 |------------|---------|---------|
 | React | 19.1 | UI framework |
 | TypeScript | 5.8 | Type-safe development |
-| Vite | 6.4 | Build tool and dev server |
+| Vite | 6.3 | Build tool and dev server |
 | vite-plugin-pwa | 0.21 | PWA generation with Workbox |
 | Web Speech API | Browser-native | Speech recognition and synthesis |
-| Vitest | 3.2 | Unit testing |
+| Vitest | 3.1 | Unit testing |
 | Testing Library | 16.3 | Component testing |
 
 ---
@@ -215,41 +215,92 @@ See the complete list in [`src/voice/languages.ts`](src/voice/languages.ts).
 
 ```
 voicenav-voice-browser/
-├── index.html                    # Entry point
+├── index.html                      # Entry point
 ├── public/
-│   ├── favicon.svg               # App icon
-│   └── manifest.json             # PWA manifest
+│   ├── favicon.svg                 # App icon
+│   └── manifest.json               # PWA manifest
 ├── src/
-│   ├── main.tsx                  # React entry
-│   ├── App.tsx                   # Root component
-│   ├── App.css                   # App styles
-│   ├── index.css                 # Global styles (CSS variables)
+│   ├── main.tsx                    # React entry
+│   ├── App.tsx                     # Root component
+│   ├── App.css                     # App styles
+│   ├── index.css                   # Global styles (CSS variables)
 │   ├── context/
-│   │   └── AppContext.tsx         # Global state (useReducer + Context)
+│   │   └── AppContext.tsx           # Global state (useReducer + Context)
 │   ├── hooks/
-│   │   └── useVoice.ts           # Voice recognition + synthesis hook
+│   │   ├── useVoice.ts             # Voice recognition + synthesis hook
+│   │   └── useNetworkState.ts      # Online/offline detection
 │   ├── components/
-│   │   ├── Header.tsx            # Top nav bar with voice button
-│   │   ├── HomeScreen.tsx        # Home page with search + quick links
-│   │   ├── BrowserView.tsx       # iframe browser with toolbar
-│   │   ├── TabBar.tsx            # Tab management bar
-│   │   ├── VoiceOverlay.tsx      # Full-screen voice listening overlay
-│   │   ├── BookmarksView.tsx     # Bookmarks list
-│   │   ├── HistoryView.tsx       # Browsing history
-│   │   └── SettingsView.tsx      # Settings (search engine, voice, font)
+│   │   ├── Header.tsx              # Top nav bar with voice button
+│   │   ├── HomeScreen.tsx          # Home page with search + quick links
+│   │   ├── BrowserView.tsx         # iframe browser with toolbar
+│   │   ├── TabBar.tsx              # Tab management bar
+│   │   ├── VoiceOverlay.tsx        # Full-screen voice listening overlay
+│   │   ├── VoiceButton.tsx         # Animated voice button
+│   │   ├── VoiceWaveform.tsx       # Audio waveform visualization
+│   │   ├── VoiceNavLogo.tsx        # SVG logo component
+│   │   ├── BookmarksView.tsx       # Bookmarks list
+│   │   ├── HistoryView.tsx         # Browsing history
+│   │   ├── SettingsView.tsx        # Settings (search engine, voice, font)
+│   │   ├── CommandPalette.tsx      # Voice command palette
+│   │   ├── FloatingAssistant.tsx   # Floating AI assistant
+│   │   ├── TaskProgress.tsx        # Task automation progress
+│   │   ├── OfflineBanner.tsx       # Offline status banner
+│   │   └── ErrorBoundary.tsx       # Error boundary
+│   ├── browser/
+│   │   ├── BrowserView.tsx         # High-level browser engine
+│   │   ├── domExtractor.js         # DOM content extraction
+│   │   ├── actionExecutor.js       # Page action execution
+│   │   └── types.ts                # Browser type definitions
+│   ├── agent/
+│   │   ├── brain.ts                # Central AI orchestrator
+│   │   ├── nlu.ts                  # Natural language understanding
+│   │   ├── smartNav.ts             # Smart navigation + prediction
+│   │   ├── pageIntelligence.ts     # Page analysis (prices, ratings, forms)
+│   │   ├── pageSummarizer.ts       # On-device page summarization
+│   │   ├── conversationMode.ts     # Conversational AI with pronoun resolution
+│   │   ├── tabManager.ts           # Multi-tab voice management
+│   │   ├── taskEngine.ts           # Task automation engine
+│   │   ├── voiceShortcuts.ts       # Custom voice shortcuts + macros
+│   │   ├── voiceProfiles.ts        # Personalized voice profiles
+│   │   ├── voiceOnboarding.ts      # Voice-guided onboarding
+│   │   ├── commandHistory.ts       # Command history + analytics
+│   │   ├── commandPredictor.ts     # Predictive command suggestions
+│   │   ├── contextActions.ts       # Context-aware actions
+│   │   ├── a11yDashboard.ts        # WCAG accessibility dashboard
+│   │   ├── assistant.ts            # AI assistant
+│   │   ├── sessionMemory.ts        # Session memory
+│   │   ├── perfMonitor.ts          # Performance monitoring
+│   │   └── loop.ts                 # Agent loop
 │   ├── voice/
-│   │   ├── languages.ts          # 222 supported languages
-│   │   ├── languageDetector.ts   # Auto-detect language from text
-│   │   ├── speechToText.ts       # Expo STT integration
-│   │   └── textToSpeech.ts       # Expo TTS with queue + audio cues
+│   │   ├── languages.ts            # 222 supported languages
+│   │   ├── languageDetector.ts     # Auto-detect language from text
+│   │   ├── speechToText.ts         # Web Speech API STT
+│   │   ├── textToSpeech.ts         # Web Speech API TTS with queue
+│   │   ├── continuousListener.ts   # Continuous voice listening
+│   │   ├── gestureNav.ts           # Gesture-based navigation
+│   │   └── voiceMacros.ts          # Voice macro system
+│   ├── store/
+│   │   ├── index.ts                # Main Zustand store
+│   │   ├── bookmarks.ts            # Bookmarks store
+│   │   ├── theme.ts                # Theme store (dark/light/high-contrast/AMOLED)
+│   │   ├── voiceCommands.ts        # Voice commands store
+│   │   └── persistentState.ts      # Persistent state management
+│   ├── a11y/
+│   │   └── theme.ts                # Theme system + CSS variables
+│   ├── utils/
+│   │   ├── security.ts             # CSP, input validation, rate limiting
+│   │   ├── logger.ts               # Sanitized logging
+│   │   ├── haptics.ts              # Haptic feedback
+│   │   └── crashReporting.ts       # Crash reporting
 │   ├── types/
-│   │   └── index.ts              # TypeScript interfaces
+│   │   └── index.ts                # TypeScript interfaces
 │   └── test/
-│       ├── setup.ts              # Test configuration
-│       ├── App.test.tsx          # Component rendering tests
-│       ├── voice.test.ts         # Voice recognition + synthesis tests
-│       └── context.test.tsx      # State management tests
-├── assets/                       # Logos, screenshots, banners
+│       ├── setup.ts                # Test configuration
+│       ├── App.test.tsx            # Component rendering tests
+│       ├── voice.test.ts           # Voice recognition + synthesis tests
+│       └── context.test.tsx        # State management tests
+├── assets/                         # Logos, screenshots, banners
+├── app/                            # Expo Router screens (legacy)
 ├── package.json
 ├── tsconfig.json
 ├── vite.config.ts
