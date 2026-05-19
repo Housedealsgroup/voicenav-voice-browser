@@ -142,6 +142,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   function isValidUrl(str: string): boolean {
     try {
+      // Block dangerous protocols
+      const lower = str.toLowerCase().trim()
+      if (lower.startsWith('javascript:') || lower.startsWith('data:') || lower.startsWith('vbscript:')) {
+        return false
+      }
       const url = new URL(str.includes('://') ? str : `https://${str}`)
       return url.hostname.includes('.')
     } catch {

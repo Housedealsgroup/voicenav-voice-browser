@@ -25,6 +25,7 @@ function parseCommand(transcript: string): VoiceCommand {
   if (t === 'reload' || t === 'refresh' || t === 'refresh page') return { action: 'reload', confidence: 0.95 }
   if (t === 'stop' || t === 'cancel' || t === 'halt' || t === 'stop speaking' || t === 'be quiet' || t === 'silence') return { action: 'stop', confidence: 0.95 }
   if (t === 'read this page' || t === 'read this' || t === 'read page' || t === 'read aloud' || t === 'read to me') return { action: 'read_page', confidence: 0.95 }
+  if (t === 'what can i say' || t === 'help' || t === 'what can you do' || t === 'commands' || t === 'voice commands') return { action: 'help', confidence: 0.95 }
   if (t === 'scroll down' || t === 'page down' || t === 'down') return { action: 'scroll_down', confidence: 0.95 }
   if (t === 'scroll up' || t === 'page up' || t === 'up') return { action: 'scroll_up', confidence: 0.95 }
   if (t === 'scroll to top' || t === 'top of page') return { action: 'scroll_up', confidence: 0.9 }
@@ -133,8 +134,21 @@ export function useVoice() {
     setVoiceState(prev => ({ ...prev, audioLevel: 0 }))
   }, [])
 
+  // Announce to screen reader live region
+  function announceToSR(text: string) {
+    const el = document.getElementById('sr-announce')
+    if (el) {
+      el.textContent = ''
+      void el.offsetHeight // force reflow so SR re-reads
+      el.textContent = text
+    }
+  }
+
   // Text-to-speech
   const speak = useCallback((text: string, options?: { rate?: number; pitch?: number; volume?: number; voice?: SpeechSynthesisVoice }) => {
+    // Always announce to screen readers (even if TTS not supported)
+    announceToSR(text)
+
     if (!('speechSynthesis' in window)) {
       console.warn('Speech synthesis not supported')
       return
@@ -325,8 +339,26 @@ export function useVoice() {
         speak(text)
         break
       }
+      case 'help':
+        speak(
+          'Here are the voice commands you can use. ' +
+          'Say "go to" followed by a website name to navigate. ' +
+          'Say "search for" followed by your query to search the web. ' +
+          'Say "read this page" to hear the page content. ' +
+          'Say "go back" or "go forward" to navigate history. ' +
+          'Say "reload" to refresh the page. ' +
+          'Say "scroll down" or "scroll up" to move the page. ' +
+          'Say "find" followed by text to search on the page. ' +
+          'Say "bookmark" to save the current page. ' +
+          'Say "new tab" or "close tab" to manage tabs. ' +
+          'Say "zoom in" or "zoom out" to change text size. ' +
+          'Say "stop speaking" to stop reading. ' +
+          'Say "go home" to return to the start page. ' +
+          'Or press the microphone button and speak naturally.'
+        )
+        break
       case 'unknown':
-        speak('Sorry, I didn\'t understand that command')
+        speak('Sorry, I didn\'t understand that command. Say "help" for available commands.')
         break
     }
   }, [state, dispatch, navigate, search, goHome, speak])

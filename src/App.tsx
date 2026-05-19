@@ -36,10 +36,22 @@ function AppContent() {
 
   return (
     <div className={`app ${state.theme}`}>
+      {/* Skip navigation — critical for screen reader users */}
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
       <Header />
-      <main className="main-content">
+      <main id="main-content" className="main-content" role="main">
         {renderView()}
       </main>
+      {/* Live region for screen reader announcements */}
+      <div
+        className="sr-only"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        id="sr-announce"
+      />
       <VoiceOverlay />
     </div>
   )
