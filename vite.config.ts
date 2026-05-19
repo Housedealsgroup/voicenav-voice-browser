@@ -3,6 +3,11 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      'expo-haptics': '/src/test/mocks/expo-haptics.ts',
+    },
+  },
   plugins: [
     react(),
     VitePWA({
