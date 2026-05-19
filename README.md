@@ -76,7 +76,7 @@ npm run preview
 | **Text-to-Speech** | Spoken feedback for every command |
 | **Voice Selection** | `getVoices()` API returns all system voices |
 | **Configurable** | Rate, pitch, volume, language options |
-| **13 Languages** | English, Spanish, French, German, Italian, Portuguese, Chinese, Japanese, Korean, Arabic, Hindi, Russian |
+| **222 Languages** | Full language support with auto-detection — see `src/voice/languages.ts` for the complete list |
 
 ### Browser
 | Feature | Description |
@@ -236,6 +236,24 @@ npm run test:watch
 ## License
 
 MIT License — see [LICENSE](LICENSE) for details.
+
+---
+
+---
+
+## Known Limitations
+
+**Firefox + Embedded Sites**: Firefox blocks embedded pages from certain sites (e.g., x.com) for security. If you see *"Firefox Can't Open This Page — To protect your security, Firefox will not allow Firefox to display the page if another site has embedded it"*, open the link in a new window instead.
+
+---
+
+## Support VoiceNav
+
+If you find VoiceNav useful, consider supporting the project:
+
+**Bitcoin:** `bc1qkgkhescdu30xn3fpkv52mcea9njn47u7snjj9k`
+
+Every donation, no matter how small, keeps this project alive.
 
 ---
 

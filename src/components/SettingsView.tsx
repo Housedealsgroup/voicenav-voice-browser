@@ -1,4 +1,5 @@
 import { useApp } from '../context/AppContext'
+import { SUPPORTED_LANGUAGES } from '../voice/languages'
 import './SettingsView.css'
 
 export function SettingsView() {
@@ -10,21 +11,10 @@ export function SettingsView() {
     { value: 'bing', label: 'Bing' },
   ] as const
 
-  const languages = [
-    { value: 'en-US', label: 'English (US)' },
-    { value: 'en-GB', label: 'English (UK)' },
-    { value: 'es-ES', label: 'Spanish' },
-    { value: 'fr-FR', label: 'French' },
-    { value: 'de-DE', label: 'German' },
-    { value: 'it-IT', label: 'Italian' },
-    { value: 'pt-BR', label: 'Portuguese (BR)' },
-    { value: 'zh-CN', label: 'Chinese' },
-    { value: 'ja-JP', label: 'Japanese' },
-    { value: 'ko-KR', label: 'Korean' },
-    { value: 'ar-SA', label: 'Arabic' },
-    { value: 'hi-IN', label: 'Hindi' },
-    { value: 'ru-RU', label: 'Russian' },
-  ]
+  const languages = SUPPORTED_LANGUAGES.map(l => ({
+    value: l.sttCode,
+    label: `${l.name} (${l.nativeName})`,
+  }))
 
   return (
     <div className="settings-view">

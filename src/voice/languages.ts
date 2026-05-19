@@ -145,6 +145,137 @@ export const SUPPORTED_LANGUAGES: LanguageConfig[] = [
 
   // === Constructed & Minority ===
   { code: 'eo', name: 'Esperanto', nativeName: 'Esperanto', sttCode: 'eo', ttsCode: 'eo' },
+
+  // === Additional Regional Variants ===
+  { code: 'en-AU', name: 'English (Australia)', nativeName: 'English (Australia)', sttCode: 'en-AU', ttsCode: 'en-AU' },
+  { code: 'en-IN', name: 'English (India)', nativeName: 'English (India)', sttCode: 'en-IN', ttsCode: 'en-IN' },
+  { code: 'en-ZA', name: 'English (South Africa)', nativeName: 'English (South Africa)', sttCode: 'en-ZA', ttsCode: 'en-ZA' },
+  { code: 'en-IE', name: 'English (Ireland)', nativeName: 'English (Ireland)', sttCode: 'en-IE', ttsCode: 'en-IE' },
+  { code: 'en-NZ', name: 'English (New Zealand)', nativeName: 'English (New Zealand)', sttCode: 'en-NZ', ttsCode: 'en-NZ' },
+  { code: 'en-SG', name: 'English (Singapore)', nativeName: 'English (Singapore)', sttCode: 'en-SG', ttsCode: 'en-SG' },
+  { code: 'es-MX', name: 'Spanish (Mexico)', nativeName: 'Español (México)', sttCode: 'es-MX', ttsCode: 'es-MX' },
+  { code: 'es-AR', name: 'Spanish (Argentina)', nativeName: 'Español (Argentina)', sttCode: 'es-AR', ttsCode: 'es-AR' },
+  { code: 'es-CO', name: 'Spanish (Colombia)', nativeName: 'Español (Colombia)', sttCode: 'es-CO', ttsCode: 'es-CO' },
+  { code: 'es-CL', name: 'Spanish (Chile)', nativeName: 'Español (Chile)', sttCode: 'es-CL', ttsCode: 'es-CL' },
+  { code: 'es-US', name: 'Spanish (US)', nativeName: 'Español (US)', sttCode: 'es-US', ttsCode: 'es-US' },
+  { code: 'pt-PT', name: 'Portuguese (Portugal)', nativeName: 'Português (Portugal)', sttCode: 'pt-PT', ttsCode: 'pt-PT' },
+  { code: 'zh-TW', name: 'Chinese (Traditional)', nativeName: '中文 (繁體)', sttCode: 'zh-TW', ttsCode: 'zh-TW' },
+  { code: 'zh-HK', name: 'Chinese (Hong Kong)', nativeName: '中文 (香港)', sttCode: 'zh-HK', ttsCode: 'zh-HK' },
+  { code: 'fr-CA', name: 'French (Canada)', nativeName: 'Français (Canada)', sttCode: 'fr-CA', ttsCode: 'fr-CA' },
+  { code: 'fr-BE', name: 'French (Belgium)', nativeName: 'Français (Belgique)', sttCode: 'fr-BE', ttsCode: 'fr-BE' },
+  { code: 'fr-CH', name: 'French (Switzerland)', nativeName: 'Français (Suisse)', sttCode: 'fr-CH', ttsCode: 'fr-CH' },
+  { code: 'de-AT', name: 'German (Austria)', nativeName: 'Deutsch (Österreich)', sttCode: 'de-AT', ttsCode: 'de-AT' },
+  { code: 'de-CH', name: 'German (Switzerland)', nativeName: 'Deutsch (Schweiz)', sttCode: 'de-CH', ttsCode: 'de-CH' },
+  { code: 'ar-EG', name: 'Arabic (Egypt)', nativeName: 'العربية (مصر)', sttCode: 'ar-EG', ttsCode: 'ar-EG', isRTL: true },
+  { code: 'ar-AE', name: 'Arabic (UAE)', nativeName: 'العربية (الإمارات)', sttCode: 'ar-AE', ttsCode: 'ar-AE', isRTL: true },
+  { code: 'ar-JO', name: 'Arabic (Jordan)', nativeName: 'العربية (الأردن)', sttCode: 'ar-JO', ttsCode: 'ar-JO', isRTL: true },
+  { code: 'ar-LB', name: 'Arabic (Lebanon)', nativeName: 'العربية (لبنان)', sttCode: 'ar-LB', ttsCode: 'ar-LB', isRTL: true },
+  { code: 'ar-MA', name: 'Arabic (Morocco)', nativeName: 'العربية (المغرب)', sttCode: 'ar-MA', ttsCode: 'ar-MA', isRTL: true },
+  { code: 'ar-TN', name: 'Arabic (Tunisia)', nativeName: 'العربية (تونس)', sttCode: 'ar-TN', ttsCode: 'ar-TN', isRTL: true },
+  { code: 'hi-Latn', name: 'Hindi (Latin)', nativeName: 'Hinglish', sttCode: 'hi-Latn', ttsCode: 'hi-IN' },
+
+  // === Additional African Languages ===
+  { code: 'ny', name: 'Chichewa', nativeName: 'Chichewa', sttCode: 'ny-MW', ttsCode: 'ny-MW' },
+  { code: 'so', name: 'Somali', nativeName: 'Soomaali', sttCode: 'so-SO', ttsCode: 'so-SO' },
+  { code: 'ti', name: 'Tigrinya', nativeName: 'ትግርኛ', sttCode: 'ti-ET', ttsCode: 'ti-ET' },
+  { code: 'ff', name: 'Fula', nativeName: 'Fulfulde', sttCode: 'ff-SN', ttsCode: 'ff-SN' },
+  { code: 'bm', name: 'Bambara', nativeName: 'Bamanankan', sttCode: 'bm-ML', ttsCode: 'bm-ML' },
+  { code: 'ln', name: 'Lingala', nativeName: 'Lingála', sttCode: 'ln-CD', ttsCode: 'ln-CD' },
+  { code: 'kg', name: 'Kongo', nativeName: 'Kikongo', sttCode: 'kg-CD', ttsCode: 'kg-CD' },
+  { code: 'lu', name: 'Luba-Katanga', nativeName: 'Tshiluba', sttCode: 'lu-CD', ttsCode: 'lu-CD' },
+  { code: 'rn', name: 'Kirundi', nativeName: 'Kirundi', sttCode: 'rn-BI', ttsCode: 'rn-BI' },
+  { code: 'ee', name: 'Ewe', nativeName: 'Eʋegbe', sttCode: 'ee-GH', ttsCode: 'ee-GH' },
+  { code: 'tw', name: 'Twi', nativeName: 'Twi', sttCode: 'tw-GH', ttsCode: 'tw-GH' },
+  { code: 've', name: 'Venda', nativeName: 'Tshivenḓa', sttCode: 've-ZA', ttsCode: 've-ZA' },
+  { code: 'nr', name: 'Southern Ndebele', nativeName: 'isiNdebele', sttCode: 'nr-ZA', ttsCode: 'nr-ZA' },
+
+  // === Additional South/Southeast Asian ===
+  { code: 'as', name: 'Assamese', nativeName: 'অসমীয়া', sttCode: 'as-IN', ttsCode: 'as-IN' },
+  { code: 'or', name: 'Odia', nativeName: 'ଓଡ଼ିଆ', sttCode: 'or-IN', ttsCode: 'or-IN' },
+  { code: 'sd', name: 'Sindhi', nativeName: 'سنڌي', sttCode: 'sd-PK', ttsCode: 'sd-PK', isRTL: true },
+  { code: 'bo', name: 'Tibetan', nativeName: 'བོད་སྐད', sttCode: 'bo-CN', ttsCode: 'bo-CN' },
+  { code: 'dz', name: 'Dzongkha', nativeName: 'རྫོང་ཁ', sttCode: 'dz-BT', ttsCode: 'dz-BT' },
+  { code: 'ms-SG', name: 'Malay (Singapore)', nativeName: 'Bahasa Melayu (Singapore)', sttCode: 'ms-SG', ttsCode: 'ms-SG' },
+
+  // === Pacific & Oceanic ===
+  { code: 'ty', name: 'Tahitian', nativeName: 'Reo Tahiti', sttCode: 'ty-PF', ttsCode: 'ty-PF' },
+  { code: 'ho', name: 'Hiri Motu', nativeName: 'Hiri Motu', sttCode: 'ho-PG', ttsCode: 'ho-PG' },
+  { code: 'bi', name: 'Bislama', nativeName: 'Bislama', sttCode: 'bi-VU', ttsCode: 'bi-VU' },
+  { code: 'na', name: 'Nauru', nativeName: 'Dorerin Naoero', sttCode: 'na-NR', ttsCode: 'na-NR' },
+  { code: 'tvl', name: 'Tuvaluan', nativeName: 'Te Ggana Tuuvalu', sttCode: 'tvl-TV', ttsCode: 'tvl-TV' },
+  { code: 'gil', name: 'Gilbertese', nativeName: 'Taetae ni Kiribati', sttCode: 'gil-KI', ttsCode: 'gil-KI' },
+  { code: 'mh', name: 'Marshallese', nativeName: 'Kajin M̧ajeļ', sttCode: 'mh-MH', ttsCode: 'mh-MH' },
+  { code: 'chk', name: 'Chuukese', nativeName: 'Chuukese', sttCode: 'chk-FM', ttsCode: 'chk-FM' },
+  { code: 'pon', name: 'Pohnpeian', nativeName: 'Pohnpeian', sttCode: 'pon-FM', ttsCode: 'pon-FM' },
+  { code: 'kos', name: 'Kosraean', nativeName: 'Kosraean', sttCode: 'kos-FM', ttsCode: 'kos-FM' },
+  { code: 'yap', name: 'Yapese', nativeName: 'Yapese', sttCode: 'yap-FM', ttsCode: 'yap-FM' },
+
+  // === Additional European ===
+  { code: 'nn', name: 'Norwegian Nynorsk', nativeName: 'Norsk Nynorsk', sttCode: 'nn-NO', ttsCode: 'nn-NO' },
+  { code: 'fo', name: 'Faroese', nativeName: 'Føroyskt', sttCode: 'fo-FO', ttsCode: 'fo-FO' },
+  { code: 'kl', name: 'Greenlandic', nativeName: 'Kalaallisut', sttCode: 'kl-GL', ttsCode: 'kl-GL' },
+  { code: 'hsb', name: 'Upper Sorbian', nativeName: 'Hornjoserbšćina', sttCode: 'hsb-DE', ttsCode: 'hsb-DE' },
+  { code: 'dsb', name: 'Lower Sorbian', nativeName: 'Dolnoserbšćina', sttCode: 'dsb-DE', ttsCode: 'dsb-DE' },
+  { code: 'lij', name: 'Ligurian', nativeName: 'Ligure', sttCode: 'lij-IT', ttsCode: 'lij-IT' },
+  { code: 'pms', name: 'Piedmontese', nativeName: 'Piemontèis', sttCode: 'pms-IT', ttsCode: 'pms-IT' },
+  { code: 'lmo', name: 'Lombard', nativeName: 'Lombard', sttCode: 'lmo-IT', ttsCode: 'lmo-IT' },
+  { code: 'eml', name: 'Emilian-Romagnol', nativeName: 'Emigliàn-Rumagnòl', sttCode: 'eml-IT', ttsCode: 'eml-IT' },
+  { code: 'an', name: 'Aragonese', nativeName: 'Aragonés', sttCode: 'an-ES', ttsCode: 'an-ES' },
+  { code: 'ext', name: 'Extremaduran', nativeName: 'Estremeñu', sttCode: 'ext-ES', ttsCode: 'ext-ES' },
+  { code: 'mwl', name: 'Mirandese', nativeName: 'Mirandés', sttCode: 'mwl-PT', ttsCode: 'mwl-PT' },
+  { code: 'ast', name: 'Asturian', nativeName: 'Asturianu', sttCode: 'ast-ES', ttsCode: 'ast-ES' },
+
+  // === Central Asian & Turkic ===
+  { code: 'tk', name: 'Turkmen', nativeName: 'Türkmen', sttCode: 'tk-TM', ttsCode: 'tk-TM' },
+  { code: 'ba', name: 'Bashkir', nativeName: 'Башҡорт', sttCode: 'ba-RU', ttsCode: 'ba-RU' },
+  { code: 'tt', name: 'Tatar', nativeName: 'Татар', sttCode: 'tt-RU', ttsCode: 'tt-RU' },
+  { code: 'cv', name: 'Chuvash', nativeName: 'Чăваш', sttCode: 'cv-RU', ttsCode: 'cv-RU' },
+  { code: 'sah', name: 'Yakut', nativeName: 'Саха', sttCode: 'sah-RU', ttsCode: 'sah-RU' },
+  { code: 'os', name: 'Ossetian', nativeName: 'Ирон', sttCode: 'os-GE', ttsCode: 'os-GE' },
+  { code: 'ab', name: 'Abkhaz', nativeName: 'Аԥсуа', sttCode: 'ab-GE', ttsCode: 'ab-GE' },
+
+  // === East Asian ===
+  { code: 'yue', name: 'Cantonese', nativeName: '廣東話', sttCode: 'yue-HK', ttsCode: 'yue-HK' },
+  { code: 'wuu', name: 'Wu Chinese', nativeName: '吴语', sttCode: 'wuu-CN', ttsCode: 'wuu-CN' },
+  { code: 'hak', name: 'Hakka', nativeName: '客家話', sttCode: 'hak-TW', ttsCode: 'hak-TW' },
+  { code: 'nan', name: 'Hokkien', nativeName: '閩南語', sttCode: 'nan-TW', ttsCode: 'nan-TW' },
+  { code: 'ain', name: 'Ainu', nativeName: 'アイヌ', sttCode: 'ain-JP', ttsCode: 'ain-JP' },
+  { code: 'ryu', name: 'Okinawan', nativeName: 'ウチナーグチ', sttCode: 'ryu-JP', ttsCode: 'ryu-JP' },
+
+  // === Additional South Asian ===
+  { code: 'ks', name: 'Kashmiri', nativeName: 'कॉशुर', sttCode: 'ks-IN', ttsCode: 'ks-IN' },
+  { code: 'doi', name: 'Dogri', nativeName: 'डोगरी', sttCode: 'doi-IN', ttsCode: 'doi-IN' },
+  { code: 'mai', name: 'Maithili', nativeName: 'मैथिली', sttCode: 'mai-IN', ttsCode: 'mai-IN' },
+  { code: 'sat', name: 'Santali', nativeName: 'ᱥᱟᱱᱛᱟᱲᱤ', sttCode: 'sat-IN', ttsCode: 'sat-IN' },
+  { code: 'mni', name: 'Meitei', nativeName: 'মৈতৈলোন্', sttCode: 'mni-IN', ttsCode: 'mni-IN' },
+  { code: 'brx', name: 'Bodo', nativeName: 'बड़ो', sttCode: 'brx-IN', ttsCode: 'brx-IN' },
+  { code: 'gon', name: 'Gondi', nativeName: 'गोंडी', sttCode: 'gon-IN', ttsCode: 'gon-IN' },
+  { code: 'kok', name: 'Konkani', nativeName: 'कोंकणी', sttCode: 'kok-IN', ttsCode: 'kok-IN' },
+
+  // === Indigenous Americas ===
+  { code: 'qu', name: 'Quechua', nativeName: 'Runasimi', sttCode: 'qu-PE', ttsCode: 'qu-PE' },
+  { code: 'gn', name: 'Guarani', nativeName: 'Avañe\'ẽ', sttCode: 'gn-PY', ttsCode: 'gn-PY' },
+  { code: 'ay', name: 'Aymara', nativeName: 'Aymar aru', sttCode: 'ay-BO', ttsCode: 'ay-BO' },
+  { code: 'nah', name: 'Nahuatl', nativeName: 'Nāhuatl', sttCode: 'nah-MX', ttsCode: 'nah-MX' },
+  { code: 'yua', name: 'Yucatec Maya', nativeName: 'Maaya T\'aan', sttCode: 'yua-MX', ttsCode: 'yua-MX' },
+  { code: 'cr', name: 'Cree', nativeName: 'ᓀᐦᐃᔭᐍᐏᐣ', sttCode: 'cr-CA', ttsCode: 'cr-CA' },
+  { code: 'iu', name: 'Inuktitut', nativeName: 'ᐃᓄᒃᑎᑐᑦ', sttCode: 'iu-CA', ttsCode: 'iu-CA' },
+  { code: 'oj', name: 'Ojibwe', nativeName: 'Anishinaabemowin', sttCode: 'oj-CA', ttsCode: 'oj-CA' },
+
+  // === Sign Languages (text only — STT via dictation) ===
+  { code: 'ase', name: 'American Sign Language', nativeName: 'ASL', sttCode: 'en-US', ttsCode: 'en-US' },
+  { code: 'bfi', name: 'British Sign Language', nativeName: 'BSL', sttCode: 'en-GB', ttsCode: 'en-GB' },
+  { code: 'jsl', name: 'Japanese Sign Language', nativeName: '日本手話', sttCode: 'ja-JP', ttsCode: 'ja-JP' },
+  { code: 'gsg', name: 'German Sign Language', nativeName: 'DGS', sttCode: 'de-DE', ttsCode: 'de-DE' },
+  { code: 'lsf', name: 'French Sign Language', nativeName: 'LSF', sttCode: 'fr-FR', ttsCode: 'fr-FR' },
+  { code: 'csign', name: 'Chinese Sign Language', nativeName: '中国手语', sttCode: 'zh-CN', ttsCode: 'zh-CN' },
+
+  // === Creole & Pidgin (additional) ===
+  { code: 'jam', name: 'Jamaican Patois', nativeName: 'Patois', sttCode: 'en-JM', ttsCode: 'en-JM' },
+  { code: 'tpi', name: 'Tok Pisin', nativeName: 'Tok Pisin', sttCode: 'tpi-PG', ttsCode: 'tpi-PG' },
+  { code: 'pis', name: 'Solomons Pijin', nativeName: 'Pijin', sttCode: 'pis-SB', ttsCode: 'pis-SB' },
+  { code: 'pcm', name: 'Nigerian Pidgin', nativeName: 'Naija', sttCode: 'pcm-NG', ttsCode: 'pcm-NG' },
+  { code: 'cpe', name: 'Kriol', nativeName: 'Kriol', sttCode: 'cpe-AU', ttsCode: 'cpe-AU' },
 ];
 
 export function getLanguageByCode(code: string): LanguageConfig | undefined {

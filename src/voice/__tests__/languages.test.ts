@@ -7,8 +7,8 @@ function isRTLLanguage(code: string): boolean {
 
 describe('Languages', () => {
   describe('SUPPORTED_LANGUAGES — Structure', () => {
-    it('has 113 languages', () => {
-      expect(SUPPORTED_LANGUAGES.length).toBe(113);
+    it('has 222 languages', () => {
+      expect(SUPPORTED_LANGUAGES.length).toBe(222);
     });
 
     it('all languages have code field', () => {
@@ -65,13 +65,13 @@ describe('Languages', () => {
 
     it('sttCode is valid format', () => {
       SUPPORTED_LANGUAGES.forEach(lang => {
-        expect(lang.sttCode).toMatch(/^[a-z]{2,3}(-[A-Z]{2})?$/);
+        expect(lang.sttCode).toMatch(/^[a-z]{2,3}(-[A-Z][a-z]{2,3}|-[[A-Z]{2})?$/);
       });
     });
 
     it('ttsCode is valid format', () => {
       SUPPORTED_LANGUAGES.forEach(lang => {
-        expect(lang.ttsCode).toMatch(/^[a-z]{2,3}(-[A-Z]{2})?$/);
+        expect(lang.ttsCode).toMatch(/^[a-z]{2,3}(-[A-Z][a-z]{2,3}|-[[A-Z]{2})?$/);
       });
     });
   });
@@ -113,9 +113,9 @@ describe('Languages', () => {
       expect(isRTLLanguage('hi')).toBe(false);
     });
 
-    it('exactly 5 RTL languages', () => {
+    it('exactly 12 RTL languages', () => {
       const rtlLangs = SUPPORTED_LANGUAGES.filter(l => l.isRTL);
-      expect(rtlLangs.length).toBe(5);
+      expect(rtlLangs.length).toBe(12);
     });
   });
 
