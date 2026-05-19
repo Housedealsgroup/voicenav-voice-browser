@@ -2,8 +2,6 @@
 // Tracks app performance, response times, and resource usage
 // Provides voice-readable performance reports
 
-import { logger } from '../utils/logger';
-
 export type PerfMetric = {
   name: string;
   value: number;

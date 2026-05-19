@@ -3,7 +3,7 @@
 // Adapts suggestions to page type, elements, and user history
 
 import { logger } from '../utils/logger';
-import type { PageSnapshot, PageElement } from '../browser/types';
+import type { PageSnapshot } from '../browser/types';
 
 export type ContextAction = {
   id: string;
@@ -32,7 +32,7 @@ type PageContext = {
 function analyzeContext(snapshot: PageSnapshot): PageContext {
   const elements = snapshot.elements || [];
   const text = (snapshot.textContent || '').toLowerCase();
-  const url = (snapshot.url || '').toLowerCase();
+
 
   const hasForm = elements.some(e => e.typeable) || text.includes('sign in') || text.includes('login') || text.includes('register');
   const hasMedia = elements.some(e => e.tag === 'video' || e.tag === 'audio') || text.includes('play') || text.includes('watch');
@@ -58,7 +58,7 @@ function analyzeContext(snapshot: PageSnapshot): PageContext {
   };
 }
 
-function generateActions(ctx: PageContext, snapshot: PageSnapshot): ContextAction[] {
+function generateActions(ctx: PageContext, _snapshot: PageSnapshot): ContextAction[] {
   const actions: ContextAction[] = [];
   let id = 0;
 

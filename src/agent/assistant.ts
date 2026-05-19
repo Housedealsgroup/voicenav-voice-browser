@@ -13,7 +13,7 @@ type AssistantSuggestion = {
 // Detect what the user might want to do based on page context
 export function getProactiveSuggestions(snapshot: PageSnapshot): AssistantSuggestion[] {
   const suggestions: AssistantSuggestion[] = [];
-  const { pageType, patterns, shoppingData, elements, headings } = snapshot;
+  const { pageType, patterns, shoppingData, elements: _elements, headings } = snapshot;
 
   // Shopping pages
   if (pageType === 'shopping' || pageType === 'product_listing') {

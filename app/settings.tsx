@@ -9,7 +9,6 @@ import {
   Switch,
   TextInput,
   Alert,
-  FlatList,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,7 +16,7 @@ import { useAppStore } from '../src/store';
 import { useVoiceShortcutStore, VoiceShortcut } from '../src/store/voiceCommands';
 import { COLORS, SPACING, FONT_SIZE, RADIUS, ThemeName } from '../src/a11y/theme';
 import { speak } from '../src/voice/textToSpeech';
-import { SUPPORTED_LANGUAGES, getLanguageName } from '../src/voice/languages';
+import { SUPPORTED_LANGUAGES } from '../src/voice/languages';
 import { clearAllData } from '../src/store/persistentState';
 import { useThemeStore } from '../src/store/theme';
 

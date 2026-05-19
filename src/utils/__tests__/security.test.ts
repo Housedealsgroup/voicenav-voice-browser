@@ -1,11 +1,6 @@
 import { isValidCommand, isRateLimited } from '../../agent/nlu';
 import { logger } from '../logger';
 
-// Helper: check if a hex color is valid
-function isValidHex(color: string): boolean {
-  return /^#[0-9A-Fa-f]{6}$/.test(color);
-}
-
 describe('Security', () => {
   describe('isValidCommand — XSS Prevention', () => {
     it('rejects script tag injection', () => {

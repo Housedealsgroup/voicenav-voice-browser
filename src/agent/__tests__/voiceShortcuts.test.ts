@@ -4,7 +4,6 @@ import {
   parseShortcutCreation,
   parseShortcutDeletion,
   matchShortcut,
-  getAllShortcuts,
   getBuiltInShortcuts,
   formatShortcutsList,
 } from '../voiceShortcuts';

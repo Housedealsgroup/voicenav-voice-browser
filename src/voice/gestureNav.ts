@@ -2,8 +2,6 @@
 // Voice-activated gesture simulation and swipe-based navigation
 // Enables gesture commands through voice for accessibility
 
-import { logger } from '../utils/logger';
-
 export type GestureType =
   | 'swipe_up' | 'swipe_down' | 'swipe_left' | 'swipe_right'
   | 'double_tap' | 'long_press' | 'pinch_in' | 'pinch_out'

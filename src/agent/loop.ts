@@ -1,7 +1,7 @@
 import { PageSnapshot, AgentAction, AgentContext } from '../browser/types';
 import type { VoiceCommand } from '../browser/types';
-import { parseVoiceCommand, getAgentStep, analyzePage } from './brain';
-import { speak, stopSpeaking, enqueueSpeech } from '../voice/textToSpeech';
+import { parseVoiceCommand, getAgentStep } from './brain';
+import { stopSpeaking, enqueueSpeech } from '../voice/textToSpeech';
 
 type AgentCallbacks = {
   onAction: (action: AgentAction) => void;
@@ -37,7 +37,7 @@ export function handleSnapshot(snapshot: PageSnapshot): void {
 
   snapshotBuffer = snapshot;
 
-  const { action, isComplete, nextStep, needsRetry } = getAgentStep(currentIntent, snapshot, context);
+  const { action, isComplete, nextStep: _nextStep, needsRetry } = getAgentStep(currentIntent, snapshot, context);
 
   callbacks.onAction(action);
 

@@ -45,7 +45,7 @@ const DEFAULT_STATE: ContinuousListenerState = {
   langSwitchDebounce: 2000,
 };
 
-let state = { ...DEFAULT_STATE };
+const state = { ...DEFAULT_STATE };
 let callbacks: ContinuousCallbacks | null = null;
 let langSwitchTimer: ReturnType<typeof setTimeout> | null = null;
 let pendingLang: string | null = null;
@@ -82,7 +82,9 @@ export function stopContinuous(): void {
   interimBuffer = '';
   try {
     ExpoSpeechRecognitionModule.stop();
-  } catch {}
+  } catch {
+    // ignore
+  }
   callbacks?.onListeningEnd?.();
 }
 
@@ -128,7 +130,9 @@ export function pushToTalkEnd(): void {
   if (state.mode === 'push_to_talk') {
     try {
       ExpoSpeechRecognitionModule.stop();
-    } catch {}
+    } catch {
+    // ignore
+  }
     state.isListening = false;
   }
 }
@@ -159,7 +163,9 @@ function restartSTT(lang: string): void {
   state.currentLang = lang;
   try {
     ExpoSpeechRecognitionModule.stop();
-  } catch {}
+  } catch {
+    // ignore
+  }
   setTimeout(() => {
     if (state.mode !== 'off') {
       startSTT();
@@ -217,7 +223,9 @@ function resetSilenceTimer(): void {
       if (state.isListening && state.mode !== 'push_to_talk') {
         try {
           ExpoSpeechRecognitionModule.stop();
-        } catch {}
+        } catch {
+    // ignore
+  }
         setTimeout(() => {
           if (state.mode !== 'off') {
             startSTT();

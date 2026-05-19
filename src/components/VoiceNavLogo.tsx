@@ -7,8 +7,6 @@ interface VoiceNavLogoProps {
 }
 
 export default function VoiceNavLogo({ size = 120 }: VoiceNavLogoProps) {
-  const s = size / 1024; // scale factor
-
   return (
     <View style={[styles.container, { width: size, height: size }]}>
       <Svg width={size} height={size} viewBox="0 0 1024 1024">

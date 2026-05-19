@@ -7,7 +7,6 @@ import {
   FlatList,
   TextInput,
   Platform,
-  Alert,
   Animated,
   PanResponder,
   Dimensions,
@@ -23,11 +22,6 @@ import { speak } from '../src/voice/textToSpeech';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const SWIPE_THRESHOLD = -80;
 const TAG_COLORS = [COLORS.dark.primary, COLORS.dark.accent, COLORS.dark.success, COLORS.dark.warning, COLORS.dark.error, '#E040FB', '#FF6D00', '#00BFA5'];
-
-type BookmarkTag = {
-  label: string;
-  color: string;
-};
 
 // Bookmark item with swipe gesture
 function SwipeableBookmarkRow({

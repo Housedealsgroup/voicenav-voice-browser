@@ -36,7 +36,7 @@ export default function VoiceWaveform({
   }, [isActive]);
 
   const startWave = () => {
-    animations.current = bars.map((bar, i) => {
+    animations.current = bars.map((bar) => {
       const randomDelay = Math.random() * 200;
       const randomDuration = 200 + Math.random() * 300;
       const randomHeight = 0.3 + Math.random() * 0.7;

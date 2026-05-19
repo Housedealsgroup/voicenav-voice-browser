@@ -288,7 +288,7 @@ function classifyEntities(text: string): void {
   }
 
   // Dates
-  const datePattern = /\b(?:\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+\d{1,2},?\s*\d{2,4})\b/gi;
+  const datePattern = /\b(?:\d{1,2}[-/]\d{1,2}[-/]\d{2,4}|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+\d{1,2},?\s*\d{2,4})\b/gi;
   const dates = text.match(datePattern);
   if (dates) {
     context.activeEntities.set('date', dates[0]);

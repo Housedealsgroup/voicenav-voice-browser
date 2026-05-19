@@ -2,7 +2,7 @@ import {
   createTask, submitTask, getActiveTask, advanceStep, cancelActiveTask,
   pauseActiveTask, resumeActiveTask, getTaskProgress, hasMultipleSteps,
   parseMultiStepCommand, matchTaskTemplate, createTaskFromTemplate,
-  completeActiveTask, TASK_TEMPLATES,
+  TASK_TEMPLATES,
 } from '../taskEngine';
 
 describe('Task Engine', () => {

@@ -11,7 +11,7 @@ export function BrowserView() {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [loadState, setLoadState] = useState<LoadState>('idle')
   const [urlInput, setUrlInput] = useState('')
-  const [showUrlBar, setShowUrlBar] = useState(false)
+  const [_showUrlBar, setShowUrlBar] = useState(false)
   const [loadError, setLoadError] = useState('')
   const activeTab = state.tabs.find(t => t.id === state.activeTabId)
 
@@ -98,14 +98,14 @@ export function BrowserView() {
   const handleBack = useCallback(() => {
     try {
       iframeRef.current?.contentWindow?.history.back()
-    } catch {}
+    } catch { /* ignore */ }
   }, [])
 
   // Go forward
   const handleForward = useCallback(() => {
     try {
       iframeRef.current?.contentWindow?.history.forward()
-    } catch {}
+    } catch { /* ignore */ }
   }, [])
 
   // Add bookmark
@@ -134,7 +134,7 @@ export function BrowserView() {
       } else if (parsed.protocol === 'data:') {
         return { icon: '📄', color: 'var(--text-muted)', label: 'Data URL' }
       }
-    } catch {}
+    } catch { /* ignore */ }
     return { icon: '🌐', color: 'var(--text-muted)', label: '' }
   }
 

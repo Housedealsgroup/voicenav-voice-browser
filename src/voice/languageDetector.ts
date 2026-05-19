@@ -305,7 +305,7 @@ export function detectLanguage(text: string): DetectionResult {
   scores.sort((a, b) => b.score - a.score);
 
   const best = scores[0];
-  const second = scores[1];
+  const _second = scores[1];
 
   if (best.score === 0) {
     // No matches — default to English

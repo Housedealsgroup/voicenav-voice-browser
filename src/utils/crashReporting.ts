@@ -25,9 +25,9 @@ export function isCrashReportingConsentGranted(): boolean {
 /** Patterns that could contain PII — URLs with credentials, emails, phone numbers, SSNs, API keys */
 const PII_PATTERNS: { pattern: RegExp; replacement: string }[] = [
   // URLs with embedded credentials: http://user:pass@host
-  { pattern: /https?:\/\/[^@\/\s]+:[^@\/\s]+@/gi, replacement: 'https://***:***@' },
+  { pattern: /https?:\/\/[^@/\s]+:[^@/\s]+@/gi, replacement: 'https://***:***@' },
   // Email addresses
-  { pattern: /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g, replacement: '[EMAIL_REDACTED]' },
+  { pattern: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, replacement: '[EMAIL_REDACTED]' },
   // US phone numbers
   { pattern: /\b(\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g, replacement: '[PHONE_REDACTED]' },
   // SSN patterns

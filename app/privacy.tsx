@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { COLORS, SPACING, FONT_SIZE, RADIUS } from '../src/a11y/theme';
+import { COLORS, SPACING, FONT_SIZE } from '../src/a11y/theme';
 
 export default function PrivacyScreen() {
   const router = useRouter();

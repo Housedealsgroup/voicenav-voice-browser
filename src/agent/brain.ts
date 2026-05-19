@@ -3,15 +3,14 @@
 
 import {
   PageSnapshot, AgentAction, PageElement, VoiceCommand,
-  AgentContext, PageType
+  AgentContext,
 } from '../browser/types';
-import { understand, resolveSiteAlias, NLUResult, Intent, isValidCommand, isRateLimited } from './nlu';
-import { getSession, getContextForNLU, updateEntityMemory, resolveReference } from './sessionMemory';
+import { understand, resolveSiteAlias, NLUResult, isValidCommand, isRateLimited } from './nlu';
+import { getContextForNLU, updateEntityMemory, resolveReference } from './sessionMemory';
 import { logger } from '../utils/logger';
 import { matchShortcut } from './voiceShortcuts';
-import { predictCommands, recordCommand, type PredictionContext } from './commandPredictor';
-import { analyzePageIntelligence, speakPageIntelligence, detectContentType } from './pageIntelligence';
-import { hapticCommandRecognized, hapticSuccess, hapticError } from '../utils/haptics';
+import { recordCommand } from './commandPredictor';
+import { hapticCommandRecognized } from '../utils/haptics';
 
 // --- Helper: Extract store name from intent or target ---
 function extractStoreFromIntent(intent: NLUResult, defaultStore: string): string {
@@ -161,7 +160,7 @@ function findByIndex(elements: PageElement[], index: number, clickable: boolean 
 
 export function getPageSuggestions(snapshot: PageSnapshot): string[] {
   const suggestions: string[] = [];
-  const { pageType, patterns, shoppingData, elements } = snapshot;
+  const { pageType, patterns, shoppingData, elements: _elements } = snapshot;
 
   if (patterns?.hasSearch) suggestions.push('Search for something');
   if (pageType === 'shopping' || pageType === 'product_listing') {

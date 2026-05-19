@@ -1,6 +1,6 @@
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import React, { useRef, useCallback, useImperativeHandle, forwardRef, useEffect } from 'react';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { COLORS } from '../a11y/theme';
 import type { PageSnapshot, AgentAction } from './types';
 import { logger } from '../utils/logger';
@@ -96,6 +96,7 @@ function isSuspiciousUrl(url: string): boolean {
 // Read injected scripts as raw strings via Metro's require + toString
 const DOM_EXTRACTOR = (() => {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const fn = require('./domExtractor.js');
     return typeof fn === 'string' ? fn : '';
   } catch {
@@ -105,6 +106,7 @@ const DOM_EXTRACTOR = (() => {
 
 const ACTION_EXECUTOR = (() => {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const fn = require('./actionExecutor.js');
     return typeof fn === 'string' ? fn : '';
   } catch {
@@ -143,6 +145,7 @@ function escapeForJS(str: string): string {
     .replace(/\0/g, '\\0')            // null byte
     .replace(/\u2028/g, '\\u2028')    // Unicode Line Separator
     .replace(/\u2029/g, '\\u2029')    // Unicode Paragraph Separator
+    // eslint-disable-next-line no-control-regex
     .replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g, (ch) =>
       '\\x' + ch.charCodeAt(0).toString(16).padStart(2, '0')
     );

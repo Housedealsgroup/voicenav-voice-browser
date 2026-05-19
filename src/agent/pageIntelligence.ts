@@ -137,11 +137,11 @@ const ENTITY_PATTERNS: Array<{ pattern: RegExp; type: ExtractedEntity['type']; c
   // Places (capitalized multi-word, common suffixes)
   { pattern: /\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*(?:\s+(?:City|Town|Village|County|State|Province|Country|Island|Mountain|River|Lake|Ocean|Sea|Bay|Valley|Desert|Forest))\b/g, type: 'place', confidence: 0.7 },
   // Money amounts
-  { pattern: /(?:[\$€£¥₹₽₩]\s*\d+(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?\s*(?:USD|EUR|GBP|CAD|AUD|JPY|CNY|INR))/gi, type: 'money', confidence: 0.9 },
+  { pattern: /(?:[$€£¥₹₽₩]\s*\d+(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?\s*(?:USD|EUR|GBP|CAD|AUD|JPY|CNY|INR))/gi, type: 'money', confidence: 0.9 },
   // Dates
-  { pattern: /\b(?:\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2},?\s*\d{2,4})\b/gi, type: 'date', confidence: 0.85 },
+  { pattern: /\b(?:\d{1,2}[-/]\d{1,2}[-/]\d{2,4}|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2},?\s*\d{2,4})\b/gi, type: 'date', confidence: 0.85 },
   // URLs
-  { pattern: /https?:\/\/[^\s<>"{}|\\^`\[\]]+/gi, type: 'url', confidence: 0.95 },
+  { pattern: /https?:\/\/[^\s<>"{}|\\^`[\]]+/gi, type: 'url', confidence: 0.95 },
   // Emails
   { pattern: /[\w.-]+@[\w.-]+\.\w{2,}/g, type: 'email', confidence: 0.95 },
   // Phone numbers
@@ -205,7 +205,7 @@ const CONTENT_TYPE_PATTERNS: Array<{ type: ContentType; check: (snapshot: PageSn
 // Extract price information from text
 function extractPrices(text: string, _elements: PageElement[]): PriceInfo[] {
   const prices: PriceInfo[] = [];
-  const priceRegex = /(?:[\$€£¥₹₽₩]|USD|EUR|GBP|CAD|AUD|JPY|CNY|INR)\s*\d+(?:[.,]\d{1,2})?/gi;
+  const priceRegex = /(?:[$€£¥₹₽₩]|USD|EUR|GBP|CAD|AUD|JPY|CNY|INR)\s*\d+(?:[.,]\d{1,2})?/gi;
   const matches = text.match(priceRegex) || [];
 
   for (const match of matches) {
@@ -214,7 +214,7 @@ function extractPrices(text: string, _elements: PageElement[]): PriceInfo[] {
   }
 
   // Look for original/sale price patterns
-  const saleRegex = /(?:was|originally|regular)\s*[:.]?\s*([\$\€\£]\d+(?:[.,]\d{2})?)/gi;
+  const saleRegex = /(?:was|originally|regular)\s*[:.]?\s*([$€£]\d+(?:[.,]\d{2})?)/gi;
   let saleMatch;
   while ((saleMatch = saleRegex.exec(text)) !== null) {
     if (prices.length > 0) {
@@ -223,7 +223,7 @@ function extractPrices(text: string, _elements: PageElement[]): PriceInfo[] {
   }
 
   // Price range patterns (e.g., "$10 - $20" or "from $10 to $20")
-  const rangeRegex = /(?:from\s+)?([\$\€\£]\d+(?:[.,]\d{2})?)\s*(?:to|-)\s*([\$\€\£]\d+(?:[.,]\d{2})?)/gi;
+  const rangeRegex = /(?:from\s+)?([$€£]\d+(?:[.,]\d{2})?)\s*(?:to|-)\s*([$€£]\d+(?:[.,]\d{2})?)/gi;
   let rangeMatch;
   while ((rangeMatch = rangeRegex.exec(text)) !== null) {
     if (prices.length > 0) {
@@ -358,7 +358,7 @@ function extractNavigation(elements: PageElement[]): NavigationMenu | null {
     e.text?.includes('>') || e.text?.includes('/') || e.text?.includes('\u203a')
   );
   for (const el of breadcrumbElements) {
-    const parts = el.text.split(/[>\/\u203a]+/).map(s => s.trim()).filter(Boolean);
+    const parts = el.text.split(/[>/\u203a]+/).map(s => s.trim()).filter(Boolean);
     breadcrumbs.push(...parts);
   }
 

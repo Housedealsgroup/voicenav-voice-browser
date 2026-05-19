@@ -124,7 +124,7 @@ export default function VoiceButton({
         // Extra haptic for long press
         try {
           Vibration.vibrate([0, 50, 30, 50]);
-        } catch {}
+        } catch { /* ignore */ }
       }, 500);
     }
   }, [scaleAnim, triggerHaptic, onLongPress]);

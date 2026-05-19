@@ -94,7 +94,7 @@ describe('Command History', () => {
   describe('getFavoriteCommands()', () => {
     it('returns only favorited commands', () => {
       const entry1 = addCommand('fav command');
-      const entry2 = addCommand('normal command');
+      const _entry2 = addCommand('normal command');
       toggleFavorite(entry1.id);
       const favorites = getFavoriteCommands();
       expect(favorites.length).toBe(1);

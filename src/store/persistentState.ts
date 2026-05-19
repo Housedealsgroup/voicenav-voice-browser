@@ -536,7 +536,7 @@ export async function loadSessionStats(): Promise<SessionStats> {
   try {
     const data = await AsyncStorage.getItem(KEYS.SESSION_STATS);
     return data ? JSON.parse(data) : getDefaultSessionStats();
-  } catch (e) {
+  } catch {
     return getDefaultSessionStats();
   }
 }

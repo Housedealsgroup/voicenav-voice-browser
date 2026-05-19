@@ -125,7 +125,8 @@ function isNoise(text: string, volume: number, config: NoiseConfig): boolean {
   if (text.trim().length < 2) return true;
 
   // Only punctuation or special characters
-  if (/^[^a-zA-Z\u00C0-\u024F\u0400-\u04FF\u0600-\u06FF\u0900-\u097F\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\uAC00-\uD7AF]+$/.test(text)) return true;
+  // eslint-disable-next-line no-misleading-character-class
+  if (/^[^a-zA-Z\u00C0-\u024F\u0400-\u04FF\u0600-\u06FF\u0900-\u097F\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\uAC00-\uD7AF]+$/u.test(text)) return true;
 
   // Repeated nonsense
   if (/(.)\1{4,}/.test(text)) return true;
@@ -297,13 +298,17 @@ export function useSpeechRecognition(noiseConfig: Partial<NoiseConfig> = {}) {
   const stop = useCallback(() => {
     try {
       ExpoSpeechRecognitionModule.stop();
-    } catch {}
+    } catch {
+      // ignore
+    }
   }, []);
 
   const abort = useCallback(() => {
     try {
       ExpoSpeechRecognitionModule.abort();
-    } catch {}
+    } catch {
+      // ignore
+    }
   }, []);
 
   // Switch language mid-session (restarts recognition)
@@ -311,7 +316,9 @@ export function useSpeechRecognition(noiseConfig: Partial<NoiseConfig> = {}) {
     if (lang === currentLang) return;
     try {
       ExpoSpeechRecognitionModule.stop();
-    } catch {}
+    } catch {
+      // ignore
+    }
     await new Promise(r => setTimeout(r, 150)); // Brief pause for clean restart
     await start(callbacks || callbacksRef.current || undefined, lang);
   }, [currentLang, start]);

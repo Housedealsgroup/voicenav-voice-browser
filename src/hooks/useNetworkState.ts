@@ -15,7 +15,7 @@ export function useNetworkState(): NetworkState {
 
     async function checkNetwork() {
       try {
-        const NetInfo = require('@react-native-community/netinfo');
+        const NetInfo = await import('@react-native-community/netinfo');
         const unsubscribe = NetInfo.addEventListener((state: any) => {
           if (!mounted) return;
           setIsConnected(state.isConnected ?? false);

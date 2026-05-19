@@ -191,7 +191,6 @@ type SSMLSegment = {
 
 function parseSSML(ssml: string): SSMLSegment[] {
   const segments: SSMLSegment[] = [];
-  let remaining = ssml;
 
   // Process SSML-like tags
   // <prosody rate="slow" pitch="high">text</prosody>

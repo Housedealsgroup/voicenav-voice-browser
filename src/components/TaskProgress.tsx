@@ -39,7 +39,6 @@ export default function TaskProgress({
 
   if (!visible || !task) return null;
 
-  const progress = task.steps.length > 0 ? task.currentStepIndex / task.steps.length : 0;
   const isPaused = task.status === 'paused';
   const isComplete = task.status === 'completed' || task.status === 'failed' || task.status === 'cancelled';
 

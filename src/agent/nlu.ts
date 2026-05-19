@@ -2,7 +2,6 @@
 // Multi-layer intent classification, entity extraction, context resolution
 // Supports 113 languages with real-time language detection
 
-import { logger } from '../utils/logger';
 import { detectLanguage } from '../voice/languageDetector';
 
 export type Intent =

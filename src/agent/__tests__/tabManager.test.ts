@@ -58,7 +58,7 @@ describe('Tab Manager', () => {
   describe('setActiveTab()', () => {
     it('switches active tab', () => {
       const first = createTab('https://first.com');
-      const second = createTab('https://second.com');
+      const _second = createTab('https://second.com');
       expect(setActiveTab(first.id)).toBe(true);
       expect(getActiveTab()?.id).toBe(first.id);
     });
@@ -69,7 +69,7 @@ describe('Tab Manager', () => {
 
     it('deactivates other tabs', () => {
       const first = createTab('https://first.com');
-      const second = createTab('https://second.com');
+      const _second = createTab('https://second.com');
       setActiveTab(first.id);
       const tabs = getAllTabs();
       const activeTabs = tabs.filter(t => t.isActive);

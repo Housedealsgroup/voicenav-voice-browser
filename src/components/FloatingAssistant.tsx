@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, Animated, PanResponder,
-  Dimensions, Platform,
+  Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, FONT_SIZE, RADIUS } from '../a11y/theme';
@@ -10,7 +10,6 @@ import { COLORS, SPACING, FONT_SIZE, RADIUS } from '../a11y/theme';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const BUBBLE_SIZE = 56;
 const EXPANDED_WIDTH = 280;
-const EXPANDED_HEIGHT = 320;
 
 type Message = {
   id: string;

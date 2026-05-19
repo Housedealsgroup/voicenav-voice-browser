@@ -3,8 +3,6 @@
 // v2: Action-specific patterns, customizable intensity, accessibility feedback
 
 import * as Haptics from 'expo-haptics';
-import { Platform } from 'react-native';
-import { logger } from './logger';
 
 let hapticsEnabled = true;
 let hapticIntensity: HapticIntensity = 'normal';

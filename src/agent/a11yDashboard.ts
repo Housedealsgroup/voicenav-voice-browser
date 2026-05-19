@@ -156,7 +156,7 @@ function checkStructure(elements: PageElement[]): A11yIssue[] {
   // Check for landmarks
   const hasNav = elements.some(e => e.tag === 'nav' || e.role === 'navigation');
   const hasMain = elements.some(e => e.tag === 'main' || e.role === 'main');
-  const hasHeader = elements.some(e => e.tag === 'header' || e.role === 'banner');
+
 
   if (!hasMain) {
     issues.push({

@@ -1,8 +1,6 @@
 // VoiceNav Smart Command Predictor — context-aware command suggestions
 // Learns from user behavior, page context, time of day, and command patterns
 
-import { logger } from '../utils/logger';
-
 export type PredictionContext = {
   pageType?: string;
   currentUrl?: string;

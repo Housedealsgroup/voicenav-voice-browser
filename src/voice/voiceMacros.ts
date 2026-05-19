@@ -143,7 +143,9 @@ export async function loadMacros(): Promise<VoiceMacro[]> {
 async function saveMacros(): Promise<void> {
   try {
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(userMacros));
-  } catch {}
+  } catch {
+    // ignore
+  }
 }
 
 export function getAllMacros(): VoiceMacro[] {

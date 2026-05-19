@@ -559,7 +559,7 @@ describe('VoiceNav End-to-End Pipeline', () => {
   describe('Command Predictor Integration', () => {
 
     it('shopping page suggests cart/buy commands', () => {
-      const result = runCommand('add to cart', amazonSnapshot);
+      const _result = runCommand('add to cart', amazonSnapshot);
       // After cart, brain should handle buy/checkout
       const result2 = runCommand('buy this', amazonSnapshot);
       expect(result2.action.action).toBe('click');

@@ -13,12 +13,12 @@ import BrowserView, { BrowserViewHandle } from '../src/browser/BrowserView';
 import { PageSnapshot, AgentAction, AgentContext } from '../src/browser/types';
 import { speak, stopSpeaking } from '../src/voice/textToSpeech';
 import { useSpeechRecognition } from '../src/voice/speechToText';
-import { understand, resolveSiteAlias } from '../src/agent/nlu';
+import { understand } from '../src/agent/nlu';
 import { parseVoiceCommand, getAgentStep, analyzePage, getPageSuggestions } from '../src/agent/brain';
-import { addTurn, updateEntityMemory, addPageToHistory, getContextForNLU, resetSession } from '../src/agent/sessionMemory';
+import { addTurn, updateEntityMemory, addPageToHistory } from '../src/agent/sessionMemory';
 import { createTask, submitTask, getActiveTask, advanceStep, cancelActiveTask, pauseActiveTask, resumeActiveTask, getTaskProgress, hasMultipleSteps, parseMultiStepCommand, matchTaskTemplate, createTaskFromTemplate } from '../src/agent/taskEngine';
 import { findMacroByVoice, expandMacro, markMacroUsed, loadMacros } from '../src/voice/voiceMacros';
-import { startContinuous, stopContinuous, handleSpeechResult, handleSpeechError, handleVolumeChange, isContinuousActive, checkBargeIn } from '../src/voice/continuousListener';
+import { startContinuous, stopContinuous, checkBargeIn } from '../src/voice/continuousListener';
 import VoiceButton from '../src/components/VoiceButton';
 import TaskProgress from '../src/components/TaskProgress';
 import CommandPalette from '../src/components/CommandPalette';
@@ -36,7 +36,7 @@ export default function BrowserScreen() {
     currentUrl, setCurrentUrl, isLoading, setIsLoading,
     pageSnapshot, setPageSnapshot, pageTitle, setPageTitle,
     isAgentActive, setIsAgentActive, agentStatus, setAgentStatus,
-    error, setError, addBrowsingHistory, addCommandHistory, speechRate,
+    error: _error, setError, addBrowsingHistory, addCommandHistory, speechRate,
     continuousMode, setContinuousMode, addAssistantMessage, assistantMessages,
     activeTaskName, setActiveTaskName, taskProgress, setTaskProgress, commandHistory,
   } = useAppStore();
@@ -51,7 +51,7 @@ export default function BrowserScreen() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [showTaskProgress, setShowTaskProgress] = useState(false);
-  const [showFloatingAssistant, setShowFloatingAssistant] = useState(true);
+  const [showFloatingAssistant, _setShowFloatingAssistant] = useState(true);
   const [currentTask, setCurrentTask] = useState<any>(null);
   const [offlineQueue, setOfflineQueue] = useState<string[]>([]);
   const { isOffline } = useNetworkState();

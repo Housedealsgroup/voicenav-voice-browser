@@ -19,7 +19,7 @@ import { useAppStore } from '../src/store';
 import { markOnboardingComplete } from '../src/store/persistentState';
 import { requestPermission } from '../src/voice/speechToText';
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 // All 222 supported languages
 const LANGUAGES = [

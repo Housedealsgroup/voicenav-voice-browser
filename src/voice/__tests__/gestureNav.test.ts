@@ -119,7 +119,7 @@ describe('Gesture Navigation', () => {
     });
 
     it('returns null for unknown type', () => {
-      // @ts-ignore - testing invalid type
+      // @ts-expect-error - testing invalid type
       const gesture = getGestureByType('unknown_type');
       expect(gesture).toBeNull();
     });

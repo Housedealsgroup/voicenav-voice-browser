@@ -3,7 +3,7 @@
 // Supports natural language creation: "when I say my email, go to gmail"
 
 import { logger } from '../utils/logger';
-import { loadShortcuts, saveShortcut, removeShortcut, resolveShortcut, type VoiceShortcut } from '../store/persistentState';
+import { loadShortcuts, saveShortcut, removeShortcut, type VoiceShortcut } from '../store/persistentState';
 
 export type ShortcutMatch = {
   shortcut: VoiceShortcut;

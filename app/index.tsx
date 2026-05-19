@@ -11,7 +11,7 @@ import { useVoiceShortcutStore } from '../src/store/voiceCommands';
 import { COLORS, SPACING, FONT_SIZE, RADIUS } from '../src/a11y/theme';
 import { speak } from '../src/voice/textToSpeech';
 import { useSpeechRecognition } from '../src/voice/speechToText';
-import { understand, resolveSiteAlias } from '../src/agent/nlu';
+import { understand } from '../src/agent/nlu';
 import VoiceButton from '../src/components/VoiceButton';
 import VoiceNavLogo from '../src/components/VoiceNavLogo';
 import { isOnboardingDone } from '../src/store/persistentState';
@@ -108,7 +108,7 @@ const TIPS = [
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { setCurrentUrl, addBrowsingHistory, addCommandHistory, speechRate, browsingHistory, commandHistory } = useAppStore();
+  const { setCurrentUrl, addBrowsingHistory, addCommandHistory, speechRate, browsingHistory } = useAppStore();
   const { bookmarks } = useBookmarkStore();
   const { findShortcut } = useVoiceShortcutStore();
   const [inputUrl, setInputUrl] = useState('');

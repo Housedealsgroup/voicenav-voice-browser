@@ -1,8 +1,7 @@
 // VoiceNav Task Engine — multi-step task automation with state machine
 // Supports task templates, conditional logic, error recovery, and task queuing
 
-import type { PageSnapshot, AgentAction } from '../browser/types';
-import type { NLUResult, Intent } from './nlu';
+import type { AgentAction } from '../browser/types';
 import { logger } from '../utils/logger';
 
 export type TaskStatus = 'pending' | 'running' | 'waiting' | 'paused' | 'completed' | 'failed' | 'cancelled';

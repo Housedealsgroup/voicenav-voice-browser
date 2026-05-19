@@ -1,5 +1,4 @@
 import { detectLanguage, isLanguageMismatch, detectSTTLang } from '../languageDetector';
-import { SUPPORTED_LANGUAGES } from '../languages';
 
 describe('LanguageDetector', () => {
   describe('detectLanguage()', () => {

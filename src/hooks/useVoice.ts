@@ -198,20 +198,24 @@ export function useVoice() {
         break
       case 'reload':
         if (iframeRef.current) {
-          iframeRef.current.src = iframeRef.current.src
+          iframeRef.current.contentWindow?.location.reload()
         }
         speak('Reloading page')
         break
       case 'scroll_up':
         try {
           iframeRef.current?.contentWindow?.scrollBy({ top: -400, behavior: 'smooth' })
-        } catch {}
+        } catch {
+          // ignore
+        }
         speak('Scrolling up')
         break
       case 'scroll_down':
         try {
           iframeRef.current?.contentWindow?.scrollBy({ top: 400, behavior: 'smooth' })
-        } catch {}
+        } catch {
+          // ignore
+        }
         speak('Scrolling down')
         break
       case 'bookmark': {
