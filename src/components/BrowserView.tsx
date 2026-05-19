@@ -30,6 +30,7 @@ export function BrowserView() {
       text += `Domain: ${hostname}. `
     } catch { /* ignore */ }
     // Try to read same-origin page content
+    let contentRead = false
     try {
       const iframe = iframeRef.current
       if (iframe?.contentDocument?.body) {
@@ -37,13 +38,17 @@ export function BrowserView() {
         if (bodyText && bodyText.length > 0) {
           const excerpt = bodyText.slice(0, 500)
           text += `Page content: ${excerpt}`
+          contentRead = true
         }
       }
     } catch {
-      text += 'Page content is not accessible due to cross-origin restrictions.'
+      // Cross-origin — expected for most sites
+    }
+    if (!contentRead) {
+      text += 'Page content is not accessible due to cross-origin restrictions. Try saying "read this page" for same-origin pages.'
     }
     speak(text)
-  }, [activeTab, isSpeaking, speak])
+  }, [activeTab, isSpeaking, speak, iframeRef])
 
   // Sync URL input with active tab
   useEffect(() => {
@@ -102,13 +107,14 @@ export function BrowserView() {
         })
         speak(`Page loaded: ${title}`)
       } else {
+        // Cross-origin: can't read title, but page loaded
         speak('Page loaded')
       }
     } catch {
       // Cross-origin restriction - expected for most sites
       speak('Page loaded')
     }
-  }, [dispatch, state.activeTabId, speak])
+  }, [dispatch, state.activeTabId, speak, iframeRef])
 
   // Handle iframe error
   const handleIframeError = useCallback(() => {
