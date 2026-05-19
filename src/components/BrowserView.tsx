@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useApp } from '../context/AppContext'
 import { useVoice } from '../hooks/useVoice'
+import { isLikelyBlocked } from '../utils/embeddableCheck'
 import './BrowserView.css'
 
 type LoadState = 'idle' | 'loading' | 'loaded' | 'error'
@@ -12,6 +13,7 @@ export function BrowserView() {
   const [urlInput, setUrlInput] = useState('')
   const [, setShowUrlBar] = useState(false)
   const [loadError, setLoadError] = useState('')
+  const [isBlocked, setIsBlocked] = useState(false)
   const activeTab = state.tabs.find(t => t.id === state.activeTabId)
 
   // Speaker button — reads current page info via TTS
@@ -29,6 +31,12 @@ export function BrowserView() {
       const hostname = new URL(activeTab.url).hostname
       text += `Domain: ${hostname}. `
     } catch { /* ignore */ }
+    // If site is known to block embedding, give clear explanation
+    if (isBlocked) {
+      text += 'This site blocks embedding and its content cannot be read here. You can open it in a new tab to view it.'
+      speak(text)
+      return
+    }
     // Try to read same-origin page content
     let contentRead = false
     try {
@@ -45,17 +53,25 @@ export function BrowserView() {
       // Cross-origin — expected for most sites
     }
     if (!contentRead) {
-      text += 'Page content is not accessible due to cross-origin restrictions. Try saying "read this page" for same-origin pages.'
+      text += 'Page content is not accessible due to cross-origin restrictions.'
     }
     speak(text)
-  }, [activeTab, isSpeaking, speak, iframeRef])
+  }, [activeTab, isSpeaking, speak, iframeRef, isBlocked])
 
   // Sync URL input with active tab
   useEffect(() => {
     if (activeTab) {
       setUrlInput(activeTab.url)
-      setLoadState('loading')
       setLoadError('')
+      const blocked = isLikelyBlocked(activeTab.url)
+      setIsBlocked(blocked)
+      if (blocked) {
+        setLoadState('error')
+        const domain = (() => { try { return new URL(activeTab.url).hostname } catch { return 'This site' } })()
+        setLoadError(`${domain} does not allow being displayed inside other sites. Open it in a new tab instead.`)
+      } else {
+        setLoadState('loading')
+      }
     }
   }, [activeTab?.url, activeTab?.id])
 
@@ -145,6 +161,14 @@ export function BrowserView() {
       iframeRef.current?.contentWindow?.history.forward()
     } catch { /* ignore */ }
   }, [])
+
+  // Open in new tab
+  const handleOpenInNewTab = useCallback(() => {
+    if (activeTab) {
+      window.open(activeTab.url, '_blank', 'noopener,noreferrer')
+      speak('Opening in new tab')
+    }
+  }, [activeTab, speak])
 
   // Add bookmark
   const handleBookmark = useCallback(() => {
@@ -316,14 +340,30 @@ export function BrowserView() {
       {loadState === 'error' && (
         <div className="browser-error">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" stroke="var(--error)" strokeWidth="1.5" />
-            <line x1="15" y1="9" x2="9" y2="15" stroke="var(--error)" strokeWidth="2" strokeLinecap="round" />
-            <line x1="9" y1="9" x2="15" y2="15" stroke="var(--error)" strokeWidth="2" strokeLinecap="round" />
+            {isBlocked ? (
+              <>
+                <rect x="3" y="11" width="18" height="11" rx="2" stroke="var(--warning)" strokeWidth="1.5"/>
+                <path d="M7 11V7a5 5 0 0110 0v4" stroke="var(--warning)" strokeWidth="1.5" strokeLinecap="round"/>
+              </>
+            ) : (
+              <>
+                <circle cx="12" cy="12" r="10" stroke="var(--error)" strokeWidth="1.5" />
+                <line x1="15" y1="9" x2="9" y2="15" stroke="var(--error)" strokeWidth="2" strokeLinecap="round" />
+                <line x1="9" y1="9" x2="15" y2="15" stroke="var(--error)" strokeWidth="2" strokeLinecap="round" />
+              </>
+            )}
           </svg>
-          <p className="error-title">Failed to load page</p>
+          <p className="error-title">{isBlocked ? 'Site blocks embedding' : 'Failed to load page'}</p>
           <p className="error-message">{loadError}</p>
           <div className="error-actions">
-            <button className="error-btn" onClick={handleReload}>Try again</button>
+            {isBlocked && (
+              <button className="error-btn primary" onClick={handleOpenInNewTab}>Open in new tab</button>
+            )}
+            {isBlocked ? (
+              <button className="error-btn" onClick={() => { setIsBlocked(false); setLoadState('loading') }}>Try anyway</button>
+            ) : (
+              <button className="error-btn" onClick={handleReload}>Try again</button>
+            )}
             <button className="error-btn secondary" onClick={() => dispatch({ type: 'SET_VIEW', view: 'home' })}>Go home</button>
           </div>
         </div>

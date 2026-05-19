@@ -35,6 +35,7 @@ function parseCommand(transcript: string): VoiceCommand {
   if (t === 'bookmark' || t === 'bookmark this' || t === 'save this' || t === 'save page' || t === 'add bookmark') {
     return { action: 'bookmark', confidence: 0.95 }
   }
+  if (t === 'open in new tab' || t === 'open in new window') return { action: 'open_new_tab', confidence: 0.95 }
   if (t === 'home' || t === 'go home' || t === 'homepage') return { action: 'home', confidence: 0.95 }
   if (t === 'zoom in' || t === 'bigger' || t === 'make bigger' || t === 'increase size') return { action: 'zoom_in', confidence: 0.9 }
   if (t === 'zoom out' || t === 'smaller' || t === 'make smaller' || t === 'decrease size') return { action: 'zoom_out', confidence: 0.9 }
@@ -203,16 +204,19 @@ export function useVoice() {
         }
         break
       case 'back':
-        iframeRef.current?.contentWindow?.history.back()
+        try { iframeRef.current?.contentWindow?.history.back() } catch { /* cross-origin */ }
         speak('Going back')
         break
       case 'forward':
-        iframeRef.current?.contentWindow?.history.forward()
+        try { iframeRef.current?.contentWindow?.history.forward() } catch { /* cross-origin */ }
         speak('Going forward')
         break
       case 'reload':
-        if (iframeRef.current) {
-          iframeRef.current.contentWindow?.location.reload()
+        try {
+          if (iframeRef.current) iframeRef.current.contentWindow?.location.reload()
+        } catch {
+          // Cross-origin fallback: re-set src to trigger reload
+          if (iframeRef.current) iframeRef.current.src = iframeRef.current.src
         }
         speak('Reloading page')
         break
@@ -267,6 +271,16 @@ export function useVoice() {
           speak('Tab closed')
         }
         break
+      case 'open_new_tab': {
+        const openTab = state.tabs.find(t => t.id === state.activeTabId)
+        if (openTab) {
+          window.open(openTab.url, '_blank', 'noopener,noreferrer')
+          speak('Opening in new tab')
+        } else {
+          speak('No page is currently open.')
+        }
+        break
+      }
       case 'zoom_in':
         dispatch({ type: 'SET_FONT_SIZE', size: Math.min(state.fontSize + 2, 32) })
         speak('Zoomed in')
@@ -351,6 +365,7 @@ export function useVoice() {
           'Say "find" followed by text to search on the page. ' +
           'Say "bookmark" to save the current page. ' +
           'Say "new tab" or "close tab" to manage tabs. ' +
+          'Say "open in new tab" to open the current page in a new browser tab. ' +
           'Say "zoom in" or "zoom out" to change text size. ' +
           'Say "stop speaking" to stop reading. ' +
           'Say "go home" to return to the start page. ' +

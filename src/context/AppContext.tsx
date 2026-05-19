@@ -1,5 +1,6 @@
 import { createContext, useContext, useReducer, useEffect, useRef, type ReactNode, type RefObject } from 'react'
 import type { AppState, AppAction, Tab } from '../types'
+import { rewriteForEmbed } from '../utils/embeddableCheck'
 
 const STORAGE_KEY = 'voicenav-state'
 
@@ -155,7 +156,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   function navigate(url: string, title?: string) {
-    const fullUrl = isValidUrl(url) ? (url.includes('://') ? url : `https://${url}`) : getSearchUrl(url)
+    const rawUrl = isValidUrl(url) ? (url.includes('://') ? url : `https://${url}`) : getSearchUrl(url)
+    const fullUrl = rewriteForEmbed(rawUrl) ?? rawUrl
     const displayTitle = title || url
 
     if (state.activeTabId) {
