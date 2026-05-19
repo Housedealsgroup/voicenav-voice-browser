@@ -1,97 +1,56 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" fill="none">
-  <defs>
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#080818"/>
-      <stop offset="100%" stop-color="#0a0a1f"/>
-    </linearGradient>
-    <filter id="cardShadow">
-      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.2"/>
-    </filter>
-  </defs>
+  <rect width="390" height="844" rx="40" fill="#000"/>
 
-  <rect width="390" height="844" rx="40" fill="url(#bgGrad)"/>
-  <rect x="0" y="0" width="390" height="44" fill="url(#bgGrad)"/>
-  <text x="195" y="28" text-anchor="middle" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="14" font-weight="600">9:41</text>
+  <rect x="0" y="0" width="390" height="44" fill="#000"/>
+  <text x="195" y="28" text-anchor="middle" fill="#fff" font-family="system-ui, sans-serif" font-size="14" font-weight="600">9:41</text>
 
   <!-- Header -->
-  <text x="195" y="80" text-anchor="middle" fill="#f8fafc" font-family="'SF Pro Display', system-ui, sans-serif" font-size="22" font-weight="700">Settings</text>
+  <rect x="16" y="60" width="36" height="36" rx="8" fill="#0A0A12"/>
+  <path d="M37 70 h-10 m5-5 l-5 5 5 5" stroke="#c0b0d0" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <text x="64" y="84" fill="#fff" font-family="system-ui, sans-serif" font-size="24" font-weight="700">Settings</text>
 
-  <!-- Speech -->
-  <text x="45" y="125" fill="#22d3ee" font-family="'SF Pro Text', system-ui, sans-serif" font-size="11" font-weight="600" letter-spacing="1">SPEECH</text>
+  <!-- Search Engine -->
+  <text x="30" y="125" fill="#6a5a8a" font-family="system-ui, sans-serif" font-size="12" font-weight="600" letter-spacing="0.5">SEARCH ENGINE</text>
+  <rect x="16" y="135" width="358" height="44" rx="8" fill="#0A0A12" stroke="#9B5CFF" stroke-width="1"/>
+  <text x="32" y="162" fill="#fff" font-family="system-ui, sans-serif" font-size="14">Google</text>
+  <path d="M350 152 l6 6-6 6" stroke="#9B5CFF" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <rect x="16" y="183" width="358" height="44" rx="8" fill="#0A0A12" stroke="#1A1A3A" stroke-width="1"/>
+  <text x="32" y="210" fill="#c0b0d0" font-family="system-ui, sans-serif" font-size="14">DuckDuckGo</text>
+  <rect x="16" y="231" width="358" height="44" rx="8" fill="#0A0A12" stroke="#1A1A3A" stroke-width="1"/>
+  <text x="32" y="258" fill="#c0b0d0" font-family="system-ui, sans-serif" font-size="14">Bing</text>
 
-  <g filter="url(#cardShadow)">
-    <rect x="30" y="135" width="330" height="60" rx="14" fill="rgba(15,15,35,0.5)" stroke="rgba(233,69,96,0.06)" stroke-width="1"/>
-  </g>
-  <text x="55" y="160" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="15">Language</text>
-  <text x="290" y="160" fill="#22d3ee" font-family="'SF Pro Text', system-ui, sans-serif" font-size="14" font-weight="500">English</text>
-  <text x="55" y="180" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="12">Voice recognition language</text>
+  <!-- Voice Language -->
+  <text x="30" y="305" fill="#6a5a8a" font-family="system-ui, sans-serif" font-size="12" font-weight="600" letter-spacing="0.5">VOICE LANGUAGE</text>
+  <rect x="16" y="315" width="358" height="44" rx="8" fill="#0A0A12" stroke="#1A1A3A" stroke-width="1"/>
+  <text x="32" y="342" fill="#fff" font-family="system-ui, sans-serif" font-size="14">English (United States)</text>
+  <text x="350" y="342" fill="#6a5a8a" font-family="system-ui, sans-serif" font-size="12">v</text>
 
-  <g filter="url(#cardShadow)">
-    <rect x="30" y="200" width="330" height="60" rx="14" fill="rgba(15,15,35,0.5)" stroke="rgba(233,69,96,0.06)" stroke-width="1"/>
-  </g>
-  <text x="55" y="225" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="15">Speech Rate</text>
-  <rect x="200" y="218" width="120" height="4" rx="2" fill="rgba(233,69,96,0.15)"/>
-  <circle cx="270" cy="220" r="8" fill="#e94560"/>
-  <text x="55" y="245" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="12">1.0x</text>
+  <!-- Theme -->
+  <text x="30" y="395" fill="#6a5a8a" font-family="system-ui, sans-serif" font-size="12" font-weight="600" letter-spacing="0.5">THEME</text>
+  <rect x="16" y="405" width="358" height="44" rx="8" fill="#0A0A12" stroke="#9B5CFF" stroke-width="1"/>
+  <text x="32" y="432" fill="#fff" font-family="system-ui, sans-serif" font-size="14">Dark</text>
+  <path d="M350 422 l6 6-6 6" stroke="#9B5CFF" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <rect x="16" y="453" width="358" height="44" rx="8" fill="#0A0A12" stroke="#1A1A3A" stroke-width="1"/>
+  <text x="32" y="480" fill="#c0b0d0" font-family="system-ui, sans-serif" font-size="14">Light</text>
+  <rect x="16" y="501" width="358" height="44" rx="8" fill="#0A0A12" stroke="#1A1A3A" stroke-width="1"/>
+  <text x="32" y="528" fill="#c0b0d0" font-family="system-ui, sans-serif" font-size="14">High Contrast</text>
+  <rect x="16" y="549" width="358" height="44" rx="8" fill="#0A0A12" stroke="#1A1A3A" stroke-width="1"/>
+  <text x="32" y="576" fill="#c0b0d0" font-family="system-ui, sans-serif" font-size="14">AMOLED</text>
 
-  <g filter="url(#cardShadow)">
-    <rect x="30" y="265" width="330" height="60" rx="14" fill="rgba(15,15,35,0.5)" stroke="rgba(233,69,96,0.06)" stroke-width="1"/>
-  </g>
-  <text x="55" y="290" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="15">Continuous Listening</text>
-  <rect x="290" y="280" width="50" height="28" rx="14" fill="#e94560"/>
-  <circle cx="322" cy="294" r="10" fill="#f8fafc"/>
-  <text x="55" y="310" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="12">Always-on voice mode</text>
-
-  <!-- Accessibility -->
-  <text x="45" y="365" fill="#22d3ee" font-family="'SF Pro Text', system-ui, sans-serif" font-size="11" font-weight="600" letter-spacing="1">ACCESSIBILITY</text>
-
-  <g filter="url(#cardShadow)">
-    <rect x="30" y="375" width="330" height="60" rx="14" fill="rgba(15,15,35,0.5)" stroke="rgba(233,69,96,0.06)" stroke-width="1"/>
-  </g>
-  <text x="55" y="400" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="15">Voice Feedback</text>
-  <rect x="290" y="390" width="50" height="28" rx="14" fill="#e94560"/>
-  <circle cx="322" cy="404" r="10" fill="#f8fafc"/>
-  <text x="55" y="420" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="12">Speak confirmations aloud</text>
-
-  <g filter="url(#cardShadow)">
-    <rect x="30" y="440" width="330" height="60" rx="14" fill="rgba(15,15,35,0.5)" stroke="rgba(233,69,96,0.06)" stroke-width="1"/>
-  </g>
-  <text x="55" y="465" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="15">Haptic Feedback</text>
-  <rect x="290" y="455" width="50" height="28" rx="14" fill="#e94560"/>
-  <circle cx="322" cy="469" r="10" fill="#f8fafc"/>
-  <text x="55" y="485" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="12">Vibrate on actions</text>
-
-  <g filter="url(#cardShadow)">
-    <rect x="30" y="505" width="330" height="60" rx="14" fill="rgba(15,15,35,0.5)" stroke="rgba(233,69,96,0.06)" stroke-width="1"/>
-  </g>
-  <text x="55" y="530" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="15">Large Text</text>
-  <rect x="290" y="520" width="50" height="28" rx="14" fill="rgba(15,15,35,0.6)"/>
-  <circle cx="308" cy="534" r="10" fill="#64748b"/>
-  <text x="55" y="550" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="12">Increase text size</text>
-
-  <!-- Voice Shortcuts -->
-  <text x="45" y="605" fill="#22d3ee" font-family="'SF Pro Text', system-ui, sans-serif" font-size="11" font-weight="600" letter-spacing="1">VOICE SHORTCUTS</text>
-
-  <g filter="url(#cardShadow)">
-    <rect x="30" y="615" width="330" height="55" rx="14" fill="rgba(15,15,35,0.5)" stroke="rgba(233,69,96,0.06)" stroke-width="1"/>
-  </g>
-  <text x="55" y="640" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="15">Manage Shortcuts</text>
-  <text x="310" y="640" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="14">chevron</text>
-  <text x="55" y="660" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="12">3 shortcuts configured</text>
+  <!-- Font Size -->
+  <text x="30" y="625" fill="#6a5a8a" font-family="system-ui, sans-serif" font-size="12" font-weight="600" letter-spacing="0.5">FONT SIZE</text>
+  <rect x="16" y="635" width="358" height="44" rx="8" fill="#0A0A12" stroke="#1A1A3A" stroke-width="1"/>
+  <rect x="32" y="645" width="40" height="28" rx="6" fill="#12122A"/>
+  <text x="52" y="664" text-anchor="middle" fill="#fff" font-family="system-ui, sans-serif" font-size="14" font-weight="600">A-</text>
+  <text x="195" y="664" text-anchor="middle" fill="#c0b0d0" font-family="system-ui, sans-serif" font-size="14">16px</text>
+  <rect x="318" y="645" width="40" height="28" rx="6" fill="#12122A"/>
+  <text x="338" y="664" text-anchor="middle" fill="#fff" font-family="system-ui, sans-serif" font-size="14" font-weight="600">A+</text>
 
   <!-- About -->
-  <text x="45" y="710" fill="#22d3ee" font-family="'SF Pro Text', system-ui, sans-serif" font-size="11" font-weight="600" letter-spacing="1">ABOUT</text>
+  <text x="30" y="715" fill="#6a5a8a" font-family="system-ui, sans-serif" font-size="12" font-weight="600" letter-spacing="0.5">ABOUT</text>
+  <rect x="16" y="725" width="358" height="60" rx="10" fill="#0A0A12" stroke="#1A1A3A" stroke-width="1"/>
+  <text x="32" y="750" fill="#fff" font-family="system-ui, sans-serif" font-size="14" font-weight="600">VoiceNav Voice Browser v11.0.0</text>
+  <text x="32" y="770" fill="#6a5a8a" font-family="system-ui, sans-serif" font-size="12">222 languages — PWA — Works offline</text>
 
-  <g filter="url(#cardShadow)">
-    <rect x="30" y="720" width="330" height="55" rx="14" fill="rgba(15,15,35,0.5)" stroke="rgba(233,69,96,0.06)" stroke-width="1"/>
-  </g>
-  <text x="55" y="745" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="15">VoiceNav v11</text>
-  <text x="55" y="765" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="12">222 Languages — On-Device AI</text>
-
-  <!-- Bottom nav -->
-  <rect x="0" y="800" width="390" height="44" fill="#080818"/>
-  <rect x="30" y="760" width="330" height="60" rx="16" fill="rgba(15,15,35,0.5)"/>
-  <text x="85" y="795" text-anchor="middle" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10">Home</text>
-  <text x="195" y="795" text-anchor="middle" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10">Browser</text>
-  <text x="305" y="795" text-anchor="middle" fill="#22d3ee" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10" font-weight="600">Settings</text>
+  <rect x="140" y="828" width="110" height="5" rx="2.5" fill="#1A1A3A"/>
 </svg>

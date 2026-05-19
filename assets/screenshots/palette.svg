@@ -1,75 +1,43 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" fill="none">
-  <defs>
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#080818"/>
-      <stop offset="100%" stop-color="#0a0a1f"/>
-    </linearGradient>
-  </defs>
+  <rect width="390" height="844" rx="40" fill="#000" opacity="0.92"/>
 
-  <rect width="390" height="844" rx="40" fill="url(#bgGrad)"/>
-  <rect x="0" y="0" width="390" height="44" fill="url(#bgGrad)"/>
-  <text x="195" y="28" text-anchor="middle" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="14" font-weight="600">9:41</text>
+  <text x="195" y="28" text-anchor="middle" fill="#fff" font-family="system-ui, sans-serif" font-size="14" font-weight="600">9:41</text>
 
-  <!-- Dimmed background -->
-  <rect x="0" y="44" width="390" height="800" fill="#000" opacity="0.6"/>
+  <!-- Floating assistant bubble -->
+  <circle cx="340" cy="700" r="28" fill="#9B5CFF"/>
+  <rect x="332" y="686" width="8" height="16" rx="4" fill="white"/>
+  <path d="M328 698 a8 8 0 0016 0" stroke="white" stroke-width="1.8" fill="none"/>
+  <line x1="336" y1="706" x2="336" y2="712" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="332" y1="712" x2="340" y2="712" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
 
-  <!-- Command palette -->
-  <rect x="20" y="120" width="350" height="480" rx="20" fill="rgba(20,20,50,0.95)" stroke="rgba(233,69,96,0.25)" stroke-width="1.5"/>
-  <rect x="20" y="120" width="350" height="50" rx="20" fill="rgba(15,15,35,0.6)"/>
-  <rect x="20" y="150" width="350" height="20" fill="rgba(15,15,35,0.6)"/>
+  <!-- Expanded panel -->
+  <rect x="220" y="440" width="160" height="240" rx="14" fill="#0A0A12" stroke="#1A1A3A" stroke-width="1"/>
+  <!-- Header -->
+  <rect x="232" y="452" width="8" height="8" rx="4" fill="#00E676"/>
+  <text x="244" y="460" fill="#fff" font-family="system-ui, sans-serif" font-size="12" font-weight="700">VoiceNav</text>
+  <path d="M362 452 l6 6 m0-6 l-6 6" stroke="#6a5a8a" stroke-width="1.2" stroke-linecap="round"/>
 
-  <!-- Search input -->
-  <circle cx="50" cy="145" r="10" fill="none" stroke="#e94560" stroke-width="1.5"/>
-  <line x1="57" y1="152" x2="63" y2="158" stroke="#e94560" stroke-width="1.5" stroke-linecap="round"/>
-  <text x="75" y="150" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="15" font-weight="500">Go to am</text>
-  <rect x="168" y="137" width="2" height="20" fill="#22d3ee">
-    <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
-  </rect>
+  <text x="232" y="482" fill="#6a5a8a" font-family="system-ui, sans-serif" font-size="10">Ready</text>
 
-  <!-- Results -->
-  <rect x="35" y="185" width="320" height="44" rx="12" fill="rgba(233,69,96,0.1)" stroke="rgba(233,69,96,0.2)" stroke-width="1"/>
-  <circle cx="58" cy="207" r="12" fill="rgba(245,158,11,0.1)"/>
-  <g transform="translate(50,199)"><rect x="2" y="0" width="12" height="10" rx="2" fill="none" stroke="#fbbf24" stroke-width="1.2"/><path d="M0 10 L14 10" stroke="#fbbf24" stroke-width="1.2"/></g>
-  <text x="82" y="203" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="13" font-weight="600">amazon.com</text>
-  <text x="82" y="220" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10">Shopping — Visited 12 times</text>
-  <text x="330" y="210" fill="#e94560" font-family="system-ui" font-size="10">arrow</text>
+  <!-- Messages -->
+  <rect x="232" y="492" width="136" height="24" rx="6" fill="#12122A"/>
+  <text x="240" y="508" fill="#c0b0d0" font-family="system-ui, sans-serif" font-size="10">Navigating to youtube</text>
 
-  <rect x="35" y="237" width="320" height="44" rx="12" fill="rgba(15,15,35,0.4)"/>
-  <circle cx="58" cy="259" r="12" fill="rgba(66,133,244,0.1)"/>
-  <g transform="translate(50,251)"><circle cx="8" cy="8" r="6" fill="none" stroke="#4285f4" stroke-width="1.2"/><line x1="12" y1="12" x2="15" y2="15" stroke="#4285f4" stroke-width="1.2" stroke-linecap="round"/></g>
-  <text x="82" y="255" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="13" font-weight="600">Google search: amazon</text>
-  <text x="82" y="272" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10">Search the web</text>
-  <text x="330" y="262" fill="#64748b" font-family="system-ui" font-size="10">arrow</text>
+  <rect x="232" y="522" width="136" height="24" rx="6" fill="rgba(155,92,255,0.15)"/>
+  <text x="240" y="538" fill="#9B5CFF" font-family="system-ui, sans-serif" font-size="10">Page loaded: YouTube</text>
 
-  <rect x="35" y="289" width="320" height="44" rx="12" fill="rgba(15,15,35,0.4)"/>
-  <circle cx="58" cy="311" r="12" fill="rgba(6,182,212,0.1)"/>
-  <g transform="translate(50,303)"><circle cx="8" cy="8" r="7" fill="none" stroke="#22d3ee" stroke-width="1.2"/><path d="M1 8 L15 8 M8 1 L8 15" stroke="#22d3ee" stroke-width="0.8"/></g>
-  <text x="82" y="307" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="13" font-weight="600">amazon.co.uk</text>
-  <text x="82" y="324" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10">United Kingdom</text>
-  <text x="330" y="314" fill="#64748b" font-family="system-ui" font-size="10">arrow</text>
+  <!-- Suggestions -->
+  <rect x="232" y="558" width="60" height="20" rx="10" fill="rgba(155,92,255,0.1)" stroke="rgba(155,92,255,0.2)" stroke-width="1"/>
+  <text x="262" y="572" text-anchor="middle" fill="#9B5CFF" font-family="system-ui, sans-serif" font-size="9">Search</text>
+  <rect x="298" y="558" width="70" height="20" rx="10" fill="rgba(155,92,255,0.1)" stroke="rgba(155,92,255,0.2)" stroke-width="1"/>
+  <text x="333" y="572" text-anchor="middle" fill="#9B5CFF" font-family="system-ui, sans-serif" font-size="9">Bookmark</text>
 
-  <rect x="35" y="341" width="320" height="44" rx="12" fill="rgba(15,15,35,0.4)"/>
-  <circle cx="58" cy="363" r="12" fill="rgba(225,29,72,0.1)"/>
-  <g transform="translate(50,355)"><rect x="1" y="0" width="14" height="16" rx="2" fill="none" stroke="#f43f5e" stroke-width="1.2"/><line x1="4" y1="4" x2="12" y2="4" stroke="#f43f5e" stroke-width="0.8"/><line x1="4" y1="7" x2="12" y2="7" stroke="#f43f5e" stroke-width="0.8"/><line x1="4" y1="10" x2="8" y2="10" stroke="#f43f5e" stroke-width="0.8"/></g>
-  <text x="82" y="359" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="13" font-weight="600">Read about Amazon</text>
-  <text x="82" y="376" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10">Wikipedia article</text>
-  <text x="330" y="366" fill="#64748b" font-family="system-ui" font-size="10">arrow</text>
+  <!-- Quick actions -->
+  <circle cx="270" cy="610" r="16" fill="#12122A"/>
+  <rect x="264" y="602" width="6" height="10" rx="3" stroke="#c0b0d0" stroke-width="1.2" fill="none"/>
+  <path d="M261 608 a5 5 0 0010 0" stroke="#c0b0d0" stroke-width="1.2" fill="none"/>
+  <circle cx="330" cy="610" r="16" fill="#12122A"/>
+  <path d="M324 604 h12 m-6-6 v12" stroke="#c0b0d0" stroke-width="1.2" stroke-linecap="round"/>
 
-  <rect x="35" y="393" width="320" height="44" rx="12" fill="rgba(15,15,35,0.4)"/>
-  <circle cx="58" cy="415" r="12" fill="rgba(34,197,94,0.1)"/>
-  <g transform="translate(50,407)"><polygon points="7,1 9,5 13,5 10,8 11,12 7,10 3,12 4,8 1,5 5,5" fill="none" stroke="#22c55e" stroke-width="1"/></g>
-  <text x="82" y="411" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="13" font-weight="600">Shortcut: "my shopping"</text>
-  <text x="82" y="428" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10">Voice shortcut</text>
-
-  <!-- Keyboard hints -->
-  <rect x="35" y="460" width="320" height="30" rx="8" fill="rgba(8,8,24,0.8)"/>
-  <text x="55" y="480" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10">up/down navigate</text>
-  <text x="165" y="480" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10">enter select</text>
-  <text x="260" y="480" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10">esc close</text>
-
-  <rect x="0" y="750" width="390" height="94" fill="#080818"/>
-  <rect x="30" y="760" width="330" height="60" rx="16" fill="rgba(15,15,35,0.5)"/>
-  <text x="85" y="795" text-anchor="middle" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10">Home</text>
-  <text x="195" y="795" text-anchor="middle" fill="#22d3ee" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10" font-weight="600">Browser</text>
-  <text x="305" y="795" text-anchor="middle" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10">Settings</text>
+  <rect x="140" y="828" width="110" height="5" rx="2.5" fill="#1A1A3A"/>
 </svg>
