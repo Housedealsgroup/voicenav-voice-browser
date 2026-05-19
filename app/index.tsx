@@ -102,7 +102,7 @@ const TIPS = [
   { icon: 'volume-high' as const, title: 'Read Aloud', text: 'Say "read this page" and VoiceNav will read the content to you.', color: COLORS.dark.accent },
   { icon: 'pricetag' as const, title: 'Smart Shopping', text: 'Say "compare prices for [item]" to find the best deals.', color: COLORS.dark.success },
   { icon: 'shield-checkmark' as const, title: 'Privacy First', text: 'All voice processing happens on your device. Nothing is sent to servers.', color: COLORS.dark.primary },
-  { icon: 'globe' as const, title: 'Multi-Language', text: 'VoiceNav supports 116 languages. Change yours in Settings.', color: COLORS.dark.accent },
+  { icon: 'globe' as const, title: 'Multi-Language', text: 'VoiceNav supports 222 languages. Change yours in Settings.', color: COLORS.dark.accent },
   { icon: 'flash' as const, title: 'Voice Shortcuts', text: 'Create custom voice shortcuts in Settings for faster navigation.', color: COLORS.dark.warning },
 ];
 

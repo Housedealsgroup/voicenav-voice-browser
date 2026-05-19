@@ -21,7 +21,7 @@ import { requestPermission } from '../src/voice/speechToText';
 
 const { width, height } = Dimensions.get('window');
 
-// All 116 supported languages
+// All 222 supported languages
 const LANGUAGES = [
   { code: 'en-US', name: 'English (US)', flag: '🇺🇸' },
   { code: 'en-GB', name: 'English (UK)', flag: '🇬🇧' },
@@ -355,11 +355,11 @@ export default function OnboardingScreen() {
           <Text style={styles.welcomeTitle}>Welcome to VoiceNav</Text>
           <Text style={styles.welcomeSubtitle}>The voice-first web browser</Text>
           <Text style={styles.welcomeDescription}>
-            Browse the web, shop online, read articles, and navigate apps -- all with your voice. VoiceNav supports 116 languages and works completely offline.
+            Browse the web, shop online, read articles, and navigate apps -- all with your voice. VoiceNav supports 222 languages and works completely offline.
           </Text>
           <View style={styles.welcomeHighlights}>
             {[
-              { icon: 'language' as const, text: '116 languages' },
+              { icon: 'language' as const, text: '222 languages' },
               { icon: 'shield-checkmark' as const, text: 'Fully private' },
               { icon: 'flash' as const, text: 'Instant voice' },
             ].map((h) => (
@@ -382,7 +382,7 @@ export default function OnboardingScreen() {
           </View>
           <Text style={styles.stepTitle}>Choose Your Language</Text>
           <Text style={styles.stepDescription}>
-            VoiceNav supports 116 languages for voice commands and text-to-speech.
+            VoiceNav supports 222 languages for voice commands and text-to-speech.
           </Text>
 
           {/* Language search */}
