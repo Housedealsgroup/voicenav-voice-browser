@@ -15,7 +15,7 @@
 
   <!-- Browser chrome -->
   <rect x="0" y="44" width="390" height="50" fill="rgba(15,15,40,0.9)"/>
-  <rect x="15" y="54" width="290" height="30" rx="15" fill="#080818" stroke="rgba(99,102,241,0.1)" stroke-width="1"/>
+  <rect x="15" y="54" width="290" height="30" rx="15" fill="#080818" stroke="rgba(233,69,96,0.1)" stroke-width="1"/>
   <circle cx="32" cy="69" r="6" fill="none" stroke="#64748b" stroke-width="1.5"/>
   <line x1="36" y1="73" x2="40" y2="77" stroke="#64748b" stroke-width="1.5" stroke-linecap="round"/>
   <text x="48" y="73" fill="#94a3b8" font-family="'SF Mono', monospace" font-size="11">amazon.com</text>
@@ -32,10 +32,10 @@
 
   <!-- Product cards -->
   <g filter="url(#cardShadow)">
-    <rect x="15" y="290" width="170" height="220" rx="12" fill="rgba(15,15,35,0.6)" stroke="rgba(99,102,241,0.08)" stroke-width="1"/>
+    <rect x="15" y="290" width="170" height="220" rx="12" fill="rgba(15,15,35,0.6)" stroke="rgba(233,69,96,0.08)" stroke-width="1"/>
   </g>
-  <rect x="30" y="300" width="140" height="100" rx="8" fill="rgba(99,102,241,0.06)"/>
-  <g transform="translate(75,330)"><rect x="0" y="5" width="30" height="20" rx="3" fill="rgba(99,102,241,0.12)"/><circle cx="15" cy="12" r="8" fill="none" stroke="rgba(99,102,241,0.2)" stroke-width="1.5"/></g>
+  <rect x="30" y="300" width="140" height="100" rx="8" fill="rgba(233,69,96,0.06)"/>
+  <g transform="translate(75,330)"><rect x="0" y="5" width="30" height="20" rx="3" fill="rgba(233,69,96,0.12)"/><circle cx="15" cy="12" r="8" fill="none" stroke="rgba(233,69,96,0.2)" stroke-width="1.5"/></g>
   <text x="100" y="420" text-anchor="middle" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="11" font-weight="500">Sony WH-1000XM5</text>
   <text x="100" y="440" text-anchor="middle" fill="#22d3ee" font-family="'SF Pro Text', system-ui, sans-serif" font-size="14" font-weight="700">$79.99</text>
   <text x="100" y="458" text-anchor="middle" fill="#fbbf24" font-family="'SF Pro Text', system-ui, sans-serif" font-size="11">4.5 stars</text>
@@ -43,10 +43,10 @@
   <text x="100" y="487" text-anchor="middle" fill="#fbbf24" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10" font-weight="700">Add to Cart</text>
 
   <g filter="url(#cardShadow)">
-    <rect x="205" y="290" width="170" height="220" rx="12" fill="rgba(15,15,35,0.6)" stroke="rgba(99,102,241,0.08)" stroke-width="1"/>
+    <rect x="205" y="290" width="170" height="220" rx="12" fill="rgba(15,15,35,0.6)" stroke="rgba(233,69,96,0.08)" stroke-width="1"/>
   </g>
-  <rect x="220" y="300" width="140" height="100" rx="8" fill="rgba(99,102,241,0.06)"/>
-  <g transform="translate(265,330)"><rect x="0" y="5" width="30" height="20" rx="3" fill="rgba(99,102,241,0.12)"/><circle cx="15" cy="12" r="8" fill="none" stroke="rgba(99,102,241,0.2)" stroke-width="1.5"/></g>
+  <rect x="220" y="300" width="140" height="100" rx="8" fill="rgba(233,69,96,0.06)"/>
+  <g transform="translate(265,330)"><rect x="0" y="5" width="30" height="20" rx="3" fill="rgba(233,69,96,0.12)"/><circle cx="15" cy="12" r="8" fill="none" stroke="rgba(233,69,96,0.2)" stroke-width="1.5"/></g>
   <text x="290" y="420" text-anchor="middle" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="11" font-weight="500">AirPods Max</text>
   <text x="290" y="440" text-anchor="middle" fill="#22d3ee" font-family="'SF Pro Text', system-ui, sans-serif" font-size="14" font-weight="700">$549.00</text>
   <text x="290" y="458" text-anchor="middle" fill="#fbbf24" font-family="'SF Pro Text', system-ui, sans-serif" font-size="11">4.8 stars</text>
@@ -55,7 +55,7 @@
 
   <!-- Floating assistant -->
   <g filter="url(#cardShadow)">
-    <rect x="20" y="560" width="350" height="80" rx="16" fill="rgba(15,15,35,0.7)" stroke="rgba(99,102,241,0.15)" stroke-width="1"/>
+    <rect x="20" y="560" width="350" height="80" rx="16" fill="rgba(15,15,35,0.7)" stroke="rgba(233,69,96,0.15)" stroke-width="1"/>
   </g>
   <circle cx="55" cy="600" r="18" fill="#e94560"/>
   <text x="55" y="606" text-anchor="middle" fill="white" font-family="'SF Pro Text', system-ui, sans-serif" font-size="13" font-weight="700">AI</text>
@@ -70,7 +70,7 @@
 
   <!-- Bottom bar -->
   <rect x="0" y="750" width="390" height="94" fill="#080818"/>
-  <rect x="30" y="760" width="330" height="60" rx="16" fill="rgba(15,15,35,0.5)" stroke="rgba(99,102,241,0.06)" stroke-width="1"/>
+  <rect x="30" y="760" width="330" height="60" rx="16" fill="rgba(15,15,35,0.5)" stroke="rgba(233,69,96,0.06)" stroke-width="1"/>
   <text x="85" y="795" text-anchor="middle" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10">Home</text>
   <text x="195" y="795" text-anchor="middle" fill="#22d3ee" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10" font-weight="600">Browser</text>
   <text x="305" y="795" text-anchor="middle" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10">Settings</text>

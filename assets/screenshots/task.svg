@@ -15,15 +15,15 @@
 
   <!-- Task header -->
   <g filter="url(#cardShadow)">
-    <rect x="30" y="60" width="330" height="50" rx="14" fill="rgba(15,15,35,0.5)" stroke="rgba(99,102,241,0.15)" stroke-width="1.5"/>
+    <rect x="30" y="60" width="330" height="50" rx="14" fill="rgba(15,15,35,0.5)" stroke="rgba(233,69,96,0.15)" stroke-width="1.5"/>
   </g>
-  <circle cx="58" cy="85" r="14" fill="rgba(99,102,241,0.1)"/>
+  <circle cx="58" cy="85" r="14" fill="rgba(233,69,96,0.1)"/>
   <g transform="translate(50,77)"><circle cx="8" cy="8" r="6" fill="none" stroke="#e94560" stroke-width="1.5"/><path d="M8 4 L8 8 L11 10" fill="none" stroke="#e94560" stroke-width="1.2" stroke-linecap="round"/></g>
   <text x="85" y="80" fill="#e94560" font-family="'SF Pro Text', system-ui, sans-serif" font-size="10" font-weight="600">ACTIVE TASK</text>
   <text x="85" y="98" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="14" font-weight="600">Shop for headphones</text>
 
   <!-- Progress bar -->
-  <rect x="30" y="125" width="330" height="6" rx="3" fill="rgba(99,102,241,0.1)"/>
+  <rect x="30" y="125" width="330" height="6" rx="3" fill="rgba(233,69,96,0.1)"/>
   <rect x="30" y="125" width="220" height="6" rx="3" fill="#e94560"/>
   <text x="195" y="148" text-anchor="middle" fill="#94a3b8" font-family="'SF Pro Text', system-ui, sans-serif" font-size="11">Step 3 of 4</text>
 
@@ -45,7 +45,7 @@
   <text x="80" y="268" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="12">Search for headphones</text>
 
   <g filter="url(#cardShadow)">
-    <rect x="30" y="290" width="330" height="50" rx="12" fill="rgba(99,102,241,0.06)" stroke="rgba(99,102,241,0.2)" stroke-width="1.5"/>
+    <rect x="30" y="290" width="330" height="50" rx="12" fill="rgba(233,69,96,0.06)" stroke="rgba(233,69,96,0.2)" stroke-width="1.5"/>
   </g>
   <circle cx="55" cy="315" r="12" fill="#e94560"/>
   <text x="55" y="320" text-anchor="middle" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="12" font-weight="700">3</text>
@@ -56,7 +56,7 @@
   </circle>
 
   <g filter="url(#cardShadow)">
-    <rect x="30" y="350" width="330" height="50" rx="12" fill="rgba(15,15,35,0.4)" stroke="rgba(99,102,241,0.06)" stroke-width="1"/>
+    <rect x="30" y="350" width="330" height="50" rx="12" fill="rgba(15,15,35,0.4)" stroke="rgba(233,69,96,0.06)" stroke-width="1"/>
   </g>
   <circle cx="55" cy="375" r="12" fill="rgba(15,15,35,0.6)" stroke="#64748b" stroke-width="1"/>
   <text x="55" y="380" text-anchor="middle" fill="#64748b" font-family="'SF Pro Text', system-ui, sans-serif" font-size="12" font-weight="700">4</text>
@@ -70,7 +70,7 @@
   <!-- Action buttons -->
   <rect x="30" y="500" width="155" height="44" rx="12" fill="#e11d48"/>
   <text x="107" y="527" text-anchor="middle" fill="#f8fafc" font-family="'SF Pro Text', system-ui, sans-serif" font-size="12" font-weight="600">Pause Task</text>
-  <rect x="205" y="500" width="155" height="44" rx="12" fill="rgba(15,15,35,0.5)" stroke="rgba(99,102,241,0.08)" stroke-width="1"/>
+  <rect x="205" y="500" width="155" height="44" rx="12" fill="rgba(15,15,35,0.5)" stroke="rgba(233,69,96,0.08)" stroke-width="1"/>
   <text x="282" y="527" text-anchor="middle" fill="#94a3b8" font-family="'SF Pro Text', system-ui, sans-serif" font-size="12" font-weight="600">Skip Step</text>
 
   <!-- Bottom bar -->
