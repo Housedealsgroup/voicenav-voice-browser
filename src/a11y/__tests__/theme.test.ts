@@ -110,7 +110,7 @@ describe('Theme', () => {
 
   describe('Dark Theme', () => {
     it('has dark background', () => {
-      expect(COLORS.dark.background).toBe('#0B0B1E');
+      expect(COLORS.dark.background).toBe('#000000');
     });
 
     it('has white text', () => {
@@ -118,11 +118,11 @@ describe('Theme', () => {
     });
 
     it('has purple primary', () => {
-      expect(COLORS.dark.primary).toBe('#7C5CFC');
+      expect(COLORS.dark.primary).toBe('#9B5CFF');
     });
 
-    it('has cyan accent', () => {
-      expect(COLORS.dark.accent).toBe('#00E5FF');
+    it('has purple accent', () => {
+      expect(COLORS.dark.accent).toBe('#C084FC');
     });
 
     it('text has sufficient contrast on background', () => {

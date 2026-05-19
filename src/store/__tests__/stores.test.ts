@@ -54,7 +54,7 @@ describe('Theme Store', () => {
   it('sets dark theme', () => {
     useThemeStore.getState().setDark(true);
     expect(useThemeStore.getState().isDark).toBe(true);
-    expect(useThemeStore.getState().colors.background).toBe('#0B0B1E');
+    expect(useThemeStore.getState().colors.background).toBe('#000000');
   });
 
   it('sets light theme', () => {
