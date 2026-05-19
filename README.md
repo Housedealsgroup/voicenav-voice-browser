@@ -12,7 +12,7 @@ A Progressive Web App voice-controlled browser. Speak commands to navigate, sear
 [![React](https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite_6-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev)
 [![License](https://img.shields.io/badge/License-MIT-00E676?style=for-the-badge)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-584_Passing-00E676?style=for-the-badge)](#testing)
+[![Tests](https://img.shields.io/badge/Tests-1003_Passing-00E676?style=for-the-badge)](#testing)
 [![PWA](https://img.shields.io/badge/PWA-Ready-5F4BB6?style=for-the-badge&logo=pwa&logoColor=white)](#pwa)
 [![Languages](https://img.shields.io/badge/Languages-222-E94560?style=for-the-badge)](#languages)
 
@@ -57,7 +57,7 @@ npm install
 npm run dev
 ```
 
-Open **http://localhost:5100** in Chrome, Edge, or Safari.
+Open **http://localhost:5173** in Chrome, Edge, or Safari.
 
 ### Step 2: Grant Microphone Access
 
@@ -319,7 +319,7 @@ npm test
 npm run test:watch
 ```
 
-**584 tests across 12 suites** — all passing. Covers voice recognition, speech synthesis, 30+ command parsing scenarios, state management, language detection, and component rendering.
+**1003 tests across 28 suites** — all passing. Covers voice recognition, speech synthesis, 30+ command parsing scenarios, state management, language detection, and component rendering.
 
 ---
 
