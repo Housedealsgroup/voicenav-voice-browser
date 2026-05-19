@@ -3,14 +3,14 @@ import { useVoice } from '../hooks/useVoice'
 import './Header.css'
 
 export function Header() {
-  const { state, dispatch, goHome } = useApp()
+  const { state, dispatch, goHome, iframeRef } = useApp()
   const { toggleListening, isListening, isSpeaking } = useVoice()
   const activeTab = state.tabs.find(t => t.id === state.activeTabId)
 
   return (
     <header className="header">
       <div className="header-left">
-        <button className="header-btn logo-btn" onClick={goHome} title="Home">
+        <button className="header-btn logo-btn" onClick={goHome} title="Home" aria-label="Go to home screen">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <rect x="9" y="2" width="6" height="12" rx="3" stroke="currentColor" strokeWidth="2"/>
             <path d="M5 10a7 7 0 0014 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
@@ -21,17 +21,15 @@ export function Header() {
         {state.currentView === 'browser' && (
           <>
             <button className="header-btn" onClick={() => {
-              const iframe = document.querySelector('iframe')
-              iframe?.contentWindow?.history.back()
-            }} title="Back">
+              try { iframeRef.current?.contentWindow?.history.back() } catch { /* ignore */ }
+            }} title="Back" aria-label="Go back">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
             <button className="header-btn" onClick={() => {
-              const iframe = document.querySelector('iframe')
-              iframe?.contentWindow?.history.forward()
-            }} title="Forward">
+              try { iframeRef.current?.contentWindow?.history.forward() } catch { /* ignore */ }
+            }} title="Forward" aria-label="Go forward">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>

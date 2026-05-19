@@ -16,13 +16,34 @@ export default defineConfig({
       manifest: {
         name: 'VoiceNav Voice Browser',
         short_name: 'VoiceNav',
-        description: 'AI-powered voice-controlled browser',
+        description: 'AI-powered voice-controlled browser for blind and visually impaired users. 222 languages, on-device AI.',
         theme_color: '#000000',
         background_color: '#000000',
         display: 'standalone',
         orientation: 'portrait',
         scope: '/',
         start_url: '/',
+        categories: ['accessibility', 'browser', 'utilities'],
+        shortcuts: [
+          {
+            name: 'New Tab',
+            short_name: 'New Tab',
+            url: '/?action=new-tab',
+            icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }]
+          },
+          {
+            name: 'Bookmarks',
+            short_name: 'Bookmarks',
+            url: '/?view=bookmarks',
+            icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }]
+          },
+          {
+            name: 'Settings',
+            short_name: 'Settings',
+            url: '/?view=settings',
+            icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }]
+          }
+        ],
         icons: [
           {
             src: 'pwa-192x192.png',

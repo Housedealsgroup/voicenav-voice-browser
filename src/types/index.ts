@@ -40,7 +40,7 @@ export interface AppState {
   showVoiceOverlay: boolean
   searchEngine: 'google' | 'duckduckgo' | 'bing'
   voiceLang: string
-  theme: 'dark' | 'light'
+  theme: 'dark' | 'light' | 'high-contrast' | 'amoled'
   fontSize: number
 }
 
@@ -60,6 +60,6 @@ export type AppAction =
   | { type: 'SET_VOICE_OVERLAY'; show: boolean }
   | { type: 'SET_SEARCH_ENGINE'; engine: 'google' | 'duckduckgo' | 'bing' }
   | { type: 'SET_VOICE_LANG'; lang: string }
-  | { type: 'SET_THEME'; theme: 'dark' | 'light' }
+  | { type: 'SET_THEME'; theme: 'dark' | 'light' | 'high-contrast' | 'amoled' }
   | { type: 'SET_FONT_SIZE'; size: number }
   | { type: 'LOAD_STATE'; state: Partial<AppState> }

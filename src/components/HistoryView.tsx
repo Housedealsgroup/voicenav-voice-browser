@@ -1,5 +1,5 @@
 import { useApp } from '../context/AppContext'
-import './BookmarksView.css'
+import './HistoryView.css'
 
 export function HistoryView() {
   const { state, dispatch, navigate } = useApp()

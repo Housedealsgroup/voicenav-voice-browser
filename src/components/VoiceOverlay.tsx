@@ -26,7 +26,7 @@ export function VoiceOverlay() {
       : 'Processing...'
 
   return (
-    <div className="voice-overlay" onClick={(e) => e.stopPropagation()}>
+    <div className="voice-overlay" role="dialog" aria-label="Voice command overlay" aria-modal="true">
       <div className="voice-overlay-content">
         {/* Microphone button with audio level ring */}
         <div className="voice-mic-container">

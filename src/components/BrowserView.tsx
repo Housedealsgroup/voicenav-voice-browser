@@ -10,7 +10,7 @@ export function BrowserView() {
   const { speak, isSpeaking } = useVoice()
   const [loadState, setLoadState] = useState<LoadState>('idle')
   const [urlInput, setUrlInput] = useState('')
-  const [_showUrlBar, setShowUrlBar] = useState(false)
+  const [, setShowUrlBar] = useState(false)
   const [loadError, setLoadError] = useState('')
   const activeTab = state.tabs.find(t => t.id === state.activeTabId)
 
@@ -74,9 +74,11 @@ export function BrowserView() {
     setShowUrlBar(false)
   }
 
-  // Validate URL
+  // Validate URL (matches AppContext.isValidUrl)
   function isValidUrl(str: string): boolean {
     try {
+      const lower = str.toLowerCase().trim()
+      if (lower.startsWith('javascript:') || lower.startsWith('data:') || lower.startsWith('vbscript:')) return false
       const url = new URL(str.includes('://') ? str : `https://${str}`)
       return url.hostname.includes('.')
     } catch {

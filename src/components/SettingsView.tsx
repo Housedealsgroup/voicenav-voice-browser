@@ -61,6 +61,26 @@ export function SettingsView() {
       </div>
 
       <div className="settings-section">
+        <h2 className="settings-section-title">Theme</h2>
+        <div className="settings-options">
+          {(['dark', 'light', 'high-contrast', 'amoled'] as const).map(theme => (
+            <button
+              key={theme}
+              className={`settings-option ${state.theme === theme ? 'active' : ''}`}
+              onClick={() => dispatch({ type: 'SET_THEME', theme })}
+            >
+              <span>{theme === 'dark' ? 'Dark' : theme === 'light' ? 'Light' : theme === 'high-contrast' ? 'High Contrast' : 'AMOLED'}</span>
+              {state.theme === theme && (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 6L9 17l-5-5" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="settings-section">
         <h2 className="settings-section-title">Font Size</h2>
         <div className="font-size-control">
           <button
@@ -91,32 +111,44 @@ export function SettingsView() {
             <span>Search the web</span>
           </div>
           <div className="command-item">
-            <code>&quot;Go back&quot;</code>
-            <span>Go to previous page</span>
+            <code>&quot;Read this page&quot;</code>
+            <span>Read page content aloud</span>
+          </div>
+          <div className="command-item">
+            <code>&quot;Find [text]&quot;</code>
+            <span>Search on current page</span>
+          </div>
+          <div className="command-item">
+            <code>&quot;Go back&quot; / &quot;Go forward&quot;</code>
+            <span>Navigate history</span>
           </div>
           <div className="command-item">
             <code>&quot;Reload&quot;</code>
             <span>Refresh the page</span>
           </div>
           <div className="command-item">
-            <code>&quot;Scroll down&quot;</code>
-            <span>Scroll the page down</span>
+            <code>&quot;Scroll down&quot; / &quot;Scroll up&quot;</code>
+            <span>Scroll the page</span>
           </div>
           <div className="command-item">
             <code>&quot;Bookmark&quot;</code>
             <span>Save current page</span>
           </div>
           <div className="command-item">
-            <code>&quot;Home&quot;</code>
-            <span>Go to home screen</span>
-          </div>
-          <div className="command-item">
-            <code>&quot;New tab&quot;</code>
-            <span>Open a new tab</span>
+            <code>&quot;New tab&quot; / &quot;Close tab&quot;</code>
+            <span>Manage tabs</span>
           </div>
           <div className="command-item">
             <code>&quot;Zoom in&quot; / &quot;Zoom out&quot;</code>
             <span>Adjust text size</span>
+          </div>
+          <div className="command-item">
+            <code>&quot;Stop speaking&quot;</code>
+            <span>Stop reading aloud</span>
+          </div>
+          <div className="command-item">
+            <code>&quot;Help&quot;</code>
+            <span>List all voice commands</span>
           </div>
         </div>
       </div>
