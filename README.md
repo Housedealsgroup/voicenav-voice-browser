@@ -243,7 +243,11 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 ## Known Limitations
 
+**Sites That Block Embedding**: Many popular sites (Google, Facebook, X/Twitter, YouTube, etc.) set `X-Frame-Options: DENY` or `Content-Security-Policy: frame-ancestors 'none'` headers, which prevent them from loading inside VoiceNav's iframe. You'll see "refused to connect" or a blank page. **Workaround**: These sites can still be searched via voice ("search for cats on YouTube") — the search results page loads fine; individual pages from those sites will need to be opened in a new browser tab/window.
+
 **Firefox + Embedded Sites**: Firefox blocks embedded pages from certain sites (e.g., x.com) for security. If you see *"Firefox Can't Open This Page — To protect your security, Firefox will not allow Firefox to display the page if another site has embedded it"*, open the link in a new window instead.
+
+**Voice Feedback for Accessibility**: VoiceNav speaks back every command confirmation ("Scrolling down", "Navigating to youtube.com", "Page loaded: ...") so blind and visually impaired users get full audio feedback. If speech synthesis is silent, check your device volume and ensure your browser supports the Web Speech API.
 
 ---
 

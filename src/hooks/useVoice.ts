@@ -206,11 +206,13 @@ export function useVoice() {
         try {
           iframeRef.current?.contentWindow?.scrollBy({ top: -400, behavior: 'smooth' })
         } catch {}
+        speak('Scrolling up')
         break
       case 'scroll_down':
         try {
           iframeRef.current?.contentWindow?.scrollBy({ top: 400, behavior: 'smooth' })
         } catch {}
+        speak('Scrolling down')
         break
       case 'bookmark': {
         const activeTab = state.tabs.find(t => t.id === state.activeTabId)

@@ -1,11 +1,13 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { useApp } from '../context/AppContext'
+import { useVoice } from '../hooks/useVoice'
 import './BrowserView.css'
 
 type LoadState = 'idle' | 'loading' | 'loaded' | 'error'
 
 export function BrowserView() {
   const { state, dispatch } = useApp()
+  const { speak } = useVoice()
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [loadState, setLoadState] = useState<LoadState>('idle')
   const [urlInput, setUrlInput] = useState('')
@@ -60,22 +62,28 @@ export function BrowserView() {
     try {
       const iframe = iframeRef.current
       if (iframe?.contentDocument?.title) {
+        const title = iframe.contentDocument.title
         dispatch({
           type: 'UPDATE_TAB',
           tabId: state.activeTabId!,
-          updates: { title: iframe.contentDocument.title }
+          updates: { title }
         })
+        speak(`Page loaded: ${title}`)
+      } else {
+        speak('Page loaded')
       }
     } catch {
       // Cross-origin restriction - expected for most sites
+      speak('Page loaded')
     }
-  }, [dispatch, state.activeTabId])
+  }, [dispatch, state.activeTabId, speak])
 
   // Handle iframe error
   const handleIframeError = useCallback(() => {
     setLoadState('error')
     setLoadError('Failed to load page. The site may block embedding.')
-  }, [])
+    speak('Failed to load page. The site may block embedding.')
+  }, [speak])
 
   // Reload iframe
   const handleReload = useCallback(() => {
