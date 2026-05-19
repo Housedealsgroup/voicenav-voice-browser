@@ -23,7 +23,8 @@ function parseCommand(transcript: string): VoiceCommand {
   if (t === 'go back' || t === 'back' || t === 'previous page') return { action: 'back', confidence: 0.98 }
   if (t === 'go forward' || t === 'forward' || t === 'next page') return { action: 'forward', confidence: 0.98 }
   if (t === 'reload' || t === 'refresh' || t === 'refresh page') return { action: 'reload', confidence: 0.95 }
-  if (t === 'stop' || t === 'cancel' || t === 'halt') return { action: 'stop', confidence: 0.95 }
+  if (t === 'stop' || t === 'cancel' || t === 'halt' || t === 'stop speaking' || t === 'be quiet' || t === 'silence') return { action: 'stop', confidence: 0.95 }
+  if (t === 'read this page' || t === 'read this' || t === 'read page' || t === 'read aloud' || t === 'read to me') return { action: 'read_page', confidence: 0.95 }
   if (t === 'scroll down' || t === 'page down' || t === 'down') return { action: 'scroll_down', confidence: 0.95 }
   if (t === 'scroll up' || t === 'page up' || t === 'up') return { action: 'scroll_up', confidence: 0.95 }
   if (t === 'scroll to top' || t === 'top of page') return { action: 'scroll_up', confidence: 0.9 }
@@ -62,9 +63,8 @@ function parseCommand(transcript: string): VoiceCommand {
 }
 
 export function useVoice() {
-  const { state, dispatch, navigate, search, goHome } = useApp()
+  const { state, dispatch, navigate, search, goHome, iframeRef } = useApp()
   const recognitionRef = useRef<any>(null)
-  const iframeRef = useRef<HTMLIFrameElement | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
   const animFrameRef = useRef<number>(0)
@@ -262,8 +262,69 @@ export function useVoice() {
         speak('Zoomed out')
         break
       case 'find':
-        speak(`Searching page for ${command.value}`)
+        if (command.value) {
+          try {
+            // Try using the browser's built-in find on the iframe
+            const iframe = iframeRef.current
+            if (iframe?.contentWindow) {
+              const found = (iframe.contentWindow as any).find(command.value)
+              if (found) {
+                speak(`Found: ${command.value}`)
+              } else {
+                speak(`Could not find: ${command.value}`)
+              }
+            } else {
+              // Fallback: search on the main window
+              const found = (window as any).find(command.value)
+              speak(found ? `Found: ${command.value}` : `Could not find: ${command.value}`)
+            }
+          } catch {
+            speak(`Searching page for ${command.value}`)
+          }
+        }
         break
+      case 'read_page': {
+        const activeTab = state.tabs.find(t => t.id === state.activeTabId)
+        if (!activeTab) {
+          speak('No page is currently open.')
+          break
+        }
+        let text = `Now reading: ${activeTab.title || 'Untitled page'}. `
+        try {
+          const hostname = new URL(activeTab.url).hostname
+          text += `Domain: ${hostname}. `
+        } catch { /* ignore */ }
+        // Try to read same-origin page content
+        try {
+          const iframe = iframeRef.current
+          if (iframe?.contentDocument?.body) {
+            const bodyText = iframe.contentDocument.body.innerText?.trim()
+            if (bodyText && bodyText.length > 0) {
+              // Extract meaningful text: skip scripts, styles, and very short fragments
+              const sentences = bodyText
+                .replace(/\s+/g, ' ')
+                .split(/[.!?]+/)
+                .map(s => s.trim())
+                .filter(s => s.length > 10)
+                .slice(0, 10)
+                .join('. ')
+              if (sentences.length > 0) {
+                text += sentences
+              } else {
+                text += bodyText.slice(0, 500)
+              }
+            } else {
+              text += 'The page appears to be empty.'
+            }
+          } else {
+            text += 'Page content is not accessible due to cross-origin restrictions. The page may be on a different domain.'
+          }
+        } catch {
+          text += 'Page content is not accessible due to cross-origin restrictions.'
+        }
+        speak(text)
+        break
+      }
       case 'unknown':
         speak('Sorry, I didn\'t understand that command')
         break

@@ -1,104 +1,101 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import Svg, { Defs, LinearGradient, RadialGradient, Stop, Rect, Circle, Path, Line, Text as SvgText } from 'react-native-svg';
-
 interface VoiceNavLogoProps {
-  size?: number;
+  size?: number
+  className?: string
 }
 
-export default function VoiceNavLogo({ size = 120 }: VoiceNavLogoProps) {
+export default function VoiceNavLogo({ size = 120, className = '' }: VoiceNavLogoProps) {
   return (
-    <View style={[styles.container, { width: size, height: size }]}>
-      <Svg width={size} height={size} viewBox="0 0 1024 1024">
-        <Defs>
-          <LinearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-            <Stop offset="0%" stopColor="#0a0a1a" />
-            <Stop offset="50%" stopColor="#0d0d24" />
-            <Stop offset="100%" stopColor="#111133" />
-          </LinearGradient>
-          <RadialGradient id="bgGlow" cx="50%" cy="35%" r="60%">
-            <Stop offset="0%" stopColor="#6366f1" stopOpacity="0.12" />
-            <Stop offset="100%" stopColor="#0a0a1a" stopOpacity="0" />
-          </RadialGradient>
-          <LinearGradient id="micBody" x1="0%" y1="0%" x2="0%" y2="100%">
-            <Stop offset="0%" stopColor="#e0e7ff" />
-            <Stop offset="100%" stopColor="#a5b4fc" />
-          </LinearGradient>
-          <LinearGradient id="accentLine" x1="0%" y1="0%" x2="100%" y2="0%">
-            <Stop offset="0%" stopColor="#6366f1" />
-            <Stop offset="50%" stopColor="#818cf8" />
-            <Stop offset="100%" stopColor="#6366f1" />
-          </LinearGradient>
-          <LinearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <Stop offset="0%" stopColor="#818cf8" stopOpacity="0.1" />
-            <Stop offset="50%" stopColor="#c7d2fe" stopOpacity="0.6" />
-            <Stop offset="100%" stopColor="#818cf8" stopOpacity="0.1" />
-          </LinearGradient>
-          <LinearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <Stop offset="0%" stopColor="#6366f1" stopOpacity="0.4" />
-            <Stop offset="50%" stopColor="#818cf8" stopOpacity="0.6" />
-            <Stop offset="100%" stopColor="#6366f1" stopOpacity="0.4" />
-          </LinearGradient>
-        </Defs>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 1024 1024"
+      fill="none"
+      className={className}
+      role="img"
+      aria-label="VoiceNav logo"
+    >
+      <defs>
+        <linearGradient id="logoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#0a0a12" />
+          <stop offset="100%" stopColor="#12122A" />
+        </linearGradient>
+        <linearGradient id="logoAccent" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#C084FC" />
+          <stop offset="100%" stopColor="#9B5CFF" />
+        </linearGradient>
+        <radialGradient id="logoGlow" cx="50%" cy="35%" r="50%">
+          <stop offset="0%" stopColor="#9B5CFF" stopOpacity="0.15" />
+          <stop offset="100%" stopColor="#0a0a12" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="logoRing" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#9B5CFF" stopOpacity="0.6" />
+          <stop offset="50%" stopColor="#C084FC" stopOpacity="0.3" />
+          <stop offset="100%" stopColor="#9B5CFF" stopOpacity="0.6" />
+        </linearGradient>
+      </defs>
 
-        {/* Background */}
-        <Rect width="1024" height="1024" rx="220" fill="url(#bg)" />
-        <Rect width="1024" height="1024" rx="220" fill="url(#bgGlow)" />
+      {/* Background */}
+      <rect width="1024" height="1024" rx="224" fill="url(#logoBg)" />
+      <rect width="1024" height="1024" rx="224" fill="url(#logoGlow)" />
 
-        {/* Outer ring */}
-        <Circle cx="512" cy="460" r="320" fill="none" stroke="url(#ringGrad)" strokeWidth="1.5" opacity="0.3" />
-        <Circle cx="512" cy="460" r="320" fill="none" stroke="url(#ringGrad)" strokeWidth="6" opacity="0.06" strokeDasharray="4 16" />
+      {/* Outer ring */}
+      <circle cx="512" cy="512" r="440" stroke="url(#logoRing)" strokeWidth="4" opacity="0.4" />
+      <circle cx="512" cy="512" r="380" stroke="#9B5CFF" strokeWidth="2" opacity="0.15" />
 
-        {/* Middle ring */}
-        <Circle cx="512" cy="460" r="260" fill="none" stroke="#818cf8" strokeWidth="1" opacity="0.15" />
+      {/* Microphone body */}
+      <rect x="442" y="240" width="140" height="280" rx="70" fill="url(#logoAccent)" />
 
-        {/* Inner glow */}
-        <Circle cx="512" cy="440" r="180" fill="#6366f1" opacity="0.06" />
+      {/* Microphone arc */}
+      <path
+        d="M342 420a170 170 0 00340 0"
+        stroke="url(#logoAccent)"
+        strokeWidth="36"
+        strokeLinecap="round"
+        fill="none"
+      />
 
-        {/* Sound waves — left */}
-        <Path d="M200 340 Q170 460 200 580" fill="none" stroke="url(#waveGrad)" strokeWidth="7" strokeLinecap="round" opacity="0.25" />
-        <Path d="M240 360 Q218 460 240 560" fill="none" stroke="url(#waveGrad)" strokeWidth="6" strokeLinecap="round" opacity="0.4" />
-        <Path d="M280 385 Q265 460 280 535" fill="none" stroke="url(#waveGrad)" strokeWidth="5" strokeLinecap="round" opacity="0.6" />
-        <Path d="M315 400 Q305 460 315 520" fill="none" stroke="url(#waveGrad)" strokeWidth="4" strokeLinecap="round" opacity="0.75" />
+      {/* Stand */}
+      <line x1="512" y1="600" x2="512" y2="740" stroke="#9B5CFF" strokeWidth="36" strokeLinecap="round" />
+      <line x1="402" y1="740" x2="622" y2="740" stroke="#9B5CFF" strokeWidth="36" strokeLinecap="round" />
 
-        {/* Sound waves — right */}
-        <Path d="M824 340 Q854 460 824 580" fill="none" stroke="url(#waveGrad)" strokeWidth="7" strokeLinecap="round" opacity="0.25" />
-        <Path d="M784 360 Q806 460 784 560" fill="none" stroke="url(#waveGrad)" strokeWidth="6" strokeLinecap="round" opacity="0.4" />
-        <Path d="M744 385 Q759 460 744 535" fill="none" stroke="url(#waveGrad)" strokeWidth="5" strokeLinecap="round" opacity="0.6" />
-        <Path d="M709 400 Q719 460 709 520" fill="none" stroke="url(#waveGrad)" strokeWidth="4" strokeLinecap="round" opacity="0.75" />
+      {/* Sound waves left */}
+      <path
+        d="M310 340c-30 30-30 120 0 150"
+        stroke="#C084FC"
+        strokeWidth="24"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.5"
+      />
+      <path
+        d="M260 300c-50 50-50 200 0 230"
+        stroke="#C084FC"
+        strokeWidth="18"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.3"
+      />
 
-        {/* Microphone */}
-        <Rect x="464" y="320" width="96" height="180" rx="48" fill="url(#micBody)" />
-        <Line x1="484" y1="370" x2="540" y2="370" stroke="rgba(99,102,241,0.25)" strokeWidth="1.5" />
-        <Line x1="484" y1="395" x2="540" y2="395" stroke="rgba(99,102,241,0.25)" strokeWidth="1.5" />
-        <Line x1="484" y1="420" x2="540" y2="420" stroke="rgba(99,102,241,0.25)" strokeWidth="1.5" />
-        <Line x1="484" y1="445" x2="540" y2="445" stroke="rgba(99,102,241,0.25)" strokeWidth="1.5" />
-        <Line x1="484" y1="470" x2="540" y2="470" stroke="rgba(99,102,241,0.25)" strokeWidth="1.5" />
+      {/* Sound waves right */}
+      <path
+        d="M714 340c30 30 30 120 0 150"
+        stroke="#C084FC"
+        strokeWidth="24"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.5"
+      />
+      <path
+        d="M764 300c50 50 50 200 0 230"
+        stroke="#C084FC"
+        strokeWidth="18"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.3"
+      />
 
-        {/* Mic arc + stand + base */}
-        <Path d="M385 545 Q385 640 512 640 Q639 640 639 545" fill="none" stroke="#c7d2fe" strokeWidth="8" strokeLinecap="round" />
-        <Line x1="512" y1="640" x2="512" y2="695" stroke="#c7d2fe" strokeWidth="8" strokeLinecap="round" />
-        <Line x1="465" y1="695" x2="559" y2="695" stroke="#c7d2fe" strokeWidth="8" strokeLinecap="round" />
-
-        {/* Recording dot */}
-        <Circle cx="512" cy="300" r="12" fill="#ef4444" />
-        <Circle cx="512" cy="300" r="18" fill="none" stroke="#ef4444" strokeWidth="2" opacity="0.4" />
-
-        {/* Accent line */}
-        <Rect x="312" y="760" width="400" height="3" rx="1.5" fill="url(#accentLine)" opacity="0.4" />
-
-        {/* Text */}
-        <SvgText x="512" y="820" textAnchor="middle" fontFamily="System" fontSize="76" fontWeight="800" fill="#f8fafc" letterSpacing="10">VOICENAV</SvgText>
-        <SvgText x="512" y="862" textAnchor="middle" fontFamily="System" fontSize="19" fill="#a5b4fc" letterSpacing="14" fontWeight="600">VOICE BROWSER</SvgText>
-        <SvgText x="512" y="900" textAnchor="middle" fontFamily="System" fontSize="13" fill="rgba(248,250,252,0.35)" letterSpacing="4">by HouseDealsGroup</SvgText>
-      </Svg>
-    </View>
-  );
+      {/* Top dot accent */}
+      <circle cx="512" cy="190" r="20" fill="#9B5CFF" opacity="0.6" />
+    </svg>
+  )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

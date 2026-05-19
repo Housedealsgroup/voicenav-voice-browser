@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useEffect, type ReactNode } from 'react'
+import { createContext, useContext, useReducer, useEffect, useRef, type ReactNode, type RefObject } from 'react'
 import type { AppState, AppAction, Tab } from '../types'
 
 const STORAGE_KEY = 'voicenav-state'
@@ -108,12 +108,14 @@ interface AppContextValue {
   navigate: (url: string, title?: string) => void
   search: (query: string) => void
   goHome: () => void
+  iframeRef: RefObject<HTMLIFrameElement | null>
 }
 
 const AppContext = createContext<AppContextValue | null>(null)
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, null, loadSavedState)
+  const iframeRef = useRef<HTMLIFrameElement | null>(null)
 
   // Persist state
   useEffect(() => {
@@ -169,7 +171,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AppContext.Provider value={{ state, dispatch, navigate, search, goHome }}>
+    <AppContext.Provider value={{ state, dispatch, navigate, search, goHome, iframeRef }}>
       {children}
     </AppContext.Provider>
   )

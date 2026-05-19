@@ -198,3 +198,20 @@
 .browser-iframe.hidden {
   display: none;
 }
+
+/* Speaker button */
+.speaker-btn {
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.speaker-btn:hover {
+  color: var(--accent);
+  background: rgba(155, 92, 255, 0.1);
+}
+
+.speaker-btn.active {
+  color: var(--accent);
+  animation: pulse 1s ease-in-out infinite;
+  background: rgba(155, 92, 255, 0.15);
+}

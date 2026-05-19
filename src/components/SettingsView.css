@@ -36,7 +36,7 @@
 
 .settings-option.active {
   border-color: var(--accent);
-  background: rgba(233, 69, 96, 0.1);
+  background: rgba(155, 92, 255, 0.1);
 }
 
 .settings-select {

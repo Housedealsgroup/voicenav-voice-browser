@@ -14,7 +14,7 @@ export interface HistoryEntry {
 }
 
 export interface VoiceCommand {
-  action: 'navigate' | 'search' | 'back' | 'forward' | 'reload' | 'scroll_up' | 'scroll_down' | 'bookmark' | 'home' | 'stop' | 'new_tab' | 'close_tab' | 'zoom_in' | 'zoom_out' | 'find' | 'unknown'
+  action: 'navigate' | 'search' | 'back' | 'forward' | 'reload' | 'scroll_up' | 'scroll_down' | 'bookmark' | 'home' | 'stop' | 'new_tab' | 'close_tab' | 'zoom_in' | 'zoom_out' | 'find' | 'read_page' | 'unknown'
   value?: string
   confidence: number
 }

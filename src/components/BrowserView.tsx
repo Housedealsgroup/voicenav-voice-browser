@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useApp } from '../context/AppContext'
 import { useVoice } from '../hooks/useVoice'
 import './BrowserView.css'
@@ -6,14 +6,44 @@ import './BrowserView.css'
 type LoadState = 'idle' | 'loading' | 'loaded' | 'error'
 
 export function BrowserView() {
-  const { state, dispatch } = useApp()
-  const { speak } = useVoice()
-  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const { state, dispatch, iframeRef } = useApp()
+  const { speak, isSpeaking } = useVoice()
   const [loadState, setLoadState] = useState<LoadState>('idle')
   const [urlInput, setUrlInput] = useState('')
   const [_showUrlBar, setShowUrlBar] = useState(false)
   const [loadError, setLoadError] = useState('')
   const activeTab = state.tabs.find(t => t.id === state.activeTabId)
+
+  // Speaker button — reads current page info via TTS
+  const handleSpeaker = useCallback(() => {
+    if (isSpeaking) {
+      window.speechSynthesis.cancel()
+      return
+    }
+    if (!activeTab) {
+      speak('No page is currently open.')
+      return
+    }
+    let text = `Now viewing: ${activeTab.title || 'Untitled page'}. `
+    try {
+      const hostname = new URL(activeTab.url).hostname
+      text += `Domain: ${hostname}. `
+    } catch { /* ignore */ }
+    // Try to read same-origin page content
+    try {
+      const iframe = iframeRef.current
+      if (iframe?.contentDocument?.body) {
+        const bodyText = iframe.contentDocument.body.innerText?.trim()
+        if (bodyText && bodyText.length > 0) {
+          const excerpt = bodyText.slice(0, 500)
+          text += `Page content: ${excerpt}`
+        }
+      }
+    } catch {
+      text += 'Page content is not accessible due to cross-origin restrictions.'
+    }
+    speak(text)
+  }, [activeTab, isSpeaking, speak])
 
   // Sync URL input with active tab
   useEffect(() => {
@@ -123,19 +153,57 @@ export function BrowserView() {
     }
   }, [activeTab, dispatch])
 
-  // Get security indicator
-  function getSecurityInfo(url: string): { icon: string; color: string; label: string } {
+  // Get security indicator (returns SVG path data, no emoji)
+  function getSecurityInfo(url: string): { svg: React.ReactNode; color: string; label: string } {
     try {
       const parsed = new URL(url)
       if (parsed.protocol === 'https:') {
-        return { icon: '🔒', color: 'var(--success)', label: 'Secure' }
+        return {
+          svg: (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="2"/>
+              <path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+            </svg>
+          ),
+          color: 'var(--success)',
+          label: 'Secure connection'
+        }
       } else if (parsed.protocol === 'http:') {
-        return { icon: '⚠️', color: 'var(--warning)', label: 'Not secure' }
+        return {
+          svg: (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              <circle cx="12" cy="17" r="1" fill="currentColor"/>
+            </svg>
+          ),
+          color: 'var(--warning)',
+          label: 'Not secure'
+        }
       } else if (parsed.protocol === 'data:') {
-        return { icon: '📄', color: 'var(--text-muted)', label: 'Data URL' }
+        return {
+          svg: (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          ),
+          color: 'var(--text-muted)',
+          label: 'Data URL'
+        }
       }
     } catch { /* ignore */ }
-    return { icon: '🌐', color: 'var(--text-muted)', label: '' }
+    return {
+      svg: (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+          <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" stroke="currentColor" strokeWidth="2"/>
+        </svg>
+      ),
+      color: 'var(--text-muted)',
+      label: ''
+    }
   }
 
   if (!activeTab) {
@@ -187,7 +255,7 @@ export function BrowserView() {
         {/* URL bar */}
         <form className="toolbar-url" onSubmit={handleUrlSubmit}>
           <span className="url-security" title={security.label} style={{ color: security.color }}>
-            {security.icon}
+            {security.svg}
           </span>
           <input
             className="toolbar-url-input"
@@ -214,6 +282,25 @@ export function BrowserView() {
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
             <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
+        </button>
+
+        {/* Speaker button — reads page aloud */}
+        <button
+          className={`toolbar-btn speaker-btn ${isSpeaking ? 'active' : ''}`}
+          onClick={handleSpeaker}
+          title={isSpeaking ? 'Stop speaking' : 'Read page aloud'}
+          aria-label={isSpeaking ? 'Stop speaking' : 'Read page aloud'}
+        >
+          {isSpeaking ? (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <rect x="4" y="4" width="16" height="16" rx="2" fill="currentColor"/>
+            </svg>
+          ) : (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M11 5L6 9H2v6h4l5 4V5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          )}
         </button>
       </div>
 

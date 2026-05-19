@@ -54,15 +54,15 @@
 }
 
 .voice-mic.active {
-  background: var(--success);
+  background: var(--accent);
   animation: pulse 1.5s ease-in-out infinite;
-  box-shadow: 0 0 40px rgba(74, 222, 128, 0.5);
+  box-shadow: 0 0 40px var(--accent-glow);
 }
 
 .voice-mic.speaking {
-  background: var(--warning);
+  background: #C084FC;
   animation: pulse 1s ease-in-out infinite;
-  box-shadow: 0 0 40px rgba(251, 191, 36, 0.5);
+  box-shadow: 0 0 40px rgba(192, 132, 252, 0.5);
 }
 
 .voice-status {
