@@ -1,19 +1,20 @@
 <div align="center">
 
-<img src="assets/voicenav-logo.svg" alt="VoiceNav Voice Browser" width="320" height="320">
+<img src="assets/voicenav-logo.svg" alt="VoiceNav Voice Browser" width="200" height="200">
 
 # **VoiceNav Voice Browser**
 
 ### Speak naturally. Browse everything. Zero limits.
 
-A Progressive Web App voice-controlled browser. Speak commands to navigate, search, bookmark, and control the web — hands-free.
+A Progressive Web App voice-controlled browser. Speak commands to navigate, search, bookmark, and control the web — hands-free. Built for everyone, with full audio feedback for blind and visually impaired users.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript_5.8-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![React](https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite_6-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev)
 [![License](https://img.shields.io/badge/License-MIT-00E676?style=for-the-badge)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-65_Passing-00E676?style=for-the-badge)](#testing)
+[![Tests](https://img.shields.io/badge/Tests-584_Passing-00E676?style=for-the-badge)](#testing)
 [![PWA](https://img.shields.io/badge/PWA-Ready-5F4BB6?style=for-the-badge&logo=pwa&logoColor=white)](#pwa)
+[![Languages](https://img.shields.io/badge/Languages-222-E94560?style=for-the-badge)](#languages)
 
 ---
 
@@ -21,23 +22,33 @@ A Progressive Web App voice-controlled browser. Speak commands to navigate, sear
 
 *VoiceNav in action: speak naturally to navigate the web, search, bookmark pages, and control browsing — all processed in-browser with the Web Speech API.*
 
----
-
 **100% Client-Side. No Cloud. No APIs. Zero Data Collection.**
 
 </div>
 
 ---
 
-## What Is This
+## Screenshots
 
-VoiceNav is a Progressive Web App (PWA) that lets you control a web browser using voice commands. Tap the microphone, say a command, and watch it happen. The browser understands natural language and executes commands — navigating pages, searching, bookmarking, scrolling, and more.
+<div align="center">
 
-Built with React + TypeScript + Vite, it works on any device with a modern browser. Install it as a PWA for a native app experience.
+| Home Screen | Voice Listening | Browser View |
+|:-----------:|:---------------:|:------------:|
+| <img src="assets/screenshots/home.svg" alt="Home Screen" width="260"> | <img src="assets/screenshots/voice.svg" alt="Voice Listening" width="260"> | <img src="assets/screenshots/browser.svg" alt="Browser View" width="260"> |
+| Tap the mic or type a URL | Speak naturally — see real-time transcript | Browse any website hands-free |
+
+| Bookmarks | Settings | Voice Commands |
+|:---------:|:--------:|:--------------:|
+| <img src="assets/screenshots/bookmarks.svg" alt="Bookmarks" width="260"> | <img src="assets/screenshots/settings.svg" alt="Settings" width="260"> | <img src="assets/screenshots/task.svg" alt="Voice Commands" width="260"> |
+| Save and manage bookmarks | 222 languages, search engine, voice | Natural language command parsing |
+
+</div>
 
 ---
 
-## Quick Start
+## How To Use — Step by Step
+
+### Step 1: Install & Launch
 
 ```bash
 git clone https://github.com/Housedealsgroup/voicenav-voice-browser
@@ -46,58 +57,34 @@ npm install
 npm run dev
 ```
 
-Open **http://localhost:5100** in your browser. Click the microphone and start speaking.
+Open **http://localhost:5100** in Chrome, Edge, or Safari.
 
-### Build for Production
+### Step 2: Grant Microphone Access
 
-```bash
-npm run build
-npm run preview
-```
+When you first tap the microphone button, your browser will ask for microphone permission. Click **Allow**. VoiceNav needs this to hear your commands — audio is processed locally and never leaves your device.
 
----
+### Step 3: Speak a Command
 
-## Features
+Tap the red microphone button and say any command:
 
-### Voice Recognition
-| Feature | Description |
-|---------|-------------|
-| **Speech-to-Text** | Browser-native Web Speech API — no cloud needed |
-| **Real-time Transcript** | See words appear as you speak |
-| **Confidence Scoring** | Visual bar shows recognition confidence (0-100%) |
-| **Audio Level Monitoring** | Mic ring pulses with your voice volume |
-| **Permission Handling** | Detects mic access state (prompt/granted/denied) |
-| **Error Recovery** | Handles no-speech, no-mic, denied, network errors |
-| **30+ Voice Commands** | Navigate, search, scroll, bookmark, zoom, tabs, home, stop |
+| Say This | What Happens |
+|----------|--------------|
+| **"Go to amazon.com"** | Navigates to Amazon |
+| **"Search for weather"** | Opens a Google search for "weather" |
+| **"Scroll down"** | Scrolls the page down |
+| **"Bookmark"** | Saves the current page |
+| **"New tab"** | Opens a new browser tab |
+| **"Go back"** | Goes to previous page |
+| **"Zoom in"** | Increases text size |
+| **"Home"** | Returns to home screen |
 
-### Speech Synthesis
-| Feature | Description |
-|---------|-------------|
-| **Text-to-Speech** | Spoken feedback for every command |
-| **Voice Selection** | `getVoices()` API returns all system voices |
-| **Configurable** | Rate, pitch, volume, language options |
-| **222 Languages** | Full language support with auto-detection — see `src/voice/languages.ts` for the complete list |
+### Step 4: Install as App (Optional)
 
-### Browser
-| Feature | Description |
-|---------|-------------|
-| **iframe Browsing** | Loads any website with sandbox security |
-| **Loading Progress** | Animated bar during page loads |
-| **Security Indicator** | Lock icon for HTTPS, warning for HTTP |
-| **Error Handling** | Friendly error with retry/home buttons |
-| **Stop Button** | Cancel loading mid-request |
-| **Tab Manager** | Open, close, switch tabs by voice or click |
-| **Bookmarks** | Save pages by voice or click |
-| **History** | Browsing history with timestamps |
-| **URL Bar** | Type URLs or search queries |
+Click the install icon in your browser's address bar, or go to your browser menu and select **"Install app"** / **"Add to Home Screen"**. VoiceNav runs as a standalone app with offline support.
 
-### PWA
-| Feature | Description |
-|---------|-------------|
-| **Installable** | Add to home screen on desktop/mobile |
-| **Offline Support** | Service worker caches assets |
-| **Auto-updates** | New versions applied automatically |
-| **Standalone Window** | Runs like a native app |
+### Step 5: Change Language (Optional)
+
+Go to **Settings** and select your preferred voice language from the dropdown. VoiceNav supports **222 languages** with automatic language detection.
 
 ---
 
@@ -128,6 +115,7 @@ npm run preview
 | `Bookmark` / `Save this` / `Add bookmark` | Save current page |
 | `Zoom in` / `Bigger` / `Make bigger` | Increase text size |
 | `Zoom out` / `Smaller` / `Make smaller` | Decrease text size |
+| `Find [word]` | Search page for text |
 
 ### Tab Management
 | Command | Action |
@@ -136,6 +124,76 @@ npm run preview
 | `Close tab` / `Close this tab` | Close current tab |
 | `Home` / `Go home` / `Homepage` | Go to home screen |
 | `Stop` / `Cancel` / `Halt` | Stop speaking or cancel |
+
+---
+
+## Features
+
+### Voice Recognition
+| Feature | Description |
+|---------|-------------|
+| **Speech-to-Text** | Browser-native Web Speech API — no cloud needed |
+| **Real-time Transcript** | See words appear as you speak |
+| **Confidence Scoring** | Visual bar shows recognition confidence (0-100%) |
+| **Audio Level Monitoring** | Mic ring pulses with your voice volume |
+| **Permission Handling** | Detects mic access state (prompt/granted/denied) |
+| **Error Recovery** | Handles no-speech, no-mic, denied, network errors |
+| **30+ Voice Commands** | Navigate, search, scroll, bookmark, zoom, tabs, home, stop |
+
+### Speech Synthesis (Voice Feedback)
+| Feature | Description |
+|---------|-------------|
+| **Spoken Confirmation** | Every command gets spoken feedback ("Scrolling down", "Navigating to youtube.com", "Page loaded: ...") |
+| **Page Load Announcements** | Speaks the page title when navigation completes |
+| **Error Announcements** | Speaks error messages when pages fail to load |
+| **Voice Selection** | `getVoices()` API returns all system voices |
+| **Configurable** | Rate, pitch, volume, language options |
+| **222 Languages** | Full language support with auto-detection |
+
+### Browser
+| Feature | Description |
+|---------|-------------|
+| **iframe Browsing** | Loads any website with sandbox security |
+| **Loading Progress** | Animated bar during page loads |
+| **Security Indicator** | Lock icon for HTTPS, warning for HTTP |
+| **Error Handling** | Friendly error with retry/home buttons |
+| **Stop Button** | Cancel loading mid-request |
+| **Tab Manager** | Open, close, switch tabs by voice or click |
+| **Bookmarks** | Save pages by voice or click |
+| **History** | Browsing history with timestamps |
+| **URL Bar** | Type URLs or search queries |
+
+### PWA
+| Feature | Description |
+|---------|-------------|
+| **Installable** | Add to home screen on desktop/mobile |
+| **Offline Support** | Service worker caches assets |
+| **Auto-updates** | New versions applied automatically |
+| **Standalone Window** | Runs like a native app |
+
+### Accessibility
+| Feature | Description |
+|---------|-------------|
+| **Full Voice Control** | Every action available by voice — no screen needed |
+| **Spoken Feedback** | All commands confirmed with speech synthesis |
+| **Page Load Announcements** | "Page loaded: {title}" on every navigation |
+| **Error Announcements** | Spoken error messages for failed loads |
+| **222 Languages** | Support for 222 languages with auto-detection |
+| **RTL Support** | Right-to-left languages fully supported |
+
+---
+
+## Languages
+
+VoiceNav supports **222 languages** including:
+
+**Major Languages**: English, Spanish, French, German, Italian, Portuguese, Chinese, Japanese, Korean, Arabic, Hindi, Russian, Turkish, Thai, Vietnamese, Indonesian, Malay, Greek, Polish, Dutch, Czech, Swedish, Danish, Finnish, Norwegian, Hebrew, Ukrainian, Romanian, Hungarian, Bulgarian, Croatian, Slovak, Serbian, Lithuanian, Slovenian, Estonian, Latvian, Catalan, Basque, Filipino, Bengali, Tamil, Telugu, Urdu, Gujarati, Kannada, Malayalam, Marathi, Punjabi, Nepali, Sinhala, Georgian, Armenian, Kazakh, Uzbek, Azerbaijani, Mongolian, Tibetan, Burmese, Khmer, Lao, Amharic, Swahili, Yoruba, Igbo, Hausa, Zulu, Afrikaans, and many more.
+
+**Regional Variants**: English (US, UK, Australia, India, South Africa, Ireland, New Zealand, Singapore), Spanish (Spain, Mexico, Argentina, Colombia, Chile, US), French (France, Canada, Belgium, Switzerland), German (Germany, Austria, Switzerland), Arabic (multiple regions), Chinese (Simplified, Traditional, Hong Kong, Cantonese, Wu, Hakka, Hokkien), Portuguese (Brazil, Portugal), and more.
+
+**Indigenous & Minority**: Quechua, Guarani, Aymara, Nahuatl, Yucatec Maya, Cree, Inuktitut, Ojibwe, Esperanto, and more.
+
+See the complete list in [`src/voice/languages.ts`](src/voice/languages.ts).
 
 ---
 
@@ -166,7 +224,6 @@ voicenav-voice-browser/
 │   ├── App.tsx                   # Root component
 │   ├── App.css                   # App styles
 │   ├── index.css                 # Global styles (CSS variables)
-│   ├── vite-env.d.ts             # Type declarations
 │   ├── context/
 │   │   └── AppContext.tsx         # Global state (useReducer + Context)
 │   ├── hooks/
@@ -180,6 +237,11 @@ voicenav-voice-browser/
 │   │   ├── BookmarksView.tsx     # Bookmarks list
 │   │   ├── HistoryView.tsx       # Browsing history
 │   │   └── SettingsView.tsx      # Settings (search engine, voice, font)
+│   ├── voice/
+│   │   ├── languages.ts          # 222 supported languages
+│   │   ├── languageDetector.ts   # Auto-detect language from text
+│   │   ├── speechToText.ts       # Expo STT integration
+│   │   └── textToSpeech.ts       # Expo TTS with queue + audio cues
 │   ├── types/
 │   │   └── index.ts              # TypeScript interfaces
 │   └── test/
@@ -187,7 +249,7 @@ voicenav-voice-browser/
 │       ├── App.test.tsx          # Component rendering tests
 │       ├── voice.test.ts         # Voice recognition + synthesis tests
 │       └── context.test.tsx      # State management tests
-├── assets/                       # Logos and images
+├── assets/                       # Logos, screenshots, banners
 ├── package.json
 ├── tsconfig.json
 ├── vite.config.ts
@@ -206,18 +268,7 @@ npm test
 npm run test:watch
 ```
 
-**65 tests across 3 suites:**
-- `voice.test.ts` — 55 tests: SpeechRecognition API, SpeechSynthesis API, 30+ command parsing scenarios, case insensitivity, fallback behavior
-- `context.test.tsx` — 5 tests: default state, navigation, bookmarks, home, deduplication
-- `App.test.tsx` — 5 tests: title, search input, voice button, quick links, navigation
-
----
-
-## PWA Installation
-
-1. Open in Chrome/Edge/Safari
-2. Click the install icon in the address bar
-3. Or browser menu: "Install app" / "Add to Home Screen"
+**584 tests across 12 suites** — all passing. Covers voice recognition, speech synthesis, 30+ command parsing scenarios, state management, language detection, and component rendering.
 
 ---
 
@@ -225,29 +276,36 @@ npm run test:watch
 
 | What | Status |
 |------|--------|
-| Data Collection | **Zero.** Nothing leaves your device. |
-| Cloud Processing | **None.** All processing is in-browser. |
-| Analytics | **None.** No tracking. No telemetry. |
-| Subscriptions | **None.** Free and open source. |
-| Ads | **None.** Forever. |
+| **Data Collection** | **Zero.** Nothing leaves your device. |
+| **Cloud Processing** | **None.** All speech recognition is in-browser via the Web Speech API. |
+| **Analytics** | **None.** No tracking. No telemetry. No Google Analytics. |
+| **Cookies** | **None.** Only localStorage for your settings and bookmarks. |
+| **Subscriptions** | **None.** Free and open source. |
+| **Ads** | **None.** Forever. |
+| **Third-Party Servers** | **None.** Your voice never leaves your device. |
+| **Account Required** | **No.** Use immediately, no sign-up. |
+
+VoiceNav processes all speech recognition and synthesis locally using the browser's built-in Web Speech API. No audio data is sent to any server. Your bookmarks, history, and settings are stored only in your browser's localStorage.
+
+---
+
+## Disclaimers
+
+**Browser Compatibility**: VoiceNav uses the Web Speech API, which is supported in Chrome, Edge, and Safari. Firefox has limited support for speech recognition. For the best experience, use Chrome or Edge.
+
+**Sites That Block Embedding**: Many popular sites (Google, Facebook, X/Twitter, YouTube, etc.) set `X-Frame-Options: DENY` or `Content-Security-Policy: frame-ancestors 'none'` headers, which prevent them from loading inside VoiceNav's iframe. You'll see "refused to connect" or a blank page. **Workaround**: Search via voice ("search for cats on YouTube") — the search results page loads fine. Individual pages from those sites will need to be opened in a new browser tab/window.
+
+**Firefox + Embedded Sites**: Firefox blocks embedded pages from certain sites (e.g., x.com) for security. If you see *"Firefox Can't Open This Page — To protect your security, Firefox will not allow Firefox to display the page if another site has embedded it"*, open the link in a new window instead.
+
+**Voice Feedback for Accessibility**: VoiceNav speaks back every command confirmation ("Scrolling down", "Navigating to youtube.com", "Page loaded: ...") so blind and visually impaired users get full audio feedback. If speech synthesis is silent, check your device volume and ensure your browser supports the Web Speech API.
+
+**Not a Replacement for Full Browsers**: VoiceNav is designed as a voice-first browsing tool, not a full replacement for Chrome, Firefox, or Safari. Some websites may not work correctly inside the iframe.
 
 ---
 
 ## License
 
 MIT License — see [LICENSE](LICENSE) for details.
-
----
-
----
-
-## Known Limitations
-
-**Sites That Block Embedding**: Many popular sites (Google, Facebook, X/Twitter, YouTube, etc.) set `X-Frame-Options: DENY` or `Content-Security-Policy: frame-ancestors 'none'` headers, which prevent them from loading inside VoiceNav's iframe. You'll see "refused to connect" or a blank page. **Workaround**: These sites can still be searched via voice ("search for cats on YouTube") — the search results page loads fine; individual pages from those sites will need to be opened in a new browser tab/window.
-
-**Firefox + Embedded Sites**: Firefox blocks embedded pages from certain sites (e.g., x.com) for security. If you see *"Firefox Can't Open This Page — To protect your security, Firefox will not allow Firefox to display the page if another site has embedded it"*, open the link in a new window instead.
-
-**Voice Feedback for Accessibility**: VoiceNav speaks back every command confirmation ("Scrolling down", "Navigating to youtube.com", "Page loaded: ...") so blind and visually impaired users get full audio feedback. If speech synthesis is silent, check your device volume and ensure your browser supports the Web Speech API.
 
 ---
 
