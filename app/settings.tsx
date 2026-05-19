@@ -439,8 +439,8 @@ export default function SettingsScreen() {
             users. Browse the web, shop online, and access information using just your voice.
           </Text>
           <Text style={styles.aboutText}>
-            Version 10.0.0 • Built by HouseDealsGroup{'\n'}
-            Open Source • MIT License • Free Forever
+            Version 11.0.0 • Built by HouseDealsGroup{'\n'}
+            222 Languages • Open Source • MIT License • Free Forever
           </Text>
         </View>
       </ScrollView>

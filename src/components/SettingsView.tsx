@@ -124,8 +124,8 @@ export function SettingsView() {
       <div className="settings-section">
         <h2 className="settings-section-title">About</h2>
         <div className="about-info">
-          <p><strong>VoiceNav Voice Browser</strong> v1.0.0</p>
-          <p>AI-powered voice-controlled browser</p>
+          <p><strong>VoiceNav Voice Browser</strong> v11.0.0</p>
+          <p>AI-powered voice-controlled browser &middot; 222 languages</p>
           <p className="about-muted">Built with React + TypeScript + Vite</p>
           <p className="about-muted">Progressive Web App &middot; Works offline</p>
         </div>
